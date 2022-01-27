@@ -18,7 +18,6 @@
 
     <ItemGroup>
       <Folder Include="src\data" />
-      <Folder Include="src\ui" />
     </ItemGroup>
 
     <ItemGroup>

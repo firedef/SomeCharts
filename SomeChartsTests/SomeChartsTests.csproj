@@ -15,7 +15,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Folder Include="src" />
+      <ProjectReference Include="..\SomeChartsUi\SomeChartsUi.csproj" />
     </ItemGroup>
 
 </Project>
