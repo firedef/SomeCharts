@@ -1,0 +1,28 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SomeChartsUi", "SomeChartsUi\SomeChartsUi.csproj", "{1AD53082-789D-4104-9D46-4E9EFE7017D1}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SomeChartsUiAvalonia", "SomeChartsUiAvalonia\SomeChartsUiAvalonia.csproj", "{4E8A43B8-9C1E-40CC-BFD3-85A81E422314}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SomeChartsTests", "SomeChartsTests\SomeChartsTests.csproj", "{5DD559FB-0A6A-4A9A-B973-515EE53A6BED}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{1AD53082-789D-4104-9D46-4E9EFE7017D1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1AD53082-789D-4104-9D46-4E9EFE7017D1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1AD53082-789D-4104-9D46-4E9EFE7017D1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1AD53082-789D-4104-9D46-4E9EFE7017D1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4E8A43B8-9C1E-40CC-BFD3-85A81E422314}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4E8A43B8-9C1E-40CC-BFD3-85A81E422314}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4E8A43B8-9C1E-40CC-BFD3-85A81E422314}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4E8A43B8-9C1E-40CC-BFD3-85A81E422314}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5DD559FB-0A6A-4A9A-B973-515EE53A6BED}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5DD559FB-0A6A-4A9A-B973-515EE53A6BED}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5DD559FB-0A6A-4A9A-B973-515EE53A6BED}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5DD559FB-0A6A-4A9A-B973-515EE53A6BED}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
