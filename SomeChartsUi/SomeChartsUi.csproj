@@ -17,11 +17,9 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <Folder Include="src\backends" />
       <Folder Include="src\data" />
       <Folder Include="src\themes" />
       <Folder Include="src\ui" />
-      <Folder Include="src\utils" />
     </ItemGroup>
 
 </Project>
