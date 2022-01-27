@@ -8,4 +8,6 @@ public struct indexedPalette {
 	public indexedPalette(ushort paletteIndex) => this.paletteIndex = paletteIndex;
 
 	public palette palette => theme.globalTheme.GetPalette(paletteIndex);
+
+	public static indexedPalette Random() => new((ushort)new Random().Next(1024));
 }

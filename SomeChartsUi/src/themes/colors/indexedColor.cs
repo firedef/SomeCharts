@@ -4,6 +4,10 @@ using SomeChartsUi.themes.themes;
 namespace SomeChartsUi.themes.colors; 
 
 public readonly struct indexedColor {
+	private const byte _paletteMask = 0b1_0000;
+	private const byte _alphaMask = 0b0_1000;
+	private const byte _argbMask = 0b0_1111;
+	
 	public readonly color customColor;
 	public readonly ushort colorIndex;
 	public readonly byte colorMask;
@@ -14,11 +18,11 @@ public readonly struct indexedColor {
 		this.colorMask = colorMask;
 	}
 
-	public indexedColor(color col) : this(col, 0, 0b1111) { }
+	public indexedColor(color col) : this(col, 0, _argbMask) { }
 	public indexedColor(ushort index) : this(color.black, index, 0) { }
-	public indexedColor(ushort index, byte alpha) : this(color.black.WithAlpha(alpha), index, 0b1000) { }
-	public indexedColor(palette _, ushort index) : this(color.black, index, 0b1_0000) { }
-	public indexedColor(palette _, ushort index, byte alpha) : this(color.black.WithAlpha(alpha), index, 0b1_1000) { }
+	public indexedColor(ushort index, byte alpha) : this(color.black.WithAlpha(alpha), index, _alphaMask) { }
+	public indexedColor(palette _, ushort index) : this(color.black, index, _paletteMask) { }
+	public indexedColor(palette _, ushort index, byte alpha) : this(color.black.WithAlpha(alpha), index, _paletteMask | _alphaMask) { }
 
 	public color GetColor() {
 		uint mask = 0;
@@ -46,4 +50,6 @@ public readonly struct indexedColor {
 			(p[colorIndex].raw & mask2)
 			);
 	}
+
+	public static indexedColor RandomFromPalette() => new(color.black, (ushort)new Random().Next(1024), _paletteMask);
 }
