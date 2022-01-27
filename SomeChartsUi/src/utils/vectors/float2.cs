@@ -10,6 +10,8 @@ public struct float2 {
 
 	public float2 xx => new(x);
 	public float2 yy => new(y);
+	
+	public float avg => (x + y) * .5f;
 
 	public float2 norm { get { float len = length; return new(x / len, y / len); } }
 
@@ -55,6 +57,7 @@ public struct float2 {
 	public static bool operator <=(float2 a, float b) => a.x <= b && a.y <= b;
 
 	public static float2 SinCos(float rad) => new(MathF.Sin(rad), MathF.Cos(rad));
+	public static float2 SinCos(float rad, float len) => new(MathF.Sin(rad) * len, MathF.Cos(rad) * len);
 	
 	public bool Equals(float2 other) => x == other.x && y == other.y;
 	public override bool Equals(object? obj) => obj is float2 other && Equals(other);

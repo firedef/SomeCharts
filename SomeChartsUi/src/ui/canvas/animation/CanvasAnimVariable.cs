@@ -19,4 +19,14 @@ public class CanvasAnimVariable<T> : ICanvasUpdate where T : unmanaged {
 	}
 	
 	private static T Lerp(T a, T b, float t) => (dynamic)a * (1 - t) + (dynamic)b * t;
+
+	public void Set(T v) => currentValue = v;
+
+	public static implicit operator T(CanvasAnimVariable<T> v) => v.animatedValue;
+	public static implicit operator CanvasAnimVariable<T>(T v) => new(v);
+
+	public static CanvasAnimVariable<T> operator +(CanvasAnimVariable<T> a, T b) => new(a.currentValue + (dynamic) b, a.animatedValue, a.animationSpeed);
+	public static CanvasAnimVariable<T> operator -(CanvasAnimVariable<T> a, T b) => new(a.currentValue - (dynamic) b, a.animatedValue, a.animationSpeed);
+	public static CanvasAnimVariable<T> operator *(CanvasAnimVariable<T> a, T b) => new(a.currentValue * (dynamic) b, a.animatedValue, a.animationSpeed);
+	public static CanvasAnimVariable<T> operator /(CanvasAnimVariable<T> a, T b) => new(a.currentValue / (dynamic) b, a.animatedValue, a.animationSpeed);
 }
