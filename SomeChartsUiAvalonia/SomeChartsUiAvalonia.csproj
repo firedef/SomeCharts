@@ -5,6 +5,14 @@
         <Nullable>enable</Nullable>
         <LangVersion>10</LangVersion>
     </PropertyGroup>
+    <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
+      <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+      <PlatformTarget>x64</PlatformTarget>
+    </PropertyGroup>
+    <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
+      <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+      <PlatformTarget>x64</PlatformTarget>
+    </PropertyGroup>
     <ItemGroup>
         <None Remove=".gitignore" />
     </ItemGroup>
@@ -13,8 +21,14 @@
         <PackageReference Include="Avalonia.Desktop" Version="0.10.11" />
         <!--Condition below is needed to remove Avalonia.Diagnostics package from build output in Release configuration.-->
         <PackageReference Condition="'$(Configuration)' == 'Debug'" Include="Avalonia.Diagnostics" Version="0.10.11" />
+        <PackageReference Include="HarfBuzzSharp" Version="2.8.2-preview.187" />
+        <PackageReference Include="SkiaSharp.HarfBuzz" Version="2.88.0-preview.187" />
     </ItemGroup>
     <ItemGroup>
-      <Folder Include="src" />
+      <Folder Include="src\controls" />
+      <Folder Include="src\ui" />
+    </ItemGroup>
+    <ItemGroup>
+      <ProjectReference Include="..\SomeChartsUi\SomeChartsUi.csproj" />
     </ItemGroup>
 </Project>

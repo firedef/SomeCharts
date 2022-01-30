@@ -25,6 +25,10 @@ public struct float2 {
 	public float lengthSq => x * x + y * y;
 	public float length => MathF.Sqrt(x * x + y * y);
 
+	public void FlipY() => y = -y;
+	public void FlipX() => x = -x;
+	public void Flip() => (x, y) = (-x, -y);
+
 	public static implicit operator float2(float v) => new(v);
 	public static implicit operator float2(int v) => new(v);
 
