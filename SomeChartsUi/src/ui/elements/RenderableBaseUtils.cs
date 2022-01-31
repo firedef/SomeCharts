@@ -8,7 +8,7 @@ namespace SomeChartsUi.ui.elements;
 public abstract partial class RenderableBase {
 	protected float2 canvasPosition => canvas.transform.position;
 	protected float2 canvasZoom => canvas.transform.zoom;
-	protected float canvasRotation => canvas.transform.rotation;
+	protected float3 canvasRotation => canvas.transform.rotation;
 
 	protected ChartCanvasRenderer renderer => canvas.renderer;
 	

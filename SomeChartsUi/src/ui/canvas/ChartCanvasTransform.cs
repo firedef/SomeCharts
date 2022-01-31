@@ -7,7 +7,7 @@ namespace SomeChartsUi.ui.canvas;
 public class ChartCanvasTransform {
 	public CanvasAnimVariable<float2> position = new(float2.zero, animationSpeed: .025f);
 	public CanvasAnimVariable<float2> zoom = new(float2.one, animationSpeed: .025f);
-	public CanvasAnimVariable<float> rotation = new(0);
+	public CanvasAnimVariable<float3> rotation = new(0);
 
 	public rect screenBounds;
 	public rect worldBounds { get; protected set; }

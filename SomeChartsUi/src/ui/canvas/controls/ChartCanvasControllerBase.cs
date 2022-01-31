@@ -27,7 +27,8 @@ public abstract class ChartCanvasControllerBase : ICanvasUpdate, ICanvasControls
 	}
 
 	protected void SetRotation(float r) => owner.transform.rotation.currentValue = r;
-	protected void Rotate(float r) => owner.transform.rotation.currentValue += r;
+	protected void Rotate(float r) => owner.transform.rotation.currentValue.z += r;
+	protected void Rotate(float3 r) => owner.transform.rotation.currentValue += r;
 
 	protected void UpdateTransformAnim() {
 		owner.transform.position.OnUpdate(1000);

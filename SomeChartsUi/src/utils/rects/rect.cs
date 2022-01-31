@@ -15,6 +15,8 @@ public struct rect {
 	public float2 leftTop => new(left, top);
 	public float2 rightTop => new(right, top);
 	public float2 rightBottom => new(right, bottom);
+	
+	public float2 widthHeight => new(width, height);
 
 	public float midX => left + width * .5f;
 	public float midY => bottom + height * .5f;

@@ -40,6 +40,7 @@ public class CanvasUiController : ChartCanvasControllerBase {
 		//Cursor = Cursor.Default;
 	}
 
+	//TODO: calculate scale after translation
 	public override void OnMouseScroll(MouseState state) {
 		float2 pointerPos = state.pos;
 		pointerPos.FlipY();
@@ -57,7 +58,6 @@ public class CanvasUiController : ChartCanvasControllerBase {
 
 		float2 oldScale = owner.transform.zoom.currentValue;
 		float2 newScale = float2.Clamp(oldScale * (1 + zoomAdd), .001f, 1.5f);
-		// float2 newScale = new(Math.Clamp(oldScale.x * (1 + zoomAdd.x), .001f, 1.5f), Math.Clamp(oldScale.y * (1 + zoomAdd.y), .001f, 1.5f));
 		zoomAdd = 1 - newScale / oldScale;
 
 		SetZoom(newScale);
@@ -69,11 +69,32 @@ public class CanvasUiController : ChartCanvasControllerBase {
 		if (disableAnim) owner.transform.SetAnimToCurrent();
 	}
 
+	protected float2 ScreenToWorld(float2 screen) {
+		float2 zoom = owner.transform.zoom.currentValue;
+		float2 pos = owner.transform.position.currentValue;
+		screen -= pos;
+		screen /= zoom;
+		return screen;
+	}
+	
+	protected float2 ScreenToWorldFixedPos(float2 screen) {
+		float2 zoom = owner.transform.zoom.currentValue;
+		float2 pos = owner.transform.position.currentValue;
+		screen /= zoom;
+		return screen;
+	}
+
 	public override void OnUpdate(float deltatime) { }
 
 	public override void OnKey(keycode key, keymods mods) {
 		if (key == keycode.e) Rotate(.1f);
 		if (key == keycode.q) Rotate(-.1f);
+		
+		if (key == keycode.x) Rotate(new float3(.1f,0,0));
+		if (key == keycode.z) Rotate(new float3(-.1f,0,0));
+		
+		if (key == keycode.v) Rotate(new float3(0,.1f,0));
+		if (key == keycode.c) Rotate(new float3(0,.1f,0));
 		
 		if (key == keycode.w) Move(new(+000,+100));
 		if (key == keycode.s) Move(new(+000,-100));

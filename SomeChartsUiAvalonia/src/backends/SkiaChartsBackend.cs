@@ -8,6 +8,7 @@ using SomeChartsUi.themes.colors;
 using SomeChartsUi.ui.canvas;
 using SomeChartsUi.ui.elements;
 using SomeChartsUi.ui.text;
+using SomeChartsUi.utils;
 using SomeChartsUi.utils.rects;
 using SomeChartsUi.utils.vectors;
 using SomeChartsUiAvalonia.utils;
@@ -62,9 +63,12 @@ public class SkiaChartsBackend : ChartsBackendBase, IDisposable {
 		canvas.Scale(1,-1);
 		canvas.Translate(0, -owner.transform.screenBounds.height);
 		
+		//TODO: calculate scale after translation
 		canvas.Scale(owner.transform.zoom.animatedValue.sk());
+		// canvas.Scale(MathF.Sin(owner.transform.rotation.animatedValue.x + MathF.PI / 2), MathF.Sin(owner.transform.rotation.animatedValue.y + MathF.PI / 2));
 		canvas.Translate(owner.transform.position.animatedValue.sk());
-		canvas.RotateRadians(owner.transform.rotation.animatedValue);
+		canvas.RotateRadians(owner.transform.rotation.animatedValue.z);
+		// SKMatrix matrix = SKMatrix.CreateScale()
 
 		_canvas = canvas;
 		_paint ??= new();
