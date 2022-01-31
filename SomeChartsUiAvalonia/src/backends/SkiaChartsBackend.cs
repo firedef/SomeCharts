@@ -48,16 +48,21 @@ public class SkiaChartsBackend : ChartsBackendBase, IDisposable {
 		// skia using flipped y axis, so flip back it
 		canvas.Scale(1,-1);
 		canvas.Translate(0, -owner.transform.screenBounds.height);
+		
+		canvas.Scale((owner.transform.zoom.animatedValue).sk());
+		canvas.Translate(owner.transform.position.animatedValue.sk());
 
-		_canvas?.Dispose();
 		_canvas = canvas;
 		_paint ??= new();
+		
+		_paint.SubpixelText = true;
+		_paint.Color = SKColors.White;
+		_paint.StrokeWidth = 2;
+		//_paint.Typeface = owner.theme.uiFontName;
+		_paint.IsAntialias = true;
 	}
-	
-	public SkiaChartsBackend(ChartsCanvas owner, ChartCanvasRenderer renderer) : base(owner, renderer) { }
 
 	public void Dispose() {
-		_canvas?.Dispose();
 		_paint?.Dispose();
 	}
 }

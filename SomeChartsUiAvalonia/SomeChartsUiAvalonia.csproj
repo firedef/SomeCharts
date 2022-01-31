@@ -25,7 +25,6 @@
         <PackageReference Include="SkiaSharp.HarfBuzz" Version="2.88.0-preview.187" />
     </ItemGroup>
     <ItemGroup>
-      <Folder Include="src\controls" />
       <Folder Include="src\ui" />
     </ItemGroup>
     <ItemGroup>

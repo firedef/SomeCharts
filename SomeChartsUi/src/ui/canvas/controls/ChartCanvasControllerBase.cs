@@ -2,7 +2,7 @@ using SomeChartsUi.utils.vectors;
 
 namespace SomeChartsUi.ui.canvas.controls; 
 
-public abstract class ChartCanvasControllerBase : ICanvasUpdate {
+public abstract class ChartCanvasControllerBase : ICanvasUpdate, ICanvasControls {
 	protected ChartsCanvas owner;
 
 	protected ChartCanvasControllerBase(ChartsCanvas owner) => this.owner = owner;
@@ -29,5 +29,17 @@ public abstract class ChartCanvasControllerBase : ICanvasUpdate {
 	protected void UpdateTransformAnim() {
 		owner.transform.position.OnUpdate(1000);
 		owner.transform.zoom.OnUpdate(1000);
+	}
+
+	public virtual void OnMouseMove(MouseState state) {
+		
+	}
+	public virtual void OnMouseDown(MouseState state) {
+	}
+	public virtual void OnMouseUp(MouseState state) {
+	}
+	public virtual void OnMouseScroll(MouseState state) {
+	}
+	public virtual void OnKey(keycode key, keymods mods) {
 	}
 }

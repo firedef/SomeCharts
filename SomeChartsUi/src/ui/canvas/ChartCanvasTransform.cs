@@ -5,8 +5,8 @@ using SomeChartsUi.utils.vectors;
 namespace SomeChartsUi.ui.canvas; 
 
 public class ChartCanvasTransform {
-	public CanvasAnimVariable<float2> position = new(float2.zero);
-	public CanvasAnimVariable<float2> zoom = new(float2.one);
+	public CanvasAnimVariable<float2> position = new(float2.zero, animationSpeed: .05f);
+	public CanvasAnimVariable<float2> zoom = new(float2.one, animationSpeed: .05f);
 	public CanvasAnimVariable<float> rotation = new(0);
 
 	public rect screenBounds;
@@ -24,5 +24,11 @@ public class ChartCanvasTransform {
 		rotation.OnUpdate(deltaTime);
 
 		worldBounds = screenBounds.ToWorld(position, zoom);
+	}
+
+	public void SetAnimToCurrent() {
+		position.OnUpdate(10000);
+		zoom.OnUpdate(10000);
+		rotation.OnUpdate(10000);
 	}
 }
