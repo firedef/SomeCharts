@@ -1,4 +1,5 @@
 using SomeChartsUi.ui.canvas;
+using SomeChartsUi.utils.vectors;
 
 namespace SomeChartsUi.ui.elements; 
 
@@ -7,6 +8,8 @@ namespace SomeChartsUi.ui.elements;
 /// </summary>
 public abstract partial class RenderableBase {
 	protected ChartsCanvas canvas;
+
+	public RenderableTransform transform = new(float2.zero);
 	
 	public void Render(ChartsCanvas owner) {
 		canvas = owner;

@@ -15,6 +15,7 @@ using SomeChartsUi.ui.canvas;
 using SomeChartsUi.ui.canvas.controls;
 using SomeChartsUi.ui.elements;
 using SomeChartsUi.ui.layers;
+using SomeChartsUi.utils;
 using SomeChartsUi.utils.vectors;
 using SomeChartsUiAvalonia.backends;
 using SomeChartsUiAvalonia.utils;
@@ -47,7 +48,10 @@ public class AvaloniaChartsCanvas : Panel {
 		canvas.controller = new CanvasUiController(canvas);
 		Focusable = true;
 		canvas.GetLayer("bg")!.background = color.purple;
+		
 		AddElement(new TestRenderable());
+		AddElement(new TestRenderable() {transform = new(new(1000,0))});
+		AddElement(new TestRenderable() {transform = new(new(0,-2000), 1, MathF.PI / 4)});
 	}
 
 	protected override void OnPointerPressed(PointerPressedEventArgs e) {

@@ -6,6 +6,7 @@ using SkiaSharp.HarfBuzz;
 using SomeChartsUi.backends;
 using SomeChartsUi.themes.colors;
 using SomeChartsUi.ui.canvas;
+using SomeChartsUi.ui.elements;
 using SomeChartsUi.ui.text;
 using SomeChartsUi.utils.rects;
 using SomeChartsUi.utils.vectors;
@@ -17,25 +18,37 @@ public class SkiaChartsBackend : ChartsBackendBase, IDisposable {
 	private SKCanvas? _canvas;
 	private SKPaint? _paint;
 	
-	public override unsafe void DrawMesh(float2* points, float2* uvs, color* colors, ushort* indexes, int vertexCount, int indexCount) {
-		_canvas!.DrawVerticesUnsafe(SKBlendMode.Modulate, (SKPoint*)points, (SKPoint*)uvs, (SKColor*)colors, indexes, vertexCount, indexCount, _paint!);
+	public override unsafe void DrawMesh(float2* points, float2* uvs, color* colors, ushort* indexes, int vertexCount, int indexCount, RenderableTransform transform) {
+		_canvas!.Save();
+		_canvas.Translate(transform.position.sk());
+		_canvas.Scale(transform.scale.sk());
+		_canvas.RotateRadians(transform.rotation);
+		_canvas.DrawVerticesUnsafe(SKBlendMode.Modulate, (SKPoint*)points, (SKPoint*)uvs, (SKColor*)colors, indexes, vertexCount, indexCount, _paint!);
+		_canvas.Restore();
 	}
-	public override unsafe void DrawMesh(float2[] points, float2[]? uvs, color[]? colors, ushort[] indexes) {
+	public override unsafe void DrawMesh(float2[] points, float2[]? uvs, color[]? colors, ushort[] indexes, RenderableTransform transform) {
 		fixed(float2* pointsPtr = points)
 			fixed(float2* uvsPtr = uvs)
 				fixed(color* colorsPtr = colors)
 					fixed(ushort* indexesPtr = indexes)
-						DrawMesh(pointsPtr, uvsPtr, colorsPtr, indexesPtr, points.Length, indexes.Length);
+						DrawMesh(pointsPtr, uvsPtr, colorsPtr, indexesPtr, points.Length, indexes.Length, transform);
 	}
-	public override void DrawText(string text, float2 pos, color col, FontData font, float scale = 12) {
+	public override void DrawText(string text, color col, FontData font, RenderableTransform transform) {
 		if (string.IsNullOrEmpty(text)) return;
 		
 		// flip y axis of canvas back, so text will render not upside-down
 		_canvas!.Scale(1,-1);
+		float2 pos = transform.position;
 		pos.FlipY();
 
 		_paint!.Color = col.sk();
+		_paint.TextSize = transform.scale.x;
+		_paint.TextScaleX = transform.scale.y / transform.scale.x;
+		
+		_canvas!.Save();
+		_canvas.RotateRadians(transform.rotation);
 		_canvas.DrawShapedText(SkiaFontFamilies.Get(font), text, pos.sk(), _paint);
+		_canvas.Restore();
 	}
 	public override void DrawRect(rect rectangle, color color) {
 		_paint!.Color = color.sk();
