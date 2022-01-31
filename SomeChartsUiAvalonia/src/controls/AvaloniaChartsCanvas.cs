@@ -45,6 +45,7 @@ public class AvaloniaChartsCanvas : Panel {
 	public AvaloniaChartsCanvas() {
 		_updateTimer = new(_ => Update(), null, 0, 10);
 		canvas.controller = new CanvasUiController(canvas);
+		Focusable = true;
 		canvas.GetLayer("bg")!.background = color.purple;
 		AddElement(new TestRenderable());
 	}
@@ -129,8 +130,17 @@ public class AvaloniaChartsCanvas : Panel {
 
 		canvas.controller?.OnMouseScroll(s);
 	}
+	
 
 	protected override void OnKeyUp(KeyEventArgs e) {
+		keymods mods = default;
+		if ((e.KeyModifiers & KeyModifiers.Shift) != 0) mods |= keymods.shift;
+		if ((e.KeyModifiers & KeyModifiers.Control) != 0) mods |= keymods.ctrl;
+		if ((e.KeyModifiers & KeyModifiers.Alt) != 0) mods |= keymods.alt;
+		if ((e.KeyModifiers & KeyModifiers.Meta) != 0) mods |= keymods.super;
+		
+		canvas.controller?.OnKey((keycode) e.Key, mods);
+		
 		// if (e.Key == Key.R) {
 		// 	if ((e.KeyModifiers & KeyModifiers.Shift) != 0) ResetTransform();
 		// 	else ResetXYZoom();
@@ -190,6 +200,7 @@ public class AvaloniaChartsCanvas : Panel {
 		//renderer.position = position;
 		//renderer.scale = scale;
 		//renderer.theme = theme;
+		
 		context.Custom(new CustomRender(canvas, Bounds));
 	}
 

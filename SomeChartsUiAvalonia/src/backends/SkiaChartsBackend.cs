@@ -49,8 +49,9 @@ public class SkiaChartsBackend : ChartsBackendBase, IDisposable {
 		canvas.Scale(1,-1);
 		canvas.Translate(0, -owner.transform.screenBounds.height);
 		
-		canvas.Scale((owner.transform.zoom.animatedValue).sk());
+		canvas.Scale(owner.transform.zoom.animatedValue.sk());
 		canvas.Translate(owner.transform.position.animatedValue.sk());
+		canvas.RotateRadians(owner.transform.rotation.animatedValue);
 
 		_canvas = canvas;
 		_paint ??= new();
@@ -58,7 +59,6 @@ public class SkiaChartsBackend : ChartsBackendBase, IDisposable {
 		_paint.SubpixelText = true;
 		_paint.Color = SKColors.White;
 		_paint.StrokeWidth = 2;
-		//_paint.Typeface = owner.theme.uiFontName;
 		_paint.IsAntialias = true;
 	}
 

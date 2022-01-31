@@ -22,8 +22,6 @@ public class CanvasUiController : ChartCanvasControllerBase {
 
 		SetPosition(mov);
 
-		//_start = e.GetPosition(this);
-		//_start.FlipY();
 		_start = pointerPos;
 		_origin = mov;
 	}
@@ -72,5 +70,14 @@ public class CanvasUiController : ChartCanvasControllerBase {
 	}
 
 	public override void OnUpdate(float deltatime) { }
-	
+
+	public override void OnKey(keycode key, keymods mods) {
+		if (key == keycode.e) Rotate(.1f);
+		if (key == keycode.q) Rotate(-.1f);
+		
+		if (key == keycode.w) Move(new(+000,+100));
+		if (key == keycode.s) Move(new(+000,-100));
+		if (key == keycode.d) Move(new(+100,+000));
+		if (key == keycode.a) Move(new(-100,+000));
+	}
 }

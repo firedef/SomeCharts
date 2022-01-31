@@ -26,13 +26,16 @@ public abstract class ChartCanvasControllerBase : ICanvasUpdate, ICanvasControls
 		ResetZoom();
 	}
 
+	protected void SetRotation(float r) => owner.transform.rotation.currentValue = r;
+	protected void Rotate(float r) => owner.transform.rotation.currentValue += r;
+
 	protected void UpdateTransformAnim() {
 		owner.transform.position.OnUpdate(1000);
 		owner.transform.zoom.OnUpdate(1000);
+		owner.transform.rotation.OnUpdate(1000);
 	}
 
 	public virtual void OnMouseMove(MouseState state) {
-		
 	}
 	public virtual void OnMouseDown(MouseState state) {
 	}
