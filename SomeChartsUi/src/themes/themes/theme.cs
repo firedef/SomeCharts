@@ -3,9 +3,7 @@ using SomeChartsUi.themes.palettes;
 
 namespace SomeChartsUi.themes.themes; 
 
-public partial class theme {
-	public static theme globalTheme;
-
+public partial record theme {
 	public bool isDark;
 	public List<palette> palettes;
 

@@ -112,57 +112,110 @@ public partial record theme {
 	public const ushort darkAquamarine_ind = 77;
 	public const ushort darkLightBlue_ind = 78;
 
-	public color this[int i] => i switch {
-		000 => default0,
-		001 => default1,
-		002 => default2,
-		003 => default3,
-		004 => default4,
-		005 => default5,
-		006 => default6,
-		007 => default7,
-		008 => default8,
-		009 => default9,
-		010 => default10,
-		011 => default11,
-		
-		012 => good,
-		013 => normal,
-		014 => bad,
-		
-		015 => accent0,
-		016 => accent1,
-		017 => accent2,
-		
-		051 => red,
-		052 => green,
-		053 => blue,
-		054 => yellow,
-		055 => purple,
-		056 => cyan,
-		057 => darkRed,
-		058 => darkGreen,
-		059 => darkBlue,
-		060 => darkYellow,
-		061 => darkPurple,
-		062 => darkCyan,
-		063 => white,
-		064 => black,
-		065 => gray,
-		066 => darkGray,
-		
-		067 => orange,
-		068 => lightGreen,
-		069 => magenta,
-		070 => purple2,
-		071 => aquamarine,
-		072 => lightBlue,
-		073 => darkOrange,
-		074 => darkLightGreen,
-		075 => darkMagenta,
-		076 => darkPurple2,
-		077 => darkAquamarine,
-		078 => darkLightBlue,
-		_ => throw new ArgumentOutOfRangeException(nameof(i), i, null)
-	};
+	public color this[int i] {
+		get => i switch {
+			000 => default0,
+			001 => default1,
+			002 => default2,
+			003 => default3,
+			004 => default4,
+			005 => default5,
+			006 => default6,
+			007 => default7,
+			008 => default8,
+			009 => default9,
+			010 => default10,
+			011 => default11,
+
+			012 => good,
+			013 => normal,
+			014 => bad,
+
+			015 => accent0,
+			016 => accent1,
+			017 => accent2,
+
+			051 => red,
+			052 => green,
+			053 => blue,
+			054 => yellow,
+			055 => purple,
+			056 => cyan,
+			057 => darkRed,
+			058 => darkGreen,
+			059 => darkBlue,
+			060 => darkYellow,
+			061 => darkPurple,
+			062 => darkCyan,
+			063 => white,
+			064 => black,
+			065 => gray,
+			066 => darkGray,
+
+			067 => orange,
+			068 => lightGreen,
+			069 => magenta,
+			070 => purple2,
+			071 => aquamarine,
+			072 => lightBlue,
+			073 => darkOrange,
+			074 => darkLightGreen,
+			075 => darkMagenta,
+			076 => darkPurple2,
+			077 => darkAquamarine,
+			078 => darkLightBlue,
+			_ => throw new ArgumentOutOfRangeException(nameof(i), i, null)
+		};
+		set {
+			switch (i) {
+				case 000: default0 = value; return;
+				case 001: default1 = value; return;
+				case 002: default2 = value; return;
+				case 003: default3 = value; return;
+				case 004: default4 = value; return;
+				case 005: default5 = value; return;
+				case 006: default6 = value; return;
+				case 007: default7 = value; return;
+				case 008: default8 = value; return;
+				case 009: default9 = value; return;
+				case 010: default10 = value; return;
+				case 011: default11 = value; return;
+				case 012: good = value; return;
+				case 013: normal = value; return;
+				case 014: bad = value; return;
+				case 015: accent0 = value; return;
+				case 016: accent1 = value; return;
+				case 017: accent2 = value; return;
+				case 051: red = value; return;
+				case 052: green = value; return;
+				case 053: blue = value; return;
+				case 054: yellow = value; return;
+				case 055: purple = value; return;
+				case 056: cyan = value; return;
+				case 057: darkRed = value; return;
+				case 058: darkGreen = value; return;
+				case 059: darkBlue = value; return;
+				case 060: darkYellow = value; return;
+				case 061: darkPurple = value; return;
+				case 062: darkCyan = value; return;
+				case 063: white = value; return;
+				case 064: black = value; return;
+				case 065: gray = value; return;
+				case 066: darkGray = value; return;
+				case 067: orange = value; return;
+				case 068: lightGreen = value; return;
+				case 069: magenta = value; return;
+				case 070: purple2 = value; return;
+				case 071: aquamarine = value; return;
+				case 072: lightBlue = value; return;
+				case 073: darkOrange = value; return;
+				case 074: darkLightGreen = value; return;
+				case 075: darkMagenta = value; return;
+				case 076: darkPurple2 = value; return;
+				case 077: darkAquamarine = value; return;
+				case 078: darkLightBlue = value; return;
+				default:  throw new ArgumentOutOfRangeException(nameof(i), i, null);
+			}
+		}
+	}
 }

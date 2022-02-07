@@ -10,6 +10,7 @@ using Avalonia.Skia;
 using SkiaSharp;
 using SomeChartsUi.elements.other;
 using SomeChartsUi.themes.colors;
+using SomeChartsUi.themes.themes;
 using SomeChartsUi.ui;
 using SomeChartsUi.ui.canvas;
 using SomeChartsUi.ui.canvas.controls;
@@ -54,8 +55,6 @@ public class AvaloniaChartsCanvas : Panel {
 		AddElement(new TestRenderable());
 		AddElement(new TestRenderable() {transform = new(new(1000,0))});
 		AddElement(new TestRenderable() {transform = new(new(0,-2000), 1, new float3(0,0,MathF.PI / 4))});
-		
-		
 	}
 
 	protected override void OnPointerPressed(PointerPressedEventArgs e) {
@@ -181,6 +180,7 @@ public class AvaloniaChartsCanvas : Panel {
 	public override void Render(DrawingContext context) {
 		canvas.transform.screenBounds = Bounds.ch();
 		canvas.transform.Update();
+		canvas.GetLayer("bg")!.background = theme.globalTheme.default0;
 		context.Custom(new CustomRender(canvas, Bounds));
 	}
 
