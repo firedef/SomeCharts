@@ -2,7 +2,7 @@ using SomeChartsUi.themes.colors;
 
 namespace SomeChartsUi.themes.themes; 
 
-public partial class theme {
+public partial record theme {
 	// * default colors, using in background, text etc.
 	public color default0 = "#12131c"; // default bg
 	public color default1 = "#1c1e2b";
@@ -17,36 +17,36 @@ public partial class theme {
 	public color default10 = "#c4caf5";// default H3 text
 	public color default11 = "#d9ddff";// default H2 text
 	
-	public static readonly indexedColor default0_ind = new(0);
-	public static readonly indexedColor default1_ind = new(1);
-	public static readonly indexedColor default2_ind = new(2);
-	public static readonly indexedColor default3_ind = new(3);
-	public static readonly indexedColor default4_ind = new(4);
-	public static readonly indexedColor default5_ind = new(5);
-	public static readonly indexedColor default6_ind = new(6);
-	public static readonly indexedColor default7_ind = new(7);
-	public static readonly indexedColor default8_ind = new(8);
-	public static readonly indexedColor default9_ind = new(9);
-	public static readonly indexedColor default10_ind = new(10);
-	public static readonly indexedColor default11_ind = new(11);
+	public const ushort default0_ind = 0;
+	public const ushort default1_ind = 1;
+	public const ushort default2_ind = 2;
+	public const ushort default3_ind = 3;
+	public const ushort default4_ind = 4;
+	public const ushort default5_ind = 5;
+	public const ushort default6_ind = 6;
+	public const ushort default7_ind = 7;
+	public const ushort default8_ind = 8;
+	public const ushort default9_ind = 9;
+	public const ushort default10_ind = 10;
+	public const ushort default11_ind = 11;
 	
 	// * other common colors
 	public color good = "#9effad";
 	public color normal = "#ffe59e";
 	public color bad = "#ffa39e";
 	
-	public static readonly indexedColor good_ind = new(12);
-	public static readonly indexedColor normal_ind = new(13);
-	public static readonly indexedColor bad_ind = new(14);
+	public const ushort good_ind = 12;
+	public const ushort normal_ind = 13;
+	public const ushort bad_ind = 14;
 	
 	// * accent colors
 	public color accent0 = "#9effdd"; // default H1,H0 text
 	public color accent1 = "#357860"; // default H0 text bg
 	public color accent2 = "#13362a";
 	
-	public static readonly indexedColor accent0_ind = new(15);
-	public static readonly indexedColor accent1_ind = new(16);
-	public static readonly indexedColor accent2_ind = new(17);
+	public const ushort accent0_ind = 15;
+	public const ushort accent1_ind = 16;
+	public const ushort accent2_ind = 17;
 	
 	// * reserved indexes (18 - 50)
 	
@@ -68,22 +68,22 @@ public partial class theme {
 	public color gray = "#678";
 	public color darkGray = "#222630";
 	
-	public static readonly indexedColor red_ind = new(51);
-	public static readonly indexedColor green_ind = new(52);
-	public static readonly indexedColor blue_ind = new(53);
-	public static readonly indexedColor yellow_ind = new(54);
-	public static readonly indexedColor purple_ind = new(55);
-	public static readonly indexedColor cyan_ind = new(56);
-	public static readonly indexedColor darkRed_ind = new(57);
-	public static readonly indexedColor darkGreen_ind = new(58);
-	public static readonly indexedColor darkBlue_ind = new(59);
-	public static readonly indexedColor darkYellow_ind = new(60);
-	public static readonly indexedColor darkPurple_ind = new(61);
-	public static readonly indexedColor darkCyan_ind = new(62);
-	public static readonly indexedColor white_ind = new(63);
-	public static readonly indexedColor black_ind = new(64);
-	public static readonly indexedColor gray_ind = new(65);
-	public static readonly indexedColor darkGray_ind = new(66);
+	public const ushort red_ind = 51;
+	public const ushort green_ind = 52;
+	public const ushort blue_ind = 53;
+	public const ushort yellow_ind = 54;
+	public const ushort purple_ind = 55;
+	public const ushort cyan_ind = 56;
+	public const ushort darkRed_ind = 57;
+	public const ushort darkGreen_ind = 58;
+	public const ushort darkBlue_ind = 59;
+	public const ushort darkYellow_ind = 60;
+	public const ushort darkPurple_ind = 61;
+	public const ushort darkCyan_ind = 62;
+	public const ushort white_ind = 63;
+	public const ushort black_ind = 64;
+	public const ushort gray_ind = 65;
+	public const ushort darkGray_ind = 66;
 	
 	// * advanced colors
 	public color orange = "#fa6";
@@ -99,18 +99,18 @@ public partial class theme {
 	public color darkAquamarine = "#258";
 	public color darkLightBlue = "#258";
 	
-	public static readonly indexedColor orange_ind = new(67);
-	public static readonly indexedColor lightGreen_ind = new(68);
-	public static readonly indexedColor magenta_ind = new(69);
-	public static readonly indexedColor purple2_ind = new(70);
-	public static readonly indexedColor aquamarine_ind = new(71);
-	public static readonly indexedColor lightBlue_ind = new(72);
-	public static readonly indexedColor darkOrange_ind = new(73);
-	public static readonly indexedColor darkLightGreen_ind = new(74);
-	public static readonly indexedColor darkMagenta_ind = new(75);
-	public static readonly indexedColor darkPurple2_ind = new(76);
-	public static readonly indexedColor darkAquamarine_ind = new(77);
-	public static readonly indexedColor darkLightBlue_ind = new(78);
+	public const ushort orange_ind = 67;
+	public const ushort lightGreen_ind = 68;
+	public const ushort magenta_ind = 69;
+	public const ushort purple2_ind = 70;
+	public const ushort aquamarine_ind = 71;
+	public const ushort lightBlue_ind = 72;
+	public const ushort darkOrange_ind = 73;
+	public const ushort darkLightGreen_ind = 74;
+	public const ushort darkMagenta_ind = 75;
+	public const ushort darkPurple2_ind = 76;
+	public const ushort darkAquamarine_ind = 77;
+	public const ushort darkLightBlue_ind = 78;
 
 	public color this[int i] => i switch {
 		000 => default0,
