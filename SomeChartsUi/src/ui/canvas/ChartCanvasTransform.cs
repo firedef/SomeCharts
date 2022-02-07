@@ -31,4 +31,24 @@ public class ChartCanvasTransform {
 		zoom.OnUpdate(10000);
 		rotation.OnUpdate(10000);
 	}
+
+#region transform
+
+	public void Translate(float2 v) => position.currentValue += v;
+	public void Zoom(float2 v) => zoom.currentValue += v;
+	public void Zoom(float v) => Zoom(new float2(v));
+	public void Rotate(float3 v) => rotation.currentValue += v;
+	public void Rotate(float v) => Rotate(new float3(0,0,v));
+
+	/// <summary>
+	/// scale canvas at point
+	/// </summary>
+	/// <param name="v">scale</param>
+	/// <param name="pivot">pivot in world-space coordinates</param>
+	public void ZoomAt(float2 v, float2 pivot) {
+		Zoom(v);
+		Translate((pivot - position) * v);
+	}
+
+#endregion transform
 }

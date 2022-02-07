@@ -2,45 +2,49 @@ using SomeChartsUi.utils.vectors;
 
 namespace SomeChartsUi.ui.canvas.controls;
 
-public class CanvasUiController : ChartCanvasControllerBase {
+public abstract class CanvasUiControllerBase : ChartCanvasControllerBase {
 	private float2 _start;
 	private float2 _origin;
 
-	public float zoomSpeed = .2f;
+	public float zoomSpeed = .1f;
 
-	public CanvasUiController(ChartsCanvas owner) : base(owner) { }
+	public CanvasUiControllerBase(ChartsCanvas owner) : base(owner) { }
 
+	protected abstract void Capture();
+	protected abstract void ReleaseCapture();
+	protected abstract bool IsCaptured();
+	protected abstract void SetCursor(string name);
+
+	//TODO: add rotation support
 	public override void OnMouseMove(MouseState state) {
 		float2 pointerPos = state.pos;
 		pointerPos.FlipY();
-		if (state.capture == null) return;
+		if (!IsCaptured()) return;
 
 		float speed = 1;
 		if ((state.modifiers & keymods.alt) != 0) speed = 4;
 
-		float2 mov = (pointerPos - _start) / owner.transform.zoom.currentValue * speed + _origin;
-
-		SetPosition(mov);
+		float2 mov = (pointerPos - _start) / owner.transform.zoom.currentValue * speed;
+		Move(mov);
 
 		_start = pointerPos;
-		_origin = mov;
+		_origin += mov;
 	}
 	public override void OnMouseDown(MouseState state) {
 		float2 pointerPos = state.pos;
 		pointerPos.FlipY();
-		state.capture = this;
+		Capture();
 
 		_start = pointerPos;
 
 		_origin = owner.transform.position.currentValue;
-		//Cursor = Cursor.Parse("Hand");
+		SetCursor("Hand");
 	}
 	public override void OnMouseUp(MouseState state) {
-		state.capture = null;
-		//Cursor = Cursor.Default;
+		ReleaseCapture();
+		SetCursor("Arrow");
 	}
-
-	//TODO: calculate scale after translation
+	
 	public override void OnMouseScroll(MouseState state) {
 		float2 pointerPos = state.pos;
 		pointerPos.FlipY();
@@ -59,11 +63,11 @@ public class CanvasUiController : ChartCanvasControllerBase {
 		float2 oldScale = owner.transform.zoom.currentValue;
 		float2 newScale = float2.Clamp(oldScale * (1 + zoomAdd), .001f, 1.5f);
 		zoomAdd = 1 - newScale / oldScale;
-
+		
+		pointerPos.y += owner.transform.screenBounds.height;
 		SetZoom(newScale);
-		float2 posOffset = new(pointerPos.x * zoomAdd.x / newScale.x,
-		                       (owner.transform.screenBounds.height + pointerPos.y) * zoomAdd.y / newScale.y);
-
+		float2 posOffset = pointerPos * zoomAdd / newScale;
+		
 		Move(posOffset);
 
 		if (disableAnim) owner.transform.SetAnimToCurrent();
@@ -87,14 +91,22 @@ public class CanvasUiController : ChartCanvasControllerBase {
 	public override void OnUpdate(float deltatime) { }
 
 	public override void OnKey(keycode key, keymods mods) {
-		if (key == keycode.e) Rotate(.1f);
-		if (key == keycode.q) Rotate(-.1f);
+		if (key == keycode.e) owner.GetLayer("normal")!.elements[0].transform.rotation.z += .1f;
+		if (key == keycode.q) owner.GetLayer("normal")!.elements[0].transform.rotation.z -= .1f;
 		
-		if (key == keycode.x) Rotate(new float3(.1f,0,0));
-		if (key == keycode.z) Rotate(new float3(-.1f,0,0));
+		if (key == keycode.x) owner.GetLayer("normal")!.elements[0].transform.rotation.x += .1f;
+		if (key == keycode.z) owner.GetLayer("normal")!.elements[0].transform.rotation.x -= .1f;
 		
-		if (key == keycode.v) Rotate(new float3(0,.1f,0));
-		if (key == keycode.c) Rotate(new float3(0,.1f,0));
+		if (key == keycode.v) owner.GetLayer("normal")!.elements[0].transform.rotation.y += .1f;
+		if (key == keycode.c) owner.GetLayer("normal")!.elements[0].transform.rotation.y -= .1f;
+		// if (key == keycode.e) Rotate(.1f);
+		// if (key == keycode.q) Rotate(-.1f);
+		//
+		// if (key == keycode.x) Rotate(new float3(.1f,0,0));
+		// if (key == keycode.z) Rotate(new float3(-.1f,0,0));
+		//
+		// if (key == keycode.v) Rotate(new float3(0,.1f,0));
+		// if (key == keycode.c) Rotate(new float3(0,.1f,0));
 		
 		if (key == keycode.w) Move(new(+000,+100));
 		if (key == keycode.s) Move(new(+000,-100));

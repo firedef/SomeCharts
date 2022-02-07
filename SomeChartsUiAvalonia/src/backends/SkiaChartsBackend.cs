@@ -21,9 +21,17 @@ public class SkiaChartsBackend : ChartsBackendBase, IDisposable {
 	
 	public override unsafe void DrawMesh(float2* points, float2* uvs, color* colors, ushort* indexes, int vertexCount, int indexCount, RenderableTransform transform) {
 		_canvas!.Save();
-		_canvas.Translate(transform.position.sk());
+
+		//TODO: add 3D rotation
 		_canvas.Scale(transform.scale.sk());
-		_canvas.RotateRadians(transform.rotation);
+		_canvas.Translate(transform.position.sk());
+		//_canvas.Rotate3D(transform.rotation + owner.transform.rotation.animatedValue);
+		
+		// _canvas.Transform(transform.position,
+		//                   transform.scale,
+		//                   transform.rotation + owner.transform.rotation.animatedValue);
+		
+		_canvas.RotateRadians(transform.rotation.z);
 		_canvas.DrawVerticesUnsafe(SKBlendMode.Modulate, (SKPoint*)points, (SKPoint*)uvs, (SKColor*)colors, indexes, vertexCount, indexCount, _paint!);
 		_canvas.Restore();
 	}
@@ -47,7 +55,7 @@ public class SkiaChartsBackend : ChartsBackendBase, IDisposable {
 		_paint.TextScaleX = transform.scale.y / transform.scale.x;
 		
 		_canvas!.Save();
-		_canvas.RotateRadians(transform.rotation);
+		_canvas.RotateRadians(transform.rotation.z);
 		_canvas.DrawShapedText(SkiaFontFamilies.Get(font), text, pos.sk(), _paint);
 		_canvas.Restore();
 	}
@@ -63,12 +71,9 @@ public class SkiaChartsBackend : ChartsBackendBase, IDisposable {
 		canvas.Scale(1,-1);
 		canvas.Translate(0, -owner.transform.screenBounds.height);
 		
-		//TODO: calculate scale after translation
-		canvas.Scale(owner.transform.zoom.animatedValue.sk());
-		// canvas.Scale(MathF.Sin(owner.transform.rotation.animatedValue.x + MathF.PI / 2), MathF.Sin(owner.transform.rotation.animatedValue.y + MathF.PI / 2));
-		canvas.Translate(owner.transform.position.animatedValue.sk());
 		canvas.RotateRadians(owner.transform.rotation.animatedValue.z);
-		// SKMatrix matrix = SKMatrix.CreateScale()
+		canvas.Scale(owner.transform.zoom.animatedValue.sk());
+		canvas.Translate(owner.transform.position.animatedValue.sk());
 
 		_canvas = canvas;
 		_paint ??= new();

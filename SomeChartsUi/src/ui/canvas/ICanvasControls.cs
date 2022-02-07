@@ -16,13 +16,11 @@ public class MouseState {
 	public float2 wheel;
 	public PointerButtons buttons;
 	public keymods modifiers;
-	public object? capture;
 
-	public MouseState(float2 pos, float2 wheel, PointerButtons buttons, keymods modifiers, object? capture) {
+	public MouseState(float2 pos, float2 wheel, PointerButtons buttons, keymods modifiers) {
 		this.pos = pos;
 		this.wheel = wheel;
 		this.buttons = buttons;
 		this.modifiers = modifiers;
-		this.capture = capture;
 	}
 }

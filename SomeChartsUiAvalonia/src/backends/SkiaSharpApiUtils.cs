@@ -1,6 +1,8 @@
 using System;
 using System.Runtime.InteropServices;
 using SkiaSharp;
+using SomeChartsUi.utils.vectors;
+using SomeChartsUiAvalonia.utils;
 
 namespace SomeChartsUiAvalonia.backends;
 
@@ -65,4 +67,27 @@ public static unsafe class SkiaSharpApiUtils {
 
 	public static IntPtr CopyVertices(SKPoint* pos, SKPoint* uvs, SKColor* col, ushort* ind, int vCount, int indCount) =>
 		sk_vertices_make_copy(SKVertexMode.Triangles, vCount, pos, uvs, (uint*)col, indCount, ind);
+	
+	public static void Rotate3D(this SKCanvas canvas, float3 r) {
+		SKMatrix matrix = canvas.TotalMatrix;
+		
+		SKMatrix44 matrix44 = SKMatrix44.CreateIdentity();
+		matrix44.PostConcat(SKMatrix44.CreateRotation(1,0,0,r.x));
+		matrix44.PostConcat(SKMatrix44.CreateRotation(0,1,0,r.y));
+		matrix44.PostConcat(SKMatrix44.CreateRotation(0,0,1,r.z));
+		
+		canvas.SetMatrix(matrix.PostConcat(matrix44.Matrix));
+	}
+	
+	public static void Transform(this SKCanvas canvas, float2 pos, float2 scale, float3 rot) {
+		SKMatrix matrix = canvas.TotalMatrix.PostConcat(SKMatrix.CreateScale(scale.x, scale.y)).PostConcat(SKMatrix.CreateTranslation( pos.x, -pos.y));
+		
+		
+		SKMatrix44 matrix44 = SKMatrix44.CreateIdentity();
+		matrix44.PostConcat(SKMatrix44.CreateRotation(1,0,0,rot.x));
+		matrix44.PostConcat(SKMatrix44.CreateRotation(0,1,0,rot.y));
+		matrix44.PostConcat(SKMatrix44.CreateRotation(0,0,1,rot.z));
+		
+		canvas.SetMatrix(matrix.PostConcat(matrix44.Matrix));
+	}
 }

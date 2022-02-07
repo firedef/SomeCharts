@@ -33,6 +33,8 @@ public class AvaloniaChartsCanvas : Panel {
 	public bool stopRender;
 	private Timer? _updateTimer;
 	private TimeSpan _prevUpdTime;
+
+	public IPointer? pointer;
 	
 	private static ChartsCanvas CreateCanvas() {
 		ChartsCanvas canvas = new(new SkiaChartsBackend());
@@ -45,13 +47,15 @@ public class AvaloniaChartsCanvas : Panel {
 
 	public AvaloniaChartsCanvas() {
 		_updateTimer = new(_ => Update(), null, 0, 10);
-		canvas.controller = new CanvasUiController(canvas);
+		canvas.controller = new AvaloniaCanvasUiController(canvas, this);
 		Focusable = true;
 		canvas.GetLayer("bg")!.background = color.purple;
 		
 		AddElement(new TestRenderable());
 		AddElement(new TestRenderable() {transform = new(new(1000,0))});
-		AddElement(new TestRenderable() {transform = new(new(0,-2000), 1, MathF.PI / 4)});
+		AddElement(new TestRenderable() {transform = new(new(0,-2000), 1, new float3(0,0,MathF.PI / 4))});
+		
+		
 	}
 
 	protected override void OnPointerPressed(PointerPressedEventArgs e) {
@@ -70,12 +74,13 @@ public class AvaloniaChartsCanvas : Panel {
 		if ((e.KeyModifiers & KeyModifiers.Alt) != 0) mods |= keymods.alt;
 		if ((e.KeyModifiers & KeyModifiers.Meta) != 0) mods |= keymods.super;
 
-		MouseState s = new(currentPoint.Position.ch(), float2.zero, buttons, mods, currentPoint.Pointer.Captured);
+		MouseState s = new(currentPoint.Position.ch(), float2.zero, buttons, mods);
 
 		canvas.controller?.OnMouseDown(s);
 	}
 	protected override void OnPointerMoved(PointerEventArgs e) {
 		PointerPoint currentPoint = e.GetCurrentPoint(this);
+		pointer = e.Pointer;
 
 		PointerButtons buttons = default;
 		if (currentPoint.Properties.IsLeftButtonPressed) buttons |= PointerButtons.left;
@@ -90,7 +95,7 @@ public class AvaloniaChartsCanvas : Panel {
 		if ((e.KeyModifiers & KeyModifiers.Alt) != 0) mods |= keymods.alt;
 		if ((e.KeyModifiers & KeyModifiers.Meta) != 0) mods |= keymods.super;
 
-		MouseState s = new(currentPoint.Position.ch(), float2.zero, buttons, mods, currentPoint.Pointer.Captured);
+		MouseState s = new(currentPoint.Position.ch(), float2.zero, buttons, mods);
 
 		canvas.controller?.OnMouseMove(s);
 	}
@@ -110,7 +115,7 @@ public class AvaloniaChartsCanvas : Panel {
 		if ((e.KeyModifiers & KeyModifiers.Alt) != 0) mods |= keymods.alt;
 		if ((e.KeyModifiers & KeyModifiers.Meta) != 0) mods |= keymods.super;
 
-		MouseState s = new(currentPoint.Position.ch(), float2.zero, buttons, mods, currentPoint.Pointer.Captured);
+		MouseState s = new(currentPoint.Position.ch(), float2.zero, buttons, mods);
 
 		canvas.controller?.OnMouseUp(s);
 	}
@@ -130,7 +135,7 @@ public class AvaloniaChartsCanvas : Panel {
 		if ((e.KeyModifiers & KeyModifiers.Alt) != 0) mods |= keymods.alt;
 		if ((e.KeyModifiers & KeyModifiers.Meta) != 0) mods |= keymods.super;
 
-		MouseState s = new(currentPoint.Position.ch(), e.Delta.ch(), buttons, mods, currentPoint.Pointer.Captured);
+		MouseState s = new(currentPoint.Position.ch(), e.Delta.ch(), buttons, mods);
 
 		canvas.controller?.OnMouseScroll(s);
 	}
@@ -144,28 +149,6 @@ public class AvaloniaChartsCanvas : Panel {
 		if ((e.KeyModifiers & KeyModifiers.Meta) != 0) mods |= keymods.super;
 		
 		canvas.controller?.OnKey((keycode) e.Key, mods);
-		
-		// if (e.Key == Key.R) {
-		// 	if ((e.KeyModifiers & KeyModifiers.Shift) != 0) ResetTransform();
-		// 	else ResetXYZoom();
-		// }
-		//
-		// if (e.Key == Key.T) ToggleTheme();
-		//
-		// if (e.Key == Key.P) {
-		// 	UpdateTransformAnimation();
-		// 	using var img = RenderImage();
-		// 	using var data = img.Encode(SKEncodedImageFormat.Png, 100);
-		//
-		// 	using FileStream fs = new(Environment.GetFolderPath(Environment.SpecialFolder.Desktop) + $"/SomeChartsSnapshot_{new Random().Next(100_000, 999_999):X}.png", FileMode.Create);
-		// 	data.SaveTo(fs);
-		// 	Console.WriteLine("aaaa");
-		// }
-		//
-		// if (e.Key == Key.W) positionWithoutAnim.Y -= 100 / scale.Y;
-		// if (e.Key == Key.S) positionWithoutAnim.Y += 100 / scale.Y;
-		// if (e.Key == Key.A) positionWithoutAnim.X += 100 / scale.X;
-		// if (e.Key == Key.D) positionWithoutAnim.X -= 100 / scale.X;
 	}
 	
 	public void Rebuild() {
@@ -177,7 +160,6 @@ public class AvaloniaChartsCanvas : Panel {
 	private void Update() {
 		try {
 			if (stopRender || !CheckUpdateDelay()) return;
-			//UpdateAnim();
 			Rebuild();
 			_prevUpdTime = DateTime.Now.TimeOfDay;
 		}
@@ -200,11 +182,6 @@ public class AvaloniaChartsCanvas : Panel {
 
 	public override void Render(DrawingContext context) {
 		canvas.transform.screenBounds = Bounds.ch();
-		//renderer!.bounds = Bounds;
-		//renderer.position = position;
-		//renderer.scale = scale;
-		//renderer.theme = theme;
-		
 		context.Custom(new CustomRender(canvas, Bounds));
 	}
 
