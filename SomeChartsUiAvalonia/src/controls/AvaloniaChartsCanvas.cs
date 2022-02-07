@@ -49,7 +49,7 @@ public class AvaloniaChartsCanvas : Panel {
 		_updateTimer = new(_ => Update(), null, 0, 10);
 		canvas.controller = new AvaloniaCanvasUiController(canvas, this);
 		Focusable = true;
-		canvas.GetLayer("bg")!.background = color.purple;
+		//canvas.GetLayer("bg")!.background = color.purple;
 		
 		AddElement(new TestRenderable());
 		AddElement(new TestRenderable() {transform = new(new(1000,0))});
@@ -152,8 +152,6 @@ public class AvaloniaChartsCanvas : Panel {
 	}
 	
 	public void Rebuild() {
-		canvas.transform.screenBounds = Bounds.ch();
-		canvas.transform.Update();
 		InvalidateVisual();
 	}
 
@@ -182,6 +180,7 @@ public class AvaloniaChartsCanvas : Panel {
 
 	public override void Render(DrawingContext context) {
 		canvas.transform.screenBounds = Bounds.ch();
+		canvas.transform.Update();
 		context.Custom(new CustomRender(canvas, Bounds));
 	}
 

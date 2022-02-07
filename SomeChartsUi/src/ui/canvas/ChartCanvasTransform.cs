@@ -10,7 +10,7 @@ public class ChartCanvasTransform {
 	public CanvasAnimVariable<float3> rotation = new(0);
 
 	public rect screenBounds;
-	public rect worldBounds { get; protected set; }
+	public rect worldBounds { get; private set; }
 
 	private TimeSpan _lastUpdate;
 

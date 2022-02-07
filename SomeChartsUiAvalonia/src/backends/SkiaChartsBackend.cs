@@ -46,6 +46,7 @@ public class SkiaChartsBackend : ChartsBackendBase, IDisposable {
 		if (string.IsNullOrEmpty(text)) return;
 		
 		// flip y axis of canvas back, so text will render not upside-down
+		_canvas!.Save();
 		_canvas!.Scale(1,-1);
 		float2 pos = transform.position;
 		pos.FlipY();
@@ -54,14 +55,17 @@ public class SkiaChartsBackend : ChartsBackendBase, IDisposable {
 		_paint.TextSize = transform.scale.x;
 		_paint.TextScaleX = transform.scale.y / transform.scale.x;
 		
-		_canvas!.Save();
+		
 		_canvas.RotateRadians(transform.rotation.z);
 		_canvas.DrawShapedText(SkiaFontFamilies.Get(font), text, pos.sk(), _paint);
 		_canvas.Restore();
 	}
 	public override void DrawRect(rect rectangle, color color) {
 		_paint!.Color = color.sk();
+		_canvas!.Save();
+		// _canvas!.Scale(1,-1);
 		_canvas!.DrawRect(rectangle.sk(), _paint);
+		_canvas.Restore();
 	}
 
 	public void SetRenderingVariables(IDrawingContextImpl ctx) {

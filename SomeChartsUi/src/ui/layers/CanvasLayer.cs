@@ -19,7 +19,7 @@ public class CanvasLayer {
 	public void RemoveElement(RenderableBase r) => elements.Remove(r);
 
 	public void Render() {
-		if (background != null) owner.renderer.backend.DrawRect(owner.transform.screenBounds, background.Value);
+		if (background != null) owner.renderer.backend.DrawRect(owner.transform.worldBounds, background.Value);
 		foreach (RenderableBase element in elements) {
 			element.Render(owner);
 		}

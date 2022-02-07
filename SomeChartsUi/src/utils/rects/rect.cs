@@ -21,6 +21,8 @@ public struct rect {
 	public float midX => left + width * .5f;
 	public float midY => bottom + height * .5f;
 
+	public void InvertY() => (bottom, height) = (top, -height);
+
 	public rect(float left, float bottom, float width, float height) {
 		this.left = left;
 		this.bottom = bottom;
