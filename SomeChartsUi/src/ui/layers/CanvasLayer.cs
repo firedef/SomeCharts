@@ -1,6 +1,7 @@
 using SomeChartsUi.themes.colors;
 using SomeChartsUi.ui.canvas;
 using SomeChartsUi.ui.elements;
+using SomeChartsUi.utils.rects;
 
 namespace SomeChartsUi.ui.layers; 
 
@@ -19,7 +20,7 @@ public class CanvasLayer {
 	public void RemoveElement(RenderableBase r) => elements.Remove(r);
 
 	public void Render() {
-		if (background != null) owner.renderer.backend.DrawRect(owner.transform.worldBounds, background.Value);
+		if (background != null) owner.renderer.backend.DrawRect(owner.transform.screenBounds, background.Value);
 		foreach (RenderableBase element in elements) {
 			element.Render(owner);
 		}
