@@ -52,4 +52,7 @@ public readonly struct indexedColor {
 	}
 
 	public static indexedColor RandomFromPalette() => new(color.black, (ushort)new Random().Next(1024), _paletteMask);
+
+	public static implicit operator ushort(indexedColor v) => v.colorIndex;
+	public static implicit operator indexedColor(ushort v) => new(v);
 }

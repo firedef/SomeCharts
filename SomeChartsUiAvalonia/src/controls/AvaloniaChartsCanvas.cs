@@ -8,6 +8,7 @@ using Avalonia.Platform;
 using Avalonia.Rendering.SceneGraph;
 using Avalonia.Skia;
 using SkiaSharp;
+using SomeChartsUi.elements;
 using SomeChartsUi.elements.other;
 using SomeChartsUi.themes.colors;
 using SomeChartsUi.themes.themes;
@@ -55,6 +56,9 @@ public class AvaloniaChartsCanvas : Panel {
 		AddElement(new TestRenderable());
 		AddElement(new TestRenderable() {transform = new(new(1000,0))});
 		AddElement(new TestRenderable() {transform = new(new(0,-2000), 1, new float3(0,0,MathF.PI / 4))});
+		
+		AddElement(new Ruler() {orientation = Orientation.vertical});
+		AddElement(new Ruler() {orientation = Orientation.horizontal, transform = new(new(-1000,0))});
 	}
 
 	protected override void OnPointerPressed(PointerPressedEventArgs e) {
