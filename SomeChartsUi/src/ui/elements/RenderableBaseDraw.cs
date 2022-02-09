@@ -95,7 +95,7 @@ public abstract partial class RenderableBase {
 		if (start > end - .01f) return;
 		
 		count = (int) Math.Floor((end - start) / space) + 1;
-		if (count < 1) return;
+		if (count < 2) return;
 		offset.y += MathF.Ceiling(start / space) * space;
 		
 		int vCount = count * 4;

@@ -134,7 +134,7 @@ public class AvaloniaChartsCanvas : Panel {
 	public override void Render(DrawingContext context) {
 		canvas.transform.screenBounds = Bounds.ch();
 		canvas.transform.Update();
-		canvas.GetLayer("bg")!.background = theme.globalTheme.default0;
+		canvas.GetLayer("bg")!.background = theme.default0_ind;
 		context.Custom(new CustomRender(canvas, Bounds));
 	}
 

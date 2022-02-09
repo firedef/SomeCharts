@@ -7,6 +7,8 @@ public abstract class CanvasUiControllerBase : ChartCanvasControllerBase {
 	private float2 _origin;
 
 	public float zoomSpeed = .1f;
+	public float maxZoom = 1f;
+	public float minZoom = .001f;
 
 	public CanvasUiControllerBase(ChartsCanvas owner) : base(owner) { }
 
@@ -61,7 +63,7 @@ public abstract class CanvasUiControllerBase : ChartCanvasControllerBase {
 		}
 
 		float2 oldScale = owner.transform.zoom.currentValue;
-		float2 newScale = float2.Clamp(oldScale * (1 + zoomAdd), .001f, 1.5f);
+		float2 newScale = float2.Clamp(oldScale * (1 + zoomAdd), minZoom, maxZoom);
 		zoomAdd = 1 - newScale / oldScale;
 		
 		pointerPos.y += owner.transform.screenBounds.height;

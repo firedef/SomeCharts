@@ -26,7 +26,8 @@ public class SkiaChartsBackend : ChartsBackendBase, IDisposable {
 		// apply canvas transform if world-space 
 		if (transform.type == TransformType.worldSpace) {
 			_canvas!.RotateRadians(owner.transform.rotation.animatedValue.z);
-			_canvas.Scale(owner.transform.zoom.animatedValue.sk());
+			float2 s = owner.transform.zoom.animatedValue;
+			_canvas.Scale(s.sk());
 			_canvas.Translate(owner.transform.position.animatedValue.sk());
 		}
 		

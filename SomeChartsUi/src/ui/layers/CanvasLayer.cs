@@ -8,7 +8,7 @@ namespace SomeChartsUi.ui.layers;
 public class CanvasLayer {
 	public readonly string name;
 	public readonly ChartsCanvas owner;
-	public color? background;
+	public indexedColor? background;
 	public readonly List<RenderableBase> elements = new();
 
 	public CanvasLayer(ChartsCanvas owner, string name) {
@@ -20,7 +20,7 @@ public class CanvasLayer {
 	public void RemoveElement(RenderableBase r) => elements.Remove(r);
 
 	public void Render() {
-		if (background != null) owner.renderer.backend.DrawRect(owner.transform.screenBounds, background.Value);
+		if (background != null) owner.renderer.backend.DrawRect(owner.transform.screenBounds, background.Value.GetColor());
 		foreach (RenderableBase element in elements) {
 			element.Render(owner);
 		}
