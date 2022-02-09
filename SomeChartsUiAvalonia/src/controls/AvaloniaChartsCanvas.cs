@@ -63,19 +63,8 @@ public class AvaloniaChartsCanvas : Panel {
 
 	protected override void OnPointerPressed(PointerPressedEventArgs e) {
 		PointerPoint currentPoint = e.GetCurrentPoint(this);
-
-		PointerButtons buttons = default;
-		if (currentPoint.Properties.IsLeftButtonPressed) buttons |= PointerButtons.left;
-		if (currentPoint.Properties.IsRightButtonPressed) buttons |= PointerButtons.right;
-		if (currentPoint.Properties.IsMiddleButtonPressed) buttons |= PointerButtons.middle;
-		if (currentPoint.Properties.IsXButton1Pressed) buttons |= PointerButtons.forward;
-		if (currentPoint.Properties.IsXButton2Pressed) buttons |= PointerButtons.backward;
-
-		keymods mods = default;
-		if ((e.KeyModifiers & KeyModifiers.Shift) != 0) mods |= keymods.shift;
-		if ((e.KeyModifiers & KeyModifiers.Control) != 0) mods |= keymods.ctrl;
-		if ((e.KeyModifiers & KeyModifiers.Alt) != 0) mods |= keymods.alt;
-		if ((e.KeyModifiers & KeyModifiers.Meta) != 0) mods |= keymods.super;
+		PointerButtons buttons = currentPoint.Properties.GetEnum();
+		keymods mods = e.KeyModifiers.ch();
 
 		MouseState s = new(currentPoint.Position.ch(), float2.zero, buttons, mods);
 
@@ -84,19 +73,8 @@ public class AvaloniaChartsCanvas : Panel {
 	protected override void OnPointerMoved(PointerEventArgs e) {
 		PointerPoint currentPoint = e.GetCurrentPoint(this);
 		pointer = e.Pointer;
-
-		PointerButtons buttons = default;
-		if (currentPoint.Properties.IsLeftButtonPressed) buttons |= PointerButtons.left;
-		if (currentPoint.Properties.IsRightButtonPressed) buttons |= PointerButtons.right;
-		if (currentPoint.Properties.IsMiddleButtonPressed) buttons |= PointerButtons.middle;
-		if (currentPoint.Properties.IsXButton1Pressed) buttons |= PointerButtons.forward;
-		if (currentPoint.Properties.IsXButton2Pressed) buttons |= PointerButtons.backward;
-
-		keymods mods = default;
-		if ((e.KeyModifiers & KeyModifiers.Shift) != 0) mods |= keymods.shift;
-		if ((e.KeyModifiers & KeyModifiers.Control) != 0) mods |= keymods.ctrl;
-		if ((e.KeyModifiers & KeyModifiers.Alt) != 0) mods |= keymods.alt;
-		if ((e.KeyModifiers & KeyModifiers.Meta) != 0) mods |= keymods.super;
+		PointerButtons buttons = currentPoint.Properties.GetEnum();
+		keymods mods = e.KeyModifiers.ch();
 
 		MouseState s = new(currentPoint.Position.ch(), float2.zero, buttons, mods);
 
@@ -104,19 +82,8 @@ public class AvaloniaChartsCanvas : Panel {
 	}
 	protected override void OnPointerReleased(PointerReleasedEventArgs e) {
 		PointerPoint currentPoint = e.GetCurrentPoint(this);
-
-		PointerButtons buttons = default;
-		if (currentPoint.Properties.IsLeftButtonPressed) buttons |= PointerButtons.left;
-		if (currentPoint.Properties.IsRightButtonPressed) buttons |= PointerButtons.right;
-		if (currentPoint.Properties.IsMiddleButtonPressed) buttons |= PointerButtons.middle;
-		if (currentPoint.Properties.IsXButton1Pressed) buttons |= PointerButtons.forward;
-		if (currentPoint.Properties.IsXButton2Pressed) buttons |= PointerButtons.backward;
-
-		keymods mods = default;
-		if ((e.KeyModifiers & KeyModifiers.Shift) != 0) mods |= keymods.shift;
-		if ((e.KeyModifiers & KeyModifiers.Control) != 0) mods |= keymods.ctrl;
-		if ((e.KeyModifiers & KeyModifiers.Alt) != 0) mods |= keymods.alt;
-		if ((e.KeyModifiers & KeyModifiers.Meta) != 0) mods |= keymods.super;
+		PointerButtons buttons = currentPoint.Properties.GetEnum();
+		keymods mods = e.KeyModifiers.ch();
 
 		MouseState s = new(currentPoint.Position.ch(), float2.zero, buttons, mods);
 
@@ -124,39 +91,22 @@ public class AvaloniaChartsCanvas : Panel {
 	}
 	protected override void OnPointerWheelChanged(PointerWheelEventArgs e) {
 		PointerPoint currentPoint = e.GetCurrentPoint(this);
-
-		PointerButtons buttons = default;
-		if (currentPoint.Properties.IsLeftButtonPressed) buttons |= PointerButtons.left;
-		if (currentPoint.Properties.IsRightButtonPressed) buttons |= PointerButtons.right;
-		if (currentPoint.Properties.IsMiddleButtonPressed) buttons |= PointerButtons.middle;
-		if (currentPoint.Properties.IsXButton1Pressed) buttons |= PointerButtons.forward;
-		if (currentPoint.Properties.IsXButton2Pressed) buttons |= PointerButtons.backward;
-
-		keymods mods = default;
-		if ((e.KeyModifiers & KeyModifiers.Shift) != 0) mods |= keymods.shift;
-		if ((e.KeyModifiers & KeyModifiers.Control) != 0) mods |= keymods.ctrl;
-		if ((e.KeyModifiers & KeyModifiers.Alt) != 0) mods |= keymods.alt;
-		if ((e.KeyModifiers & KeyModifiers.Meta) != 0) mods |= keymods.super;
-
+		PointerButtons buttons = currentPoint.Properties.GetEnum();
+		keymods mods = e.KeyModifiers.ch();
+		
 		MouseState s = new(currentPoint.Position.ch(), e.Delta.ch(), buttons, mods);
-
+		
 		canvas.controller?.OnMouseScroll(s);
 	}
 	
 
 	protected override void OnKeyUp(KeyEventArgs e) {
-		keymods mods = default;
-		if ((e.KeyModifiers & KeyModifiers.Shift) != 0) mods |= keymods.shift;
-		if ((e.KeyModifiers & KeyModifiers.Control) != 0) mods |= keymods.ctrl;
-		if ((e.KeyModifiers & KeyModifiers.Alt) != 0) mods |= keymods.alt;
-		if ((e.KeyModifiers & KeyModifiers.Meta) != 0) mods |= keymods.super;
+		keymods mods = e.KeyModifiers.ch();
 		
 		canvas.controller?.OnKey((keycode) e.Key, mods);
 	}
 	
-	public void Rebuild() {
-		InvalidateVisual();
-	}
+	public void Rebuild() => InvalidateVisual();
 
 	private void Update() {
 		try {

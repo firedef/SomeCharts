@@ -1,6 +1,8 @@
 using Avalonia;
+using Avalonia.Input;
 using SkiaSharp;
 using SomeChartsUi.themes.colors;
+using SomeChartsUi.ui;
 using SomeChartsUi.utils.rects;
 using SomeChartsUi.utils.vectors;
 
@@ -18,4 +20,23 @@ public static class SkiaChartsUtils {
 	public static float2 ch(this SKPoint v) => new(v.X, v.Y);
 	public static float2 ch(this Point v) => new((float)v.X, (float)v.Y);
 	public static float2 ch(this Vector v) => new((float)v.X, (float)v.Y);
+
+	public static keymods ch(this KeyModifiers v) {
+		keymods mods = default;
+		if ((v & KeyModifiers.Shift) != 0) mods |= keymods.shift;
+		if ((v & KeyModifiers.Control) != 0) mods |= keymods.ctrl;
+		if ((v & KeyModifiers.Alt) != 0) mods |= keymods.alt;
+		if ((v & KeyModifiers.Meta) != 0) mods |= keymods.super;
+		return mods;
+	}
+	
+	public static PointerButtons GetEnum(this PointerPointProperties v) {
+		PointerButtons buttons = default;
+		if (v.IsLeftButtonPressed) buttons |= PointerButtons.left;
+		if (v.IsRightButtonPressed) buttons |= PointerButtons.right;
+		if (v.IsMiddleButtonPressed) buttons |= PointerButtons.middle;
+		if (v.IsXButton1Pressed) buttons |= PointerButtons.forward;
+		if (v.IsXButton2Pressed) buttons |= PointerButtons.backward;
+		return buttons;
+	}
 }
