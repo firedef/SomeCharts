@@ -15,6 +15,7 @@
     </ItemGroup>
 
     <ItemGroup>
+      <ProjectReference Include="..\SomeChartsUiAvalonia\SomeChartsUiAvalonia.csproj" />
       <ProjectReference Include="..\SomeChartsUi\SomeChartsUi.csproj" />
     </ItemGroup>
 
