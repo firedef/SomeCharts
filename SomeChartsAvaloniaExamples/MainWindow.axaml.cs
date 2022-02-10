@@ -2,7 +2,7 @@ using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Markup.Xaml;
 
-namespace SomeChartsUiAvalonia {
+namespace SomeChartsAvaloniaExamples {
 	public partial class MainWindow : Window {
 		public MainWindow() {
 			InitializeComponent();

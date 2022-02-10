@@ -5,7 +5,9 @@ using Avalonia;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Threading;
 using NUnit.Framework;
+using SomeChartsAvaloniaExamples;
 using SomeChartsUiAvalonia;
+using SomeChartsUiAvalonia.utils;
 
 namespace SomeChartsTests.avalonia; 
 
@@ -13,7 +15,7 @@ namespace SomeChartsTests.avalonia;
 public class AvaloniaTests {
 	[Test]
 	public void TestStartupAndShutdown() {
-		AvaloniaTestUtils.RunAvaloniaCloseThread(200);
-		AvaloniaTestUtils.RunAvalonia();
+		AvaloniaRunUtils.RunAvaloniaCloseThread(200);
+		AvaloniaRunUtils.RunAvalonia();
 	}
 }

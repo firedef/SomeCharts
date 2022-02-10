@@ -6,6 +6,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SomeChartsUiAvalonia", "Som
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SomeChartsTests", "SomeChartsTests\SomeChartsTests.csproj", "{5DD559FB-0A6A-4A9A-B973-515EE53A6BED}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SomeChartsAvaloniaExamples", "SomeChartsAvaloniaExamples\SomeChartsAvaloniaExamples.csproj", "{4C4E3813-5DAF-4223-9902-4A867A006E7C}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -24,5 +26,9 @@ Global
 		{5DD559FB-0A6A-4A9A-B973-515EE53A6BED}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5DD559FB-0A6A-4A9A-B973-515EE53A6BED}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5DD559FB-0A6A-4A9A-B973-515EE53A6BED}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4C4E3813-5DAF-4223-9902-4A867A006E7C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4C4E3813-5DAF-4223-9902-4A867A006E7C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4C4E3813-5DAF-4223-9902-4A867A006E7C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4C4E3813-5DAF-4223-9902-4A867A006E7C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
