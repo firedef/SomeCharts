@@ -1,3 +1,4 @@
+using SomeChartsUi.ui.elements;
 using SomeChartsUi.utils.vectors;
 
 namespace SomeChartsUi.ui.canvas.controls;
@@ -93,14 +94,16 @@ public abstract class CanvasUiControllerBase : ChartCanvasControllerBase {
 	public override void OnUpdate(float deltatime) { }
 
 	public override void OnKey(keycode key, keymods mods) {
-		if (key == keycode.e) owner.GetLayer("normal")!.elements[0].transform.rotation.z += .1f;
-		if (key == keycode.q) owner.GetLayer("normal")!.elements[0].transform.rotation.z -= .1f;
+		RenderableTransform tr = owner.GetLayer("normal")!.elements[0].transform.Get(owner.GetLayer("normal")!.elements[0]);
 		
-		if (key == keycode.x) owner.GetLayer("normal")!.elements[0].transform.rotation.x += .1f;
-		if (key == keycode.z) owner.GetLayer("normal")!.elements[0].transform.rotation.x -= .1f;
+		if (key == keycode.e) tr.rotation.z += .1f;
+		if (key == keycode.q) tr.rotation.z -= .1f;
 		
-		if (key == keycode.v) owner.GetLayer("normal")!.elements[0].transform.rotation.y += .1f;
-		if (key == keycode.c) owner.GetLayer("normal")!.elements[0].transform.rotation.y -= .1f;
+		if (key == keycode.x) tr.rotation.x += .1f;
+		if (key == keycode.z) tr.rotation.x -= .1f;
+		
+		if (key == keycode.v) tr.rotation.y += .1f;
+		if (key == keycode.c) tr.rotation.y -= .1f;
 		// if (key == keycode.e) Rotate(.1f);
 		// if (key == keycode.q) Rotate(-.1f);
 		//

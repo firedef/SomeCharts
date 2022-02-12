@@ -27,7 +27,11 @@ public class RulerExample {
 				lineLength = 10_000,
 			});
 
-			canvas.AddElement(new DebugLabel() {textScale = 16, transform = new(new(.8f,.6f), float2.one / canvas.screenSize, float3.zero, TransformType.viewportSpace)}, "top");
+			Func<RenderableBase, RenderableTransform> trFunc = _ => {
+				float2 screenSize = canvas.screenSize;
+				return new(screenSize- new float2(200,100), 1, float3.zero, TransformType.screenSpace);
+			};
+			canvas.AddElement(new DebugLabel() {textScale = 16, transform = trFunc}, "top");
 		});
 		
 		AvaloniaRunUtils.RunAvalonia();

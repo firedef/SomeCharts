@@ -1,3 +1,4 @@
+using SomeChartsUi.data;
 using SomeChartsUi.ui.canvas;
 using SomeChartsUi.utils.vectors;
 
@@ -7,9 +8,9 @@ namespace SomeChartsUi.ui.elements;
 /// base class of all canvas elements
 /// </summary>
 public abstract partial class RenderableBase {
-	protected ChartsCanvas canvas = null!;
+	public ChartsCanvas canvas { get; private set; } = null!;
 
-	public RenderableTransform transform = new(float2.zero);
+	public ChartProperty<RenderableTransform> transform = new RenderableTransform(float2.zero);
 	
 	public void Render(ChartsCanvas owner) {
 		canvas = owner;

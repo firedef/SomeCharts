@@ -39,10 +39,11 @@ public class Ruler : RenderableBase {
 	
 	protected override void Render() {
 		float2 pos = float2.zero;
-		
-		if (stickToScreen && transform.type == TransformType.worldSpace) {
-			pos.y = math.clamp(canvas.transform.worldBounds.bottom - transform.position.y, stickRange.bottom, stickRange.top) + stickOffset.x;
-			pos.x = math.clamp(canvas.transform.worldBounds.left - transform.position.x, stickRange.left, stickRange.right) + stickOffset.y;
+
+		RenderableTransform tr = transform.Get(this);
+		if (stickToScreen && tr.type == TransformType.worldSpace) {
+			pos.y = math.clamp(canvas.transform.worldBounds.bottom - tr.position.y, stickRange.bottom, stickRange.top) + stickOffset.x;
+			pos.x = math.clamp(canvas.transform.worldBounds.left - tr.position.x, stickRange.left, stickRange.right) + stickOffset.y;
 		}
 
 		{

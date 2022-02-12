@@ -16,13 +16,13 @@ public abstract partial class RenderableBase {
 	protected ChartCanvasRenderer renderer => canvas.renderer;
 	
 	protected unsafe void DrawVertices(float2* points, float2* uvs, color* colors, ushort* indexes, int vertexCount, int indexCount) => 
-		renderer.backend.DrawMesh(points, uvs, colors, indexes, vertexCount, indexCount, transform);
+		renderer.backend.DrawMesh(points, uvs, colors, indexes, vertexCount, indexCount, transform.Get(this));
 	
 	protected void DrawVertices(float2[] points, float2[]? uvs, color[]? colors, ushort[] indexes) => 
-		renderer.backend.DrawMesh(points, uvs, colors, indexes, transform);
+		renderer.backend.DrawMesh(points, uvs, colors, indexes, transform.Get(this));
 
 	protected void DrawText(string txt, float2 pos, color col, FontData font, float scale = 12) =>
-		renderer.backend.DrawText(txt, col, font, transform + new RenderableTransform(pos, scale, float3.zero));
+		renderer.backend.DrawText(txt, col, font, transform.Get(this) + new RenderableTransform(pos, scale, float3.zero));
 	
 	protected static float2 Rot90DegFastWithLen(float2 p, float len) {
 		len *= FastInverseSquareRoot(p.x * p.x + p.y * p.y);
@@ -51,13 +51,14 @@ public abstract partial class RenderableBase {
 	
 	protected (float start, float end) GetStartEndPos(float startLim, float endLim, Orientation orientation) {
 		float2 s = 1/canvasZoom;
+		RenderableTransform tr = transform.Get(this);
 		if ((orientation & Orientation.vertical) != 0)
 			return (orientation & Orientation.reversed) != 0 
-				? (math.max(startLim, canvas.transform.worldBounds.top - transform.position.y), math.min(endLim, canvas.transform.worldBounds.bottom - transform.position.y)) 
-				: (math.max(startLim, canvas.transform.worldBounds.bottom - transform.position.y), math.min(endLim, canvas.transform.worldBounds.top - transform.position.y));
+				? (math.max(startLim, canvas.transform.worldBounds.top - tr.position.y), math.min(endLim, canvas.transform.worldBounds.bottom - tr.position.y)) 
+				: (math.max(startLim, canvas.transform.worldBounds.bottom - tr.position.y), math.min(endLim, canvas.transform.worldBounds.top - tr.position.y));
 		return (orientation & Orientation.reversed) != 0 
-			? (math.max(startLim, canvas.transform.worldBounds.right - transform.position.x), math.min(endLim, canvas.transform.worldBounds.left - transform.position.x)) 
-			: (math.max(startLim, canvas.transform.worldBounds.left - transform.position.x), math.min(endLim, canvas.transform.worldBounds.right - transform.position.x));
+			? (math.max(startLim, canvas.transform.worldBounds.right - tr.position.x), math.min(endLim, canvas.transform.worldBounds.left - tr.position.x)) 
+			: (math.max(startLim, canvas.transform.worldBounds.left - tr.position.x), math.min(endLim, canvas.transform.worldBounds.right - tr.position.x));
 	}
 	
 	protected int GetDownsampleX(int downsampleMul, int sub = 2) => (int)math.max(math.log2(downsampleMul / canvas.transform.zoom.animatedValue.x), sub) - sub;
