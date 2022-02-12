@@ -7,7 +7,7 @@ namespace SomeChartsUi.ui.elements;
 /// base class of all canvas elements
 /// </summary>
 public abstract partial class RenderableBase {
-	protected ChartsCanvas canvas;
+	protected ChartsCanvas canvas = null!;
 
 	public RenderableTransform transform = new(float2.zero);
 	

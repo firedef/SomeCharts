@@ -1,3 +1,5 @@
+using System;
+using System.Diagnostics;
 using Avalonia;
 using Avalonia.Input;
 using Avalonia.Media;
@@ -61,6 +63,8 @@ public partial class AvaloniaChartsCanvas {
 		canvas.transform.Update();
 		canvas.GetLayer("bg")!.background = theme.default0_ind;
 
+		Stopwatch sw = Stopwatch.StartNew();
 		context.Custom(new CustomAvaloniaRender(canvas, Bounds));
+		canvas.renderTime = sw.Elapsed;
 	}
 }

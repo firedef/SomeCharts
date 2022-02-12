@@ -40,6 +40,8 @@ public partial class AvaloniaChartsCanvas : Panel {
 	/// <summary>time of latest canvas zoom</summary>
 	public TimeSpan zoomUpdateTime;
 
+	public float2 screenSize => new((float)Bounds.Width, (float)Bounds.Height);
+
 	public AvaloniaChartsCanvas() {
 		_updateTimer = new(_ => Update(), null, 0, 10);
 		canvas.controller = new AvaloniaCanvasUiController(canvas, this);

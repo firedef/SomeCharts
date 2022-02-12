@@ -35,8 +35,8 @@ public class SkiaChartsBackend : ChartsBackendBase, IDisposable {
 		
 		// normalize coordinates if viewport-space
 		if (transform.type == TransformType.viewportSpace) {
-			scale /= owner.transform.screenBounds.widthHeight;
-			position -= owner.transform.screenBounds.leftBottom;
+			//position -= owner.transform.screenBounds.leftBottom;
+			scale *= owner.transform.screenBounds.widthHeight;
 		}
 		
 		if (flipY) position.FlipY();

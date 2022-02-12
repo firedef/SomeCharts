@@ -11,6 +11,8 @@ public class ChartsCanvas {
 	public ChartCanvasControllerBase? controller;
 	private List<CanvasLayer> layers => renderer.layers;
 	private Dictionary<string, int> layerNames => renderer.layerNames;
+	
+	public TimeSpan renderTime;
 
 	public ChartsCanvas(ChartsBackendBase backend) {
 		transform = new();
