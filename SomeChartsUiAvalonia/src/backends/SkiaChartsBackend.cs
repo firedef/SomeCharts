@@ -35,8 +35,12 @@ public class SkiaChartsBackend : ChartsBackendBase, IDisposable {
 		
 		// normalize coordinates if viewport-space
 		if (transform.type == TransformType.viewportSpace) {
-			//position -= owner.transform.screenBounds.leftBottom;
+			position /= scale;
 			scale *= owner.transform.screenBounds.widthHeight;
+		}
+		
+		if (transform.type == TransformType.screenSpace) {
+			position /= scale;
 		}
 		
 		if (flipY) position.FlipY();
@@ -71,7 +75,6 @@ public class SkiaChartsBackend : ChartsBackendBase, IDisposable {
 
 		_paint!.Color = col.sk();
 		_paint.TextSize = 1;
-		_paint.TextScaleX = transform.scale.y / transform.scale.x;
 		// _paint.TextAlign = SKTextAlign.Left;
 		
 		_canvas.RotateRadians(transform.rotation.z);
