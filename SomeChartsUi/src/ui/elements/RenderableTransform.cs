@@ -2,7 +2,7 @@ using SomeChartsUi.utils.vectors;
 
 namespace SomeChartsUi.ui.elements; 
 
-public class RenderableTransform {
+public record RenderableTransform {
 	public float2 position;
 	public float2 scale;
 	public float3 rotation;
@@ -21,6 +21,8 @@ public class RenderableTransform {
 		this.rotation = rotation;
 		this.type = type;
 	}
+
+	public static RenderableTransform operator +(RenderableTransform a, RenderableTransform b) => new(a.position + b.position, a.scale * b.scale, a.rotation + b.rotation, a.type);
 }
 
 public enum TransformType : byte {

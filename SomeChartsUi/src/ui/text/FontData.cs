@@ -1,6 +1,6 @@
 namespace SomeChartsUi.ui.text; 
 
-public struct FontData {
+public class FontData {
 	public string family;
 	public bool isBold;
 	public bool isItalic;

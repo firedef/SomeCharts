@@ -1,5 +1,7 @@
+using System.Buffers;
 using SomeChartsUi.elements;
 using SomeChartsUi.themes.colors;
+using SomeChartsUi.ui.text;
 using SomeChartsUi.utils;
 using SomeChartsUi.utils.vectors;
 
@@ -47,14 +49,9 @@ public abstract partial class RenderableBase {
 		DrawVertices(points, null, colors, indexes, vCount, iCount);
 	}
 
-	protected unsafe void DrawVerticalLines(float2 offset, float space, float length, int count, color lineColor, float thickness) {
-		(float start, float end) = GetStartEndPos(offset.x, offset.x + count * space, Orientation.horizontal);
-		if (start > end - .01f) return;
-		
-		count = (int) Math.Floor((end - start) / space) + 1;
-		if (count < 1) return;
-		offset.x += MathF.Ceiling(start / space) * space;
-		
+	protected unsafe void DrawStraightLines(float2[] positions, float length, color lineColor, float thickness, Orientation orientation) {
+		int count = positions.Length;
+		if (count == 0) return;
 		int vCount = count * 4;
 		int iCount = count * 6;
 
@@ -62,9 +59,12 @@ public abstract partial class RenderableBase {
 		color* colors = stackalloc color[vCount];
 		ushort* indexes = stackalloc ushort[iCount];
 		
+		float2 vec = (orientation & Orientation.vertical) != 0 ? new(0, 1) : new(1, 0); // vertical : horizontal
+		float2 offset = vec.yx * length;
+		
 		for (int i = 0; i < count; i++) {
-			float2 p0 = new(offset.x + i * space, offset.y);
-			float2 p1 = p0 + new float2(0, length);
+			float2 p0 = positions[i];
+			float2 p1 = p0 + offset;
 			
 			int curVIndex = i * 4;
 			int curIIndex = i * 6;
@@ -89,48 +89,46 @@ public abstract partial class RenderableBase {
 
 		DrawVertices(points, null, colors, indexes, vCount, iCount);
 	}
+
+	protected void DrawText(string[] txt, float2[] positions, FontData fontData, color color, float scale = 12) => DrawText(txt, positions, fontData, color, scale, ..);
 	
-	protected unsafe void DrawHorizontalLines(float2 offset, float space, float length, int count, color lineColor, float thickness) {
-		(float start, float end) = GetStartEndPos(offset.y, offset.y + count * space, Orientation.vertical);
-		if (start > end - .01f) return;
-		
-		count = (int) Math.Floor((end - start) / space) + 1;
-		if (count < 2) return;
-		offset.y += MathF.Ceiling(start / space) * space;
-		
-		int vCount = count * 4;
-		int iCount = count * 6;
-
-		float2* points = stackalloc float2[vCount];
-		color* colors = stackalloc color[vCount];
-		ushort* indexes = stackalloc ushort[iCount];
-		
-		for (int i = 0; i < count; i++) {
-			float2 p0 = new(offset.x, offset.y + i * space);
-			float2 p1 = p0 + new float2(length, 0);
-			
-			int curVIndex = i * 4;
-			int curIIndex = i * 6;
-			
-			points[curVIndex + 0] = new(p0.x - thickness, p0.y - thickness);
-			points[curVIndex + 1] = new(p0.x - thickness, p1.y + thickness);
-			points[curVIndex + 2] = new(p1.x + thickness, p1.y + thickness);
-			points[curVIndex + 3] = new(p1.x + thickness, p0.y - thickness);
-
-			colors[curVIndex + 0] = lineColor;
-			colors[curVIndex + 1] = lineColor;
-			colors[curVIndex + 2] = lineColor;
-			colors[curVIndex + 3] = lineColor;
-
-			indexes[curIIndex + 0] = (ushort)(curVIndex + 0);
-			indexes[curIIndex + 1] = (ushort)(curVIndex + 1);
-			indexes[curIIndex + 2] = (ushort)(curVIndex + 2);
-			indexes[curIIndex + 3] = (ushort)(curVIndex + 0);
-			indexes[curIIndex + 4] = (ushort)(curVIndex + 2);
-			indexes[curIIndex + 5] = (ushort)(curVIndex + 3);
-		}
-
-		DrawVertices(points, null, colors, indexes, vCount, iCount);
+	protected void DrawText(string[] txt, float2[] positions, FontData fontData, color color, float scale, Range range) {
+		int count = positions.Length;
+		int s = range.Start.IsFromEnd ? count - range.Start.Value : range.Start.Value;
+		int e = range.End.IsFromEnd ? count - range.End.Value : range.End.Value;
+		for (int i = s; i < e; i++) DrawText(txt[i], positions[i]/scale, color, fontData, scale);
 	}
 
+	protected float2[] GetPositions(float2 offset, float space, int count, Orientation orientation) {
+		// get vector (direction)
+		float2 vec = (orientation & Orientation.vertical) != 0 ? new(0, 1) : new(1, 0); // vertical : horizontal
+		float offsetOnMainAxis = (offset * vec).sum;
+		
+		// get start and end points
+		(float start, float end) = GetStartEndPos(offsetOnMainAxis, offsetOnMainAxis + count * space, orientation);
+		if (start > end - .01f) return Array.Empty<float2>();
+		
+		// get count
+		count = (int) Math.Floor((end - start) / space) + 1;
+		if (count < 1) return Array.Empty<float2>();
+		
+		// snap to grid
+		offset += MathF.Ceiling(start / space) * space * vec;
+
+		// calculate array fill vars
+		float2 add = vec * space;
+		
+		// reverse if necessary
+		if ((orientation & Orientation.reversed) != 0) {
+			offset += add;
+			add *= -1;
+		}
+		
+		// allocate and fill array
+		float2[] arr = new float2[count];
+		for (int i = 0; i < count; i++)
+			arr[i] = offset + add * i;
+
+		return arr;
+	}
 }

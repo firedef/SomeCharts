@@ -28,7 +28,9 @@ public class SkiaChartsBackend : ChartsBackendBase, IDisposable {
 			_canvas!.RotateRadians(owner.transform.rotation.animatedValue.z);
 			float2 s = owner.transform.zoom.animatedValue;
 			_canvas.Scale(s.sk());
-			_canvas.Translate(owner.transform.position.animatedValue.sk());
+			float2 p = owner.transform.position.animatedValue;
+			if (flipY) p.FlipY();
+			_canvas.Translate(p.sk());
 		}
 		
 		// normalize coordinates if viewport-space
@@ -68,8 +70,9 @@ public class SkiaChartsBackend : ChartsBackendBase, IDisposable {
 		ApplyTransform(transform, true);
 
 		_paint!.Color = col.sk();
-		_paint.TextSize = transform.scale.x;
+		_paint.TextSize = 1;
 		_paint.TextScaleX = transform.scale.y / transform.scale.x;
+		// _paint.TextAlign = SKTextAlign.Left;
 		
 		_canvas.RotateRadians(transform.rotation.z);
 		_canvas.DrawShapedText(SkiaFontFamilies.Get(font), text, SKPoint.Empty, _paint);

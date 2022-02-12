@@ -100,3 +100,11 @@ public class ConstChartData<T> : ConstChartManagedData<T>, IChartData<T> where T
 		for (int i = 0; i < count; i++) dest[i] = value;
 	}
 }
+
+public static class ChartDataExtensions {
+	public static T[] GetValues<T>(this IChartManagedData<T> v, int start, int count, int downsample) {
+		T[] arr = new T[count];
+		v.GetValues(start, count, downsample, arr);
+		return arr;
+	}
+}

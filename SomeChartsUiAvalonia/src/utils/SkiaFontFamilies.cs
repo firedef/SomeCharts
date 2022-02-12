@@ -13,6 +13,7 @@ public static class SkiaFontFamilies {
 	public static Dictionary<string, FontFamilyData?> fonts = new();
 
 	public static FontFamilyData? GetFontFamily(string name) {
+		
 		if (fonts.TryGetValue(name, out FontFamilyData? v)) return v;
 		TryLoad(name);
 		return fonts[name];

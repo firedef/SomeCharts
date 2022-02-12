@@ -22,7 +22,7 @@ public abstract partial class RenderableBase {
 		renderer.backend.DrawMesh(points, uvs, colors, indexes, transform);
 
 	protected void DrawText(string txt, float2 pos, color col, FontData font, float scale = 12) =>
-		renderer.backend.DrawText(txt, col, font, transform);
+		renderer.backend.DrawText(txt, col, font, transform + new RenderableTransform(pos, scale, float3.zero));
 	
 	protected static float2 Rot90DegFastWithLen(float2 p, float len) {
 		len *= FastInverseSquareRoot(p.x * p.x + p.y * p.y);
@@ -40,6 +40,15 @@ public abstract partial class RenderableBase {
 		return y;
 	}
 
+	protected (float start, int count) GetStartCountIndexes((float start, float end) positions, float size) =>
+		(MathF.Ceiling(positions.start / size) * size,
+		(int)Math.Floor((positions.end - positions.start) / size) + 1);
+	
+	protected (float start, float end) GetStartEndPos(float2 startLim, float2 endLim, Orientation orientation) {
+		float2 vec = (orientation & Orientation.vertical) != 0 ? new(0, 1) : new(1, 0);// vertical : horizontal
+		return GetStartEndPos((startLim * vec).sum, (endLim * vec).sum, orientation);
+	}
+	
 	protected (float start, float end) GetStartEndPos(float startLim, float endLim, Orientation orientation) {
 		float2 s = 1/canvasZoom;
 		if ((orientation & Orientation.vertical) != 0)

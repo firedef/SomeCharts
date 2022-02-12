@@ -10,6 +10,8 @@ public struct float2 {
 
 	public float2 xx => new(x);
 	public float2 yy => new(y);
+	public float2 yx => new(y,x);
+	public float sum => x + y;
 	
 	public float avg => (x + y) * .5f;
 
