@@ -43,5 +43,6 @@ public static class AvaloniaRunUtils {
 	private static AppBuilder BuildAvaloniaApp() =>
 		AppBuilder.Configure<App>()
 		          .UsePlatformDetect()
+		          .With(new SkiaOptions {MaxGpuResourceSizeBytes = 256_000_000})
 		          .LogToTrace();
 }

@@ -1,13 +1,15 @@
-using System.Buffers;
 using SomeChartsUi.elements;
 using SomeChartsUi.themes.colors;
 using SomeChartsUi.ui.text;
-using SomeChartsUi.utils;
 using SomeChartsUi.utils.vectors;
 
 namespace SomeChartsUi.ui.elements; 
 
 public abstract partial class RenderableBase {
+	/// <summary>draws non-connected lines</summary>
+	/// <param name="linePoints">first and second points of lines <br/>the length is 2 * lineCount</param>
+	/// <param name="lineColors">first and second point colors of lines <br/>the length is 2 * lineCount</param>
+	/// <param name="thickness">thickness of lines</param>
 	protected unsafe void DrawLines(float2[] linePoints, color[] lineColors, float thickness) {
 		int len = linePoints.Length >> 1;
 		int vCount = len * 4;
@@ -49,6 +51,12 @@ public abstract partial class RenderableBase {
 		DrawVertices(points, null, colors, indexes, vCount, iCount);
 	}
 
+	/// <summary>draws non-connected straight lines with uniform length</summary>
+	/// <param name="positions">start points of lines</param>
+	/// <param name="length">length of each line</param>
+	/// <param name="lineColor">color of each line</param>
+	/// <param name="thickness">thickness of each line</param>
+	/// <param name="orientation">orientation of lines (vertical/horizontal)</param>
 	protected unsafe void DrawStraightLines(float2[] positions, float length, color lineColor, float thickness, Orientation orientation) {
 		int count = positions.Length;
 		if (count == 0) return;
@@ -90,8 +98,21 @@ public abstract partial class RenderableBase {
 		DrawVertices(points, null, colors, indexes, vCount, iCount);
 	}
 
+	/// <summary>draws text at specified positions</summary>
+	/// <param name="txt">texts</param>
+	/// <param name="positions">positions <br/>adds to transform of current element</param>
+	/// <param name="fontData">font type</param>
+	/// <param name="color">color</param>
+	/// <param name="scale">scale of text <br/>multiplies with transform of current element</param>
 	protected void DrawText(string[] txt, float2[] positions, FontData fontData, color color, float scale = 12) => DrawText(txt, positions, fontData, color, scale, ..);
 	
+	/// <summary>draws text at specified positions</summary>
+	/// <param name="txt">texts</param>
+	/// <param name="positions">positions <br/>adds to transform of current element</param>
+	/// <param name="fontData">font type</param>
+	/// <param name="color">color</param>
+	/// <param name="scale">scale of text <br/>multiplies with transform of current element</param>
+	/// <param name="range">range of elements to render (from positions array) </param>
 	protected void DrawText(string[] txt, float2[] positions, FontData fontData, color color, float scale, Range range) {
 		int count = positions.Length;
 		int s = range.Start.IsFromEnd ? count - range.Start.Value : range.Start.Value;
@@ -99,6 +120,12 @@ public abstract partial class RenderableBase {
 		for (int i = s; i < e; i++) DrawText(txt[i], positions[i]/scale, color, fontData, scale);
 	}
 
+	/// <summary>get positions on straight line</summary>
+	/// <param name="offset">offset of lines</param>
+	/// <param name="space">space between lines</param>
+	/// <param name="count">line count</param>
+	/// <param name="orientation">line orientation (vertical/horizontal)</param>
+	/// <returns>positions</returns>
 	protected float2[] GetPositions(float2 offset, float space, int count, Orientation orientation) {
 		// get vector (direction)
 		float2 vec = (orientation & Orientation.vertical) != 0 ? new(0, 1) : new(1, 0); // vertical : horizontal

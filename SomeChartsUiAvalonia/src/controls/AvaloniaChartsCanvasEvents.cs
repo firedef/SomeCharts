@@ -3,6 +3,7 @@ using System.Diagnostics;
 using Avalonia;
 using Avalonia.Input;
 using Avalonia.Media;
+using Avalonia.Threading;
 using SomeChartsUi.themes.themes;
 using SomeChartsUi.ui;
 using SomeChartsUi.ui.canvas;

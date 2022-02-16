@@ -30,9 +30,9 @@ public partial class AvaloniaChartsCanvas : Panel {
 	/// <summary>pause redraw loop</summary>
 	public bool stopRender;
 	
-	/// <summary>delay (in ms) between canvas redraw (when app is not hovered by mouse)</summary>
+	/// <summary>delay (in ms) between canvas redraw (when app is not hovered by mouse)<br/>Avalonia deferred renderer have max framerate of 30</summary>
 	public int updateInterval = 200;
-	/// <summary>delay (in ms) between canvas redraw (when app is hovered by mouse)</summary>
+	/// <summary>delay (in ms) between canvas redraw (when app is hovered by mouse)<br/>Avalonia deferred renderer have max framerate of 30</summary>
 	public int updateInterval_hover = 16;
 
 	/// <summary>time of latest canvas move</summary>

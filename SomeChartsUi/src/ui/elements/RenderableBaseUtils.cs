@@ -23,13 +23,14 @@ public abstract partial class RenderableBase {
 
 	protected void DrawText(string txt, float2 pos, color col, FontData font, float scale = 12) =>
 		renderer.backend.DrawText(txt, col, font, transform.Get(this) + new RenderableTransform(pos, scale, float3.zero));
-	
+
+	/// <summary>rotate vector by 90 degrees and set length</summary>
 	protected static float2 Rot90DegFastWithLen(float2 p, float len) {
 		len *= FastInverseSquareRoot(p.x * p.x + p.y * p.y);
 		return new(-p.y * len, p.x * len);
 	}
 
-	[MethodImpl(MethodImplOptions.AggressiveInlining)]
+	/// <summary>1 / sqrt(num)</summary>
 	protected static unsafe float FastInverseSquareRoot(float num) {
 		float x2 = num * .5f;
 		float y = num;
@@ -40,15 +41,18 @@ public abstract partial class RenderableBase {
 		return y;
 	}
 
-	protected (float start, int count) GetStartCountIndexes((float start, float end) positions, float size) =>
+	/// <summary>get start index and count with 2D frustum culling</summary>
+	protected (float start, int count) GetStartCountIndexes((float start, float end) positions, float size) => 
 		(MathF.Ceiling(positions.start / size) * size,
 		(int)Math.Floor((positions.end - positions.start) / size) + 1);
 	
+	/// <summary>clamp start and end positions to screen bounds</summary>
 	protected (float start, float end) GetStartEndPos(float2 startLim, float2 endLim, Orientation orientation) {
 		float2 vec = (orientation & Orientation.vertical) != 0 ? new(0, 1) : new(1, 0);// vertical : horizontal
 		return GetStartEndPos((startLim * vec).sum, (endLim * vec).sum, orientation);
 	}
-	
+
+	/// <summary>clamp start and end positions to screen bounds</summary>
 	protected (float start, float end) GetStartEndPos(float startLim, float endLim, Orientation orientation) {
 		float2 s = 1/canvasZoom;
 		RenderableTransform tr = transform.Get(this);
@@ -60,7 +64,9 @@ public abstract partial class RenderableBase {
 			? (math.max(startLim, canvas.transform.worldBounds.right - tr.position.x), math.min(endLim, canvas.transform.worldBounds.left - tr.position.x)) 
 			: (math.max(startLim, canvas.transform.worldBounds.left - tr.position.x), math.min(endLim, canvas.transform.worldBounds.right - tr.position.x));
 	}
-	
+
+	/// <summary>get preferred downsample for element</summary>
 	protected int GetDownsampleX(int downsampleMul, int sub = 2) => (int)math.max(math.log2(downsampleMul / canvas.transform.zoom.animatedValue.x), sub) - sub;
+	/// <summary>get preferred downsample for element</summary>
 	protected int GetDownsampleY(int downsampleMul, int sub = 2) => (int)math.max(math.log2(downsampleMul / canvas.transform.zoom.animatedValue.y), sub) - sub;
 }
