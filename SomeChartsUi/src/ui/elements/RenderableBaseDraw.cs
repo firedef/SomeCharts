@@ -30,10 +30,10 @@ public abstract partial class RenderableBase {
 			int curVIndex = i * 4;
 			int curIIndex = i * 6;
 			
-			points[curVIndex + 0] = new(p0.x - offset.x, p0.y - offset.y);
-			points[curVIndex + 1] = new(p0.x - offset.x, p1.y + offset.y);
-			points[curVIndex + 2] = new(p1.x + offset.x, p1.y + offset.y);
-			points[curVIndex + 3] = new(p1.x + offset.x, p0.y - offset.y);
+			points[curVIndex + 0] = new(p1.x - offset.x, p1.y - offset.y);
+			points[curVIndex + 1] = new(p1.x + offset.x, p1.y + offset.y);
+			points[curVIndex + 2] = new(p0.x + offset.x, p0.y + offset.y);
+			points[curVIndex + 3] = new(p0.x - offset.x, p0.y - offset.y);
 
 			colors[curVIndex + 0] = c0;
 			colors[curVIndex + 1] = c1;
@@ -98,6 +98,100 @@ public abstract partial class RenderableBase {
 		DrawVertices(points, null, colors, indexes, vCount, iCount);
 	}
 
+	/// <summary>draws connected lines</summary>
+	/// <param name="linePoints">points of lines <br/>the length is lineCount + 1</param>
+	/// <param name="lineColors">point colors of lines <br/>the length is lineCount + 1</param>
+	/// <param name="thickness">thickness of lines</param>
+	/// <param name="alphaMul">alpha color multiplier</param>
+	protected unsafe void DrawConnectedLines(float2[] linePoints, color[] lineColors, float thickness, float alphaMul = 1) {
+		fixed(float2* linePointsPtr = linePoints)
+			fixed(color* lineColorsPtr = lineColors)
+				DrawConnectedLines(linePointsPtr, lineColorsPtr, thickness, linePoints.Length - 1, alphaMul);
+	}
+
+	/// <summary>draws connected lines</summary>
+	/// <param name="linePoints">points of lines <br/>the length is lineCount + 1</param>
+	/// <param name="lineColors">point colors of lines <br/>the length is lineCount + 1</param>
+	/// <param name="thickness">thickness of lines</param>
+	/// <param name="len">line count</param>
+	/// <param name="alphaMul">alpha color multiplier</param>
+	protected unsafe void DrawConnectedLines(float2* linePoints, color* lineColors, float thickness, int len, float alphaMul = 1) {
+		int vCount = len * 4;
+		int iCount = len * 6;
+
+		float2* points = stackalloc float2[vCount];
+		color* colors = stackalloc color[vCount];
+		ushort* indexes = stackalloc ushort[iCount];
+
+		for (int i = 0; i < len; i++) {
+			float2 p0 = linePoints[i];
+			float2 p1 = linePoints[i + 1];
+			color c0 = lineColors[i];
+			c0.aF *= alphaMul;
+			
+			float2 offset = Rot90DegFastWithLen(p0 - p1, thickness);
+			
+			int curVIndex = i * 4;
+			int curIIndex = i * 6;
+			
+			points[curVIndex + 0] = new(p1.x - offset.x, p1.y - offset.y);
+			points[curVIndex + 1] = new(p1.x + offset.x, p1.y + offset.y);
+			points[curVIndex + 2] = new(p0.x + offset.x, p0.y + offset.y);
+			points[curVIndex + 3] = new(p0.x - offset.x, p0.y - offset.y);
+
+			colors[curVIndex + 0] = c0;
+			colors[curVIndex + 1] = c0;
+			colors[curVIndex + 2] = c0;
+			colors[curVIndex + 3] = c0;
+
+			indexes[curIIndex + 0] = (ushort)(curVIndex + 0);
+			indexes[curIIndex + 1] = (ushort)(curVIndex + 1);
+			indexes[curIIndex + 2] = (ushort)(curVIndex + 2);
+			indexes[curIIndex + 3] = (ushort)(curVIndex + 0);
+			indexes[curIIndex + 4] = (ushort)(curVIndex + 2);
+			indexes[curIIndex + 5] = (ushort)(curVIndex + 3);
+		}
+
+		DrawVertices(points, null, colors, indexes, vCount, iCount);
+	}
+
+	protected unsafe void DrawPoints(float2* elementPoints, color* elementColors, float size, int len) {
+		int vCount = len * 4;
+		int iCount = len * 6;
+
+		float2* points = stackalloc float2[vCount];
+		color* colors = stackalloc color[vCount];
+		ushort* indexes = stackalloc ushort[iCount];
+
+		for (int i = 0; i < len; i++) {
+			float2 p0 = elementPoints[i];
+			color c0 = elementColors[i];
+
+			int curVIndex = i * 4;
+			int curIIndex = i * 6;
+			
+			points[curVIndex + 0] = new(p0.x - size, p0.y - size);
+			points[curVIndex + 1] = new(p0.x - size, p0.y + size);
+			points[curVIndex + 2] = new(p0.x + size, p0.y + size);
+			points[curVIndex + 3] = new(p0.x + size, p0.y - size);
+
+			colors[curVIndex + 0] = c0;
+			colors[curVIndex + 1] = c0;
+			colors[curVIndex + 2] = c0;
+			colors[curVIndex + 3] = c0;
+
+			indexes[curIIndex + 0] = (ushort)(curVIndex + 0);
+			indexes[curIIndex + 1] = (ushort)(curVIndex + 1);
+			indexes[curIIndex + 2] = (ushort)(curVIndex + 2);
+			indexes[curIIndex + 3] = (ushort)(curVIndex + 0);
+			indexes[curIIndex + 4] = (ushort)(curVIndex + 2);
+			indexes[curIIndex + 5] = (ushort)(curVIndex + 3);
+		}
+
+		DrawVertices(points, null, colors, indexes, vCount, iCount);
+	}
+
+	
 	/// <summary>draws text at specified positions</summary>
 	/// <param name="txt">texts</param>
 	/// <param name="positions">positions <br/>adds to transform of current element</param>

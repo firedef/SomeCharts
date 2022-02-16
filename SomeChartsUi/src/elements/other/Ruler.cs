@@ -7,8 +7,9 @@ using SomeChartsUi.utils;
 using SomeChartsUi.utils.rects;
 using SomeChartsUi.utils.vectors;
 
-namespace SomeChartsUi.elements.other; 
+namespace SomeChartsUi.elements.other;
 
+//TODO: fix labels when using transform position
 public class Ruler : RenderableBase {
 	public Orientation orientation;
 	public int length = 1000;
@@ -28,8 +29,8 @@ public class Ruler : RenderableBase {
 	public indexedColor lineColor = theme.default1_ind;
 	public float lineLength = float.MaxValue;
 
-	public int downsampleMul = 20;
-	public float scale = 10;
+	public int downsampleMul = 4;
+	public float scale = 100;
 
 	public float thickness = 1;
 	public bool screenSpaceThickness = true;
@@ -39,11 +40,17 @@ public class Ruler : RenderableBase {
 	
 	protected override void Render() {
 		float2 pos = float2.zero;
+		
+		float2 vec = (orientation & Orientation.vertical) != 0 ? new(0, 1) : new(1, 0);// vertical : horizontal
 
 		RenderableTransform tr = transform.Get(this);
 		if (stickToScreen && tr.type == TransformType.worldSpace) {
-			pos.y = math.clamp(canvas.transform.worldBounds.bottom - tr.position.y, stickRange.bottom, stickRange.top) + stickOffset.x;
-			pos.x = math.clamp(canvas.transform.worldBounds.left - tr.position.x, stickRange.left, stickRange.right) + stickOffset.y;
+			pos.x = math.clamp(canvas.transform.worldBounds.left, stickRange.left, stickRange.right) + stickOffset.x;
+			pos.y = math.clamp(canvas.transform.worldBounds.bottom, stickRange.bottom, stickRange.top) + stickOffset.y;
+
+			//if ((orientation & Orientation.vertical) == 0)
+			//	pos.y = MathF.Ceiling(pos.y / scale) * scale;
+			//else pos.x = MathF.Ceiling(pos.x / scale) * scale;
 		}
 
 		{
@@ -52,14 +59,13 @@ public class Ruler : RenderableBase {
 			int count = length >> downsample;
 			
 			float2[] positions =  GetPositions(pos, space, count, orientation);
-			float2 vec = (orientation & Orientation.vertical) != 0 ? new(0, 1) : new(1, 0);// vertical : horizontal
 			float scaleVal = 1 / (canvas.transform.zoom.animatedValue * vec).sum;
 			
 			if (drawLines) DrawStraightLines(positions, lineLength - (pos * vec.yx).sum, lineColor.GetColor(), screenSpaceThickness ? thickness * scaleVal : thickness, orientation);
 			if (drawLabels && names != null) {
 				(float s, int c) = GetStartCountIndexes(GetStartEndPos(pos, pos + count * space, orientation), space);
 				if (c < 1) return;
-				string[] txt = names!.GetValues((int)(s / scale), c, downsample);
+				string[] txt = names!.GetValues((int)((s + (pos * vec).sum) / scale), c, downsample);
 				DrawText(txt, positions, font, labelColor.GetColor(), screenSpaceLabels ? fontSize * scaleVal : fontSize, skipLabels..);
 			}
 		}

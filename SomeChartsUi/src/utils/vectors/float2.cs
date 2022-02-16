@@ -43,6 +43,8 @@ public struct float2 {
 	public static float2 operator -(float2 a, float b) => new(a.x - b, a.y - b);
 	public static float2 operator -(float2 a, int b) => new(a.x - b, a.y - b);
 	
+	public static float2 operator -(float2 a) => new(-a.x, -a.y);
+	
 	public static float2 operator *(float2 a, float2 b) => new(a.x * b.x, a.y * b.y);
 	public static float2 operator *(float2 a, float b) => new(a.x * b, a.y * b);
 	public static float2 operator *(float2 a, int b) => new(a.x * b, a.y * b);

@@ -16,7 +16,7 @@ public partial record theme {
 		theme t = new();
 
 		color[] defaultColors = GenerateColors(defaultHue, .4f, .15f, defaultHue, .1f, 1f, 12);
-		color[] accentColors = GenerateColors(accentHue, .5f, 1f, accentHue, .3f, .2f, 3);
+		color[] accentColors = GenerateColors(accentHue, .5f, .7f, accentHue, .3f, .2f, 3);
 		color[] commonColors = {"#9effad", "#ffe59e", "#ffa39e"};
 		
 		ApplyColors(t, defaultColors, accentColors, commonColors);
@@ -29,7 +29,7 @@ public partial record theme {
 		theme t = new();
 
 		color[] defaultColors = GenerateColors(defaultHue, .1f, 1f, defaultHue, .4f, .15f, 12);
-		color[] accentColors = GenerateColors(accentHue, .3f, .2f, accentHue, .5f, 1f, 3);
+		color[] accentColors = GenerateColors(accentHue, .3f, .2f, accentHue, .5f, .7f, 3);
 		color[] commonColors = {"#296662", "#293166", "#663029"};
 		
 		ApplyColors(t, defaultColors, accentColors, commonColors);
@@ -85,6 +85,9 @@ public partial record theme {
 		
 		return palettes;
 	}
-	
-	
+
+	public static void CycleTheme() {
+		if (globalTheme == light) globalTheme = dark;
+		else globalTheme = light;
+	}
 }

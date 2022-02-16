@@ -1,4 +1,7 @@
+using System.Buffers;
 using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
+using SomeChartsUi.data;
 using SomeChartsUi.elements;
 using SomeChartsUi.themes.colors;
 using SomeChartsUi.ui.canvas;
@@ -48,7 +51,7 @@ public abstract partial class RenderableBase {
 	
 	/// <summary>clamp start and end positions to screen bounds</summary>
 	protected (float start, float end) GetStartEndPos(float2 startLim, float2 endLim, Orientation orientation) {
-		float2 vec = (orientation & Orientation.vertical) != 0 ? new(0, 1) : new(1, 0);// vertical : horizontal
+		float2 vec = GetOrientationVector(orientation);
 		return GetStartEndPos((startLim * vec).sum, (endLim * vec).sum, orientation);
 	}
 
@@ -66,7 +69,35 @@ public abstract partial class RenderableBase {
 	}
 
 	/// <summary>get preferred downsample for element</summary>
-	protected int GetDownsampleX(int downsampleMul, int sub = 2) => (int)math.max(math.log2(downsampleMul / canvas.transform.zoom.animatedValue.x), sub) - sub;
+	protected int GetDownsampleX(float downsampleMul, int sub = 2) => (int)math.max(math.log2(downsampleMul / canvas.transform.zoom.animatedValue.x), sub) - sub;
 	/// <summary>get preferred downsample for element</summary>
-	protected int GetDownsampleY(int downsampleMul, int sub = 2) => (int)math.max(math.log2(downsampleMul / canvas.transform.zoom.animatedValue.y), sub) - sub;
+	protected int GetDownsampleY(float downsampleMul, int sub = 2) => (int)math.max(math.log2(downsampleMul / canvas.transform.zoom.animatedValue.y), sub) - sub;
+	/// <summary>get preferred downsample for element</summary>
+	protected int GetDownsample(Orientation orientation, float downsampleMul, int sub = 2) => (orientation & Orientation.vertical) != 0 
+		? GetDownsampleY(downsampleMul, sub) 
+		: GetDownsampleX(downsampleMul, sub);
+
+	/// <summary>(0,1) for vertical and (1,0) for horizontal</summary>
+	protected static float2 GetOrientationVector(Orientation orientation) => (orientation & Orientation.vertical) != 0 ? new(0, 1) : new(1, 0);// vertical : horizontal
+
+	protected static T[] Rent<T>(int size) => ArrayPool<T>.Shared.Rent(size);
+	protected static unsafe T* RentMem<T>(int size) where T : unmanaged => (T*) NativeMemory.Alloc((nuint)((long)size * sizeof(T)));
+	
+	protected static void Free<T>(T[] arr) => ArrayPool<T>.Shared.Return(arr);
+	protected static unsafe void FreeMem<T>(T* arr) where T : unmanaged => NativeMemory.Free(arr);
+
+	public RenderableBase WithPosition(float2 v) {
+		((ChartPropertyValue<RenderableTransform>)transform).value.position = v;
+		return this;
+	}
+	
+	public RenderableBase WithScale(float2 v) {
+		((ChartPropertyValue<RenderableTransform>)transform).value.scale = v;
+		return this;
+	}
+	
+	public RenderableBase WithRotation(float v) {
+		((ChartPropertyValue<RenderableTransform>)transform).value.rotation = new(0,0,v);
+		return this;
+	}
 }

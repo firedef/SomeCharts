@@ -1,3 +1,4 @@
+using SomeChartsUi.themes.themes;
 using SomeChartsUi.ui.elements;
 using SomeChartsUi.utils.vectors;
 
@@ -94,16 +95,17 @@ public abstract class CanvasUiControllerBase : ChartCanvasControllerBase {
 	public override void OnUpdate(float deltatime) { }
 
 	public override void OnKey(keycode key, keymods mods) {
-		RenderableTransform tr = owner.GetLayer("normal")!.elements[0].transform.Get(owner.GetLayer("normal")!.elements[0]);
+		//RenderableTransform tr = owner.GetLayer("normal")!.elements[0].transform.Get(owner.GetLayer("normal")!.elements[0]);
 		
-		if (key == keycode.e) tr.rotation.z += .1f;
-		if (key == keycode.q) tr.rotation.z -= .1f;
+		//Rotate();
+		if (key == keycode.e) Rotate(.1f);
+		if (key == keycode.q) Rotate(-.1f);
 		
-		if (key == keycode.x) tr.rotation.x += .1f;
-		if (key == keycode.z) tr.rotation.x -= .1f;
-		
-		if (key == keycode.v) tr.rotation.y += .1f;
-		if (key == keycode.c) tr.rotation.y -= .1f;
+		//if (key == keycode.x) tr.rotation.x += .1f;
+		//if (key == keycode.z) tr.rotation.x -= .1f;
+		//
+		//if (key == keycode.v) tr.rotation.y += .1f;
+		//if (key == keycode.c) tr.rotation.y -= .1f;
 		// if (key == keycode.e) Rotate(.1f);
 		// if (key == keycode.q) Rotate(-.1f);
 		//
@@ -117,5 +119,7 @@ public abstract class CanvasUiControllerBase : ChartCanvasControllerBase {
 		if (key == keycode.s) Move(new(+000,-100));
 		if (key == keycode.d) Move(new(+100,+000));
 		if (key == keycode.a) Move(new(-100,+000));
+		
+		if (key == keycode.T) theme.CycleTheme();
 	}
 }
