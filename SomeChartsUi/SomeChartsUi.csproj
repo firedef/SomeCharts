@@ -25,10 +25,26 @@
       <Folder Include="src\elements\charts\radar" />
       <Folder Include="src\elements\charts\scatter" />
       <Folder Include="src\elements\ui" />
+      <Folder Include="src\utils\collections" />
     </ItemGroup>
 
     <ItemGroup>
       <PackageReference Include="System.ValueTuple" Version="4.5.0" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <None Update="src\utils\vectors\vectorGen.tt">
+        <Generator>TextTemplatingFileGenerator</Generator>
+        <LastGenOutput>vectorGen.cs</LastGenOutput>
+      </None>
+    </ItemGroup>
+
+    <ItemGroup>
+      <Compile Update="src\utils\vectors\vectorGen.cs">
+        <AutoGen>True</AutoGen>
+        <DesignTime>True</DesignTime>
+        <DependentUpon>vectorGen.tt</DependentUpon>
+      </Compile>
     </ItemGroup>
 
 </Project>
