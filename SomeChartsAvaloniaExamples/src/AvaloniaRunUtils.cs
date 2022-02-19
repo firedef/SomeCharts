@@ -1,9 +1,16 @@
 using System;
 using System.Threading.Tasks;
 using Avalonia;
+using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
+using Avalonia.OpenGL;
+using Avalonia.OpenGL.Angle;
+using Avalonia.OpenGL.Controls;
+using Avalonia.OpenGL.Egl;
 using Avalonia.Threading;
 using SomeChartsUiAvalonia.controls;
+using SomeChartsUiAvalonia.controls.gl;
+using SomeChartsUiAvalonia.controls.skia;
 
 namespace SomeChartsAvaloniaExamples; 
 
@@ -36,6 +43,12 @@ public static class AvaloniaRunUtils {
 		return canvas;
 	}
 	
+	public static AvaloniaGlChartsCanvas AddGlCanvas() {
+		AvaloniaGlChartsCanvas canvas = new();
+		App.mainWindow.Content = canvas;
+		return canvas;
+	}
+	
 	[STAThread]
 	private static void RunAvalonia(params string[] args) => BuildAvaloniaApp()
 	   .StartWithClassicDesktopLifetime(args);
@@ -43,6 +56,7 @@ public static class AvaloniaRunUtils {
 	private static AppBuilder BuildAvaloniaApp() =>
 		AppBuilder.Configure<App>()
 		          .UsePlatformDetect()
+		          .With(new X11PlatformOptions{UseDeferredRendering = false, UseEGL = false})
 		          .With(new SkiaOptions {MaxGpuResourceSizeBytes = 256_000_000})
 		          .LogToTrace();
 }

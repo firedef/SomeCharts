@@ -9,6 +9,8 @@ using SomeChartsUi.ui.elements;
 using SomeChartsUi.utils;
 using SomeChartsUi.utils.vectors;
 using SomeChartsUiAvalonia.controls;
+using SomeChartsUiAvalonia.controls.gl;
+using SomeChartsUiAvalonia.controls.skia;
 
 namespace SomeChartsAvaloniaExamples.elements; 
 
@@ -70,4 +72,11 @@ public static class ElementsExamples {
 		AvaloniaRunUtils.RunAvalonia();
 	}
 
+	public static void RunGl() {
+		AvaloniaRunUtils.RunAfterStart(() => {
+			AvaloniaGlChartsCanvas canvas = AvaloniaRunUtils.AddGlCanvas();
+		});
+		
+		AvaloniaRunUtils.RunAvalonia();
+	}
 }

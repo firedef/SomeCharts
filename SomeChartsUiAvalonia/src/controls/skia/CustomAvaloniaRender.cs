@@ -5,7 +5,7 @@ using SomeChartsUi.ui.canvas;
 using SomeChartsUi.ui.layers;
 using SomeChartsUiAvalonia.backends;
 
-namespace SomeChartsUiAvalonia.controls;
+namespace SomeChartsUiAvalonia.controls.skia;
 
 public class CustomAvaloniaRender : ICustomDrawOperation {
 	private readonly ChartsCanvas _owner;

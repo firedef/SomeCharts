@@ -3,14 +3,12 @@ using System.Threading;
 using Avalonia.Controls;
 using Avalonia.Input;
 using SkiaSharp;
-using SomeChartsUi.elements;
-using SomeChartsUi.elements.other;
 using SomeChartsUi.ui.canvas;
 using SomeChartsUi.ui.elements;
 using SomeChartsUi.utils.vectors;
 using SomeChartsUiAvalonia.backends;
 
-namespace SomeChartsUiAvalonia.controls;
+namespace SomeChartsUiAvalonia.controls.skia;
 
 public partial class AvaloniaChartsCanvas : Panel {
 	/// <summary>time of latest redraw</summary>

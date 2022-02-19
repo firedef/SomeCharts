@@ -1,16 +1,14 @@
-using System;
 using System.Diagnostics;
 using Avalonia;
 using Avalonia.Input;
 using Avalonia.Media;
-using Avalonia.Threading;
 using SomeChartsUi.themes.themes;
 using SomeChartsUi.ui;
 using SomeChartsUi.ui.canvas;
 using SomeChartsUi.utils.vectors;
 using SomeChartsUiAvalonia.utils;
 
-namespace SomeChartsUiAvalonia.controls;
+namespace SomeChartsUiAvalonia.controls.skia;
 
 public partial class AvaloniaChartsCanvas {
 	protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e) {

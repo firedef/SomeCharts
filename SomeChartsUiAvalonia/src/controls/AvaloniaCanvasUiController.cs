@@ -1,6 +1,7 @@
 using Avalonia.Input;
 using SomeChartsUi.ui.canvas;
 using SomeChartsUi.ui.canvas.controls;
+using SomeChartsUiAvalonia.controls.skia;
 
 namespace SomeChartsUiAvalonia.controls;
 
