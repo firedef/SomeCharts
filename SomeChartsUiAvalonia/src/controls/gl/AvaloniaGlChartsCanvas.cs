@@ -4,35 +4,168 @@ using System.Numerics;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Threading;
+using Avalonia;
+using Avalonia.Input;
 using Avalonia.OpenGL;
 using Avalonia.OpenGL.Controls;
 using Avalonia.OpenGL.Imaging;
 using Avalonia.Threading;
+using SomeChartsUi.themes.colors;
+using SomeChartsUi.themes.themes;
+using SomeChartsUi.ui;
+using SomeChartsUi.ui.canvas;
+using SomeChartsUi.ui.elements;
+using SomeChartsUi.ui.layers;
 using SomeChartsUi.utils;
+using SomeChartsUi.utils.mesh;
 using SomeChartsUi.utils.vectors;
+using SomeChartsUiAvalonia.backends;
+using SomeChartsUiAvalonia.utils;
+using SomeChartsUiAvalonia.utils.collections;
 using static Avalonia.OpenGL.GlConsts;
 
 namespace SomeChartsUiAvalonia.controls.gl;
 
-[StructLayout(LayoutKind.Sequential, Pack = 4)]
-public struct Vertex {
-	public float3 pos;
-
-	public Vertex(float3 pos) => this.pos = pos;
-}
-
 public class AvaloniaGlChartsCanvas : OpenGlControlBase {
-	//public static FieldInfo bitmapField = typeof(OpenGlControlBase).GetField("_bitmap", BindingFlags.NonPublic | BindingFlags.Instance)!;
-	//protected OpenGlBitmap? bitmap;
+	private GlExtrasInterface _glExtras;
+	private readonly ChartsCanvas canvas = CreateCanvas();
 	
-	public static Vertex[] points = {
-		new(new(0, 0, 0)),
-		new(new(50, 100, 0)),
-		new(new(100, 100, 0)),
-		new(new(100, 50, 50)),
-	};
+	/// <summary>pause redraw loop</summary>
+	public bool stopRender;
+	
+	/// <summary>name of current canvas</summary>
+	public string canvasName = "???";
+	
+	/// <summary>pointer (mouse) instance</summary>
+	public IPointer? pointer;
+	
+	public AvaloniaGlChartsCanvas() {
+		//_updateTimer = new(_ => Update(), null, 0, 10);
+		canvas.controller = new AvaloniaGlCanvasUiController(canvas, this);
+		Focusable = true;
+	}
+	
+	private static ChartsCanvas CreateCanvas() {
+		ChartsCanvas canvas = new(new GlChartsBackend());
+		canvas.AddLayer("bg");
+		canvas.AddLayer("normal");
+		canvas.AddLayer("top");
 
-	public static ushort[] indexes = {0, 1, 2, 0, 2, 3};
+		return canvas;
+	}
+	
+	/// <summary>add element to layer</summary>
+	public void AddElement(RenderableBase el, string layer = "normal") => (canvas.GetLayer(layer) ?? canvas.GetLayer(1)).AddElement(el);
+	/// <summary>remove element from layer</summary>
+	public void RemoveElement(RenderableBase el, string layer = "normal") => (canvas.GetLayer(layer) ?? canvas.GetLayer(1)).RemoveElement(el);
+
+
+	protected override void OnOpenGlInit(GlInterface gl, int fb) {
+		_glExtras = new(gl);
+		GlObject.gl = gl;
+		GlObject.glExtras = _glExtras;
+		GlShaders.glVersion = GlVersion;
+		GlShaderData.gl = gl;
+		GlChartsBackend.gl = gl;
+	}
+
+	protected override void OnOpenGlDeinit(GlInterface gl, int fb) {
+		// Unbind everything
+		gl.BindBuffer(GL_ARRAY_BUFFER, 0);
+		gl.BindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+		_glExtras.BindVertexArray(0);
+		gl.UseProgram(0);
+	}
+
+	protected override void OnOpenGlRender(GlInterface gl, int fb) {
+		gl.Enable(GL_DEPTH_TEST);
+		
+		gl.Enable(GL_MULTISAMPLE);
+		
+		gl.Viewport(0, 0, (int)Bounds.Width, (int)Bounds.Height);
+		
+		canvas.transform.screenBounds = Bounds.ch();
+		canvas.transform.Update();
+		canvas.GetLayer("bg")!.background = theme.default0_ind;
+
+		Stopwatch sw = Stopwatch.StartNew();
+		foreach (CanvasLayer layer in canvas.renderer!.layers)
+			layer.Render();
+		//context.Custom(new CustomAvaloniaRender(canvas, Bounds));
+		
+		Dispatcher.UIThread.Post(InvalidateVisual, DispatcherPriority.Render);
+		CheckError(gl, "end");
+		canvas.renderTime = sw.Elapsed;
+	}
+	
+	private static void CheckError(GlInterface gl, string part)
+	{
+		int err;
+		while ((err = gl.GetError()) != GL_NO_ERROR)
+			Console.WriteLine(part + ": " + err);
+	}
+	
+	protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e) {
+		stopRender = true;
+		base.OnDetachedFromVisualTree(e);
+	}
+	protected override void OnPointerPressed(PointerPressedEventArgs e) {
+		PointerPoint currentPoint = e.GetCurrentPoint(this);
+		PointerButtons buttons = currentPoint.Properties.GetEnum();
+		keymods mods = e.KeyModifiers.ch();
+
+		MouseState s = new(currentPoint.Position.ch(), float2.zero, buttons, mods);
+
+		canvas.controller?.OnMouseDown(s);
+	}
+	protected override void OnPointerMoved(PointerEventArgs e) {
+		PointerPoint currentPoint = e.GetCurrentPoint(this);
+		pointer = e.Pointer;
+		PointerButtons buttons = currentPoint.Properties.GetEnum();
+		keymods mods = e.KeyModifiers.ch();
+
+		MouseState s = new(currentPoint.Position.ch(), float2.zero, buttons, mods);
+
+		canvas.controller?.OnMouseMove(s);
+	}
+	protected override void OnPointerReleased(PointerReleasedEventArgs e) {
+		PointerPoint currentPoint = e.GetCurrentPoint(this);
+		PointerButtons buttons = currentPoint.Properties.GetEnum();
+		keymods mods = e.KeyModifiers.ch();
+
+		MouseState s = new(currentPoint.Position.ch(), float2.zero, buttons, mods);
+
+		canvas.controller?.OnMouseUp(s);
+	}
+	protected override void OnPointerWheelChanged(PointerWheelEventArgs e) {
+		PointerPoint currentPoint = e.GetCurrentPoint(this);
+		PointerButtons buttons = currentPoint.Properties.GetEnum();
+		keymods mods = e.KeyModifiers.ch();
+
+		MouseState s = new(currentPoint.Position.ch(), e.Delta.ch(), buttons, mods);
+
+		canvas.controller?.OnMouseScroll(s);
+	}
+	protected override void OnKeyUp(KeyEventArgs e) {
+		keymods mods = e.KeyModifiers.ch();
+
+		canvas.controller?.OnKey((keycode)e.Key, mods);
+	}
+
+	/*//public static FieldInfo bitmapField = typeof(OpenGlControlBase).GetField("_bitmap", BindingFlags.NonPublic | BindingFlags.Instance)!;
+	//protected OpenGlBitmap? bitmap;
+
+	//public Mesh mesh;
+	public GlObject obj;
+	
+	// public static Vertex[] points = {
+	// 	new(new(0, 0, 0)),
+	// 	new(new(50, 100, 0)),
+	// 	new(new(100, 100, 0)),
+	// 	new(new(100, 50, 50)),
+	// };
+	//
+	// public static ushort[] indexes = {0, 1, 2, 0, 2, 3};
 
 	private int _vertexBufferObject;
 	private int _indexBufferObject;
@@ -42,7 +175,24 @@ public class AvaloniaGlChartsCanvas : OpenGlControlBase {
 	private int _shaderProgram;
 	private GlExtrasInterface _glExtras;
 
+	protected void GenerateMesh(GlInterface gl) {
+		Vertex[] verts = {
+			new(new(000, 000, 0), new(0, 0), color.softRed),
+			new(new(000, 100, 0), new(0, 1), color.softPurple),
+			new(new(100, 100, 0), new(1, 1), color.softBlue),
+			new(new(100, 000, 0), new(1, 0), color.softRed)
+		};
+
+		ushort[] indexes = {0, 1, 2, 0, 2, 3};
+		
+		Mesh mesh = new(verts, indexes);
+		obj = new(gl, _glExtras, mesh);
+	}
+
 	protected override unsafe void OnOpenGlInit(GlInterface gl, int fb) {
+		Console.WriteLine("a");
+		GenerateMesh(gl);
+		Console.WriteLine("b");
 		_glExtras = new(gl);
 
 		_vertexShader = gl.CreateShader(GL_VERTEX_SHADER);
@@ -56,26 +206,39 @@ public class AvaloniaGlChartsCanvas : OpenGlControlBase {
 		gl.AttachShader(_shaderProgram, _fragmentShader);
 
 		const int posLoc = 0;
+		const int uvLoc = 1;
+		const int colLoc = 2;
 		gl.BindAttribLocationString(_shaderProgram, posLoc, "pos");
+		gl.BindAttribLocationString(_shaderProgram, uvLoc, "uv");
+		gl.BindAttribLocationString(_shaderProgram, colLoc, "col");
 		Console.WriteLine(gl.LinkProgramAndGetError(_shaderProgram));
+		CheckError(gl, "after shader");
 		
 		_vertexBufferObject = gl.GenBuffer();
 		gl.BindBuffer(GL_ARRAY_BUFFER, _vertexBufferObject);
 		int vertexSize = sizeof(Vertex);
-		fixed(Vertex* pointsPtr = points)
-			gl.BufferData(GL_ARRAY_BUFFER, (IntPtr)(points.Length * vertexSize), (IntPtr)pointsPtr, GL_DYNAMIC_DRAW);
+		
+		Vertex* pointsPtr = mesh.vertices.dataPtr;
+		gl.BufferData(GL_ARRAY_BUFFER, (IntPtr)(mesh.vertices.count * vertexSize), (IntPtr)pointsPtr, GL_DYNAMIC_DRAW);
+		Console.WriteLine(mesh.vertices.count);
 		
 		_indexBufferObject = gl.GenBuffer();
 		gl.BindBuffer(GL_ELEMENT_ARRAY_BUFFER, _indexBufferObject);
 		const int indexSize = sizeof(ushort);
-		fixed(ushort* indexesPtr = indexes)
-			gl.BufferData(GL_ELEMENT_ARRAY_BUFFER, (IntPtr)(indexes.Length * indexSize), (IntPtr)indexesPtr, GL_DYNAMIC_DRAW);
-
+		ushort* indexesPtr = mesh.indexes.dataPtr;
+		gl.BufferData(GL_ELEMENT_ARRAY_BUFFER, (IntPtr)(mesh.indexes.count * indexSize), (IntPtr)indexesPtr, GL_DYNAMIC_DRAW);
+		Console.WriteLine(mesh.indexes.count);
+		
 		_vertexArrayObject = _glExtras.GenVertexArray();
 		_glExtras.BindVertexArray(_vertexArrayObject);
 		
 		gl.VertexAttribPointer(posLoc, 3, GL_FLOAT, 0, vertexSize, IntPtr.Zero);
+		gl.VertexAttribPointer(uvLoc, 2, GL_FLOAT, 0, vertexSize, (IntPtr) (3 * sizeof(float)));
+		gl.VertexAttribPointer(colLoc, 4, GL_FLOAT, 0, vertexSize, (IntPtr) ((3 + 2) * sizeof(float)));
 		gl.EnableVertexAttribArray(posLoc);
+		gl.EnableVertexAttribArray(uvLoc);
+		gl.EnableVertexAttribArray(colLoc);
+		CheckError(gl, "after init");
 	}
 
 	protected override void OnOpenGlDeinit(GlInterface gl, int fb) {
@@ -98,20 +261,15 @@ public class AvaloniaGlChartsCanvas : OpenGlControlBase {
 		//bitmap ??= (OpenGlBitmap?) bitmapField.GetValue(this);
 		//bitmap.
 		//points = null;
-		points[0].pos.x = math.abs(MathF.Sin((float)DateTime.Now.TimeOfDay.TotalMilliseconds * .01f)) * 25;
-		int vertexSize = sizeof(Vertex);
-		fixed(Vertex* pointsPtr = points)
-			_glExtras.BufferSubData(GL_ARRAY_BUFFER, vertexSize * 0, vertexSize * 1, pointsPtr + 0);
-		//	gl.BufferData(GL_ARRAY_BUFFER, (IntPtr)(points.Length * vertexSize), (IntPtr)pointsPtr, GL_DYNAMIC_DRAW);
+		//points[0].pos.x = math.abs(MathF.Sin((float)DateTime.Now.TimeOfDay.TotalMilliseconds * .01f)) * 25;
+		//int vertexSize = sizeof(Vertex);
+		//fixed(Vertex* pointsPtr = points)
+		//	_glExtras.BufferSubData(GL_ARRAY_BUFFER, vertexSize * 0, vertexSize * 1, pointsPtr + 0);
 		
-		//gl.ClearColor(
-		//	math.abs(MathF.Sin((float) DateTime.Now.TimeOfDay.TotalMilliseconds * .001f)), 
-		//	math.abs(MathF.Sin((float) DateTime.Now.TimeOfDay.TotalMilliseconds * .005f)), 
-		//	math.abs(MathF.Sin((float) DateTime.Now.TimeOfDay.TotalMilliseconds * .0001f)),.1f);
+		//	gl.BufferData(GL_ARRAY_BUFFER, (IntPtr)(points.Length * vertexSize), (IntPtr)pointsPtr, GL_DYNAMIC_DRAW);
 		gl.ClearColor(.1f, .15f, .2f, 1f);
 		gl.Clear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		gl.Enable(GL_DEPTH_TEST);
-		
 		
 		gl.Enable(GL_MULTISAMPLE);
 		
@@ -140,7 +298,7 @@ public class AvaloniaGlChartsCanvas : OpenGlControlBase {
 		
 		CheckError(gl, "before render");
 		
-		gl.DrawElements(GL_TRIANGLES, indexes.Length, GL_UNSIGNED_SHORT, IntPtr.Zero);
+		gl.DrawElements(GL_TRIANGLES, mesh.indexes.count, GL_UNSIGNED_SHORT, IntPtr.Zero);
 		
 		Dispatcher.UIThread.Post(InvalidateVisual, DispatcherPriority.Render);
 		CheckError(gl, "end");
@@ -180,12 +338,15 @@ public class AvaloniaGlChartsCanvas : OpenGlControlBase {
 
 	private string vertexShaderSrc => GetShader(false, @"
 attribute vec3 pos;
+attribute vec2 uv;
+attribute vec4 col;
 uniform mat4 model;
 uniform mat4 projection;
 uniform mat4 view;
 
 varying vec3 fragPos;
-varying vec3 vecPos;
+varying vec2 fragUv;
+varying vec4 fragCol;
 
 void main() {
 	float scale = 1.0;
@@ -193,18 +354,20 @@ void main() {
 
 	gl_Position = projection * view * model * vec4(scaledPos, 1.0);
 	fragPos = vec3(model * vec4(pos,1.0));
-	vecPos = pos;
+	fragUv = uv;
+	fragCol = col;
 }");
 	
 	private string fragmentShaderSrc => GetShader(true, @"
 varying vec3 fragPos;
-varying vec3 vecPos;
+varying vec2 fragUv;
+varying vec4 fragCol;
 //DECLAREGLFRAG
 
 void main() {
-	gl_FragColor = vec4(sin(fragPos * .1) * .5 + .5,1.0);
+	gl_FragColor = fragCol;
 }
-");
+");*/
 }
 
 public class GlExtrasInterface : GlInterfaceBase<GlInterface.GlContextInfo>
@@ -212,7 +375,7 @@ public class GlExtrasInterface : GlInterfaceBase<GlInterface.GlContextInfo>
 	public delegate void GlDeleteVertexArrays(int count, int[] buffers);
 	public delegate void GlBindVertexArray(int array);
 	public delegate void GlGenVertexArrays(int n, int[] rv);
-	public unsafe delegate void GlBufferSubData(int trgt, int offset, int size, void* data);
+	public unsafe delegate void GlBufferSubData(int trgt, nint offset, nint size, void* data);
 	
 	public GlExtrasInterface(GlInterface gl) : base(gl.GetProcAddress, gl.ContextInfo) { }
             

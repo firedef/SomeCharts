@@ -98,33 +98,33 @@ public class CollectionTests {
 		for (int i = 0; i < 64; i++) l.Add(i);
 		l.ResetChanges();
 
-		Assert.IsFalse(l.GetCountChange(false));
+		Assert.IsFalse(l.GetCountChange());
 		List<Range> ch = l.GetChanges();
 		Assert.AreEqual(ch.Count, 0);
 
 		l[1] = 1;
-		Assert.IsFalse(l.GetCountChange(false));
+		Assert.IsFalse(l.GetCountChange());
 		ch = l.GetChanges();
 		Assert.AreEqual(ch.Count, 0);
 		
 		l[1] = 2;
-		Assert.IsFalse(l.GetCountChange(false));
+		Assert.IsFalse(l.GetCountChange());
 		ch = l.GetChanges();
 		Assert.AreEqual(ch.Count, 1);
 		Assert.AreEqual(ch[0], ..HashedList<int>.blockSize);
 		
-		Assert.IsFalse(l.GetCountChange(false));
+		Assert.IsFalse(l.GetCountChange());
 		ch = l.GetChanges();
 		Assert.AreEqual(ch.Count, 0);
 
 		for (int i = 0; i < 64; i++) l[i] = 64 - i;
-		Assert.IsFalse(l.GetCountChange(false));
+		Assert.IsFalse(l.GetCountChange());
 		ch = l.GetChanges();
 		Assert.AreEqual(ch.Count, 1);
 		Assert.AreEqual(ch[0], ..64);
 		
 		l.Add(1);
-		Assert.IsTrue(l.GetCountChange(false));
+		Assert.IsTrue(l.GetCountChange());
 		ch = l.GetChanges();
 		Assert.AreEqual(ch.Count, 1);
 		Assert.AreEqual(ch[0], ..65);
@@ -144,7 +144,7 @@ public class CollectionTests {
 			l[ind] = rnd.Next(c);
 		}
 		
-		Assert.IsFalse(l.GetCountChange(false));
+		Assert.IsFalse(l.GetCountChange());
 		
 		List<Range> ch = l.GetChanges();
 		foreach (Range r in ch) {

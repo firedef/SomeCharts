@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Avalonia;
 using Avalonia.Controls;
@@ -56,7 +57,6 @@ public static class AvaloniaRunUtils {
 	private static AppBuilder BuildAvaloniaApp() =>
 		AppBuilder.Configure<App>()
 		          .UsePlatformDetect()
-		          .With(new X11PlatformOptions{UseDeferredRendering = false, UseEGL = false})
-		          .With(new SkiaOptions {MaxGpuResourceSizeBytes = 256_000_000})
+		          .With(new X11PlatformOptions{UseDeferredRendering = false, GlProfiles = new List<GlVersion> {new(GlProfileType.OpenGL, 4, 0)}})
 		          .LogToTrace();
 }

@@ -15,6 +15,19 @@ using SomeChartsUiAvalonia.controls.skia;
 namespace SomeChartsAvaloniaExamples.elements; 
 
 public static class ElementsExamples {
+	public static void RunTest() {
+		AvaloniaRunUtils.RunAfterStart(() => {
+			AvaloniaGlChartsCanvas canvas = AvaloniaRunUtils.AddGlCanvas();
+
+			TestRenderable r = new();
+			canvas.AddElement(r);
+			r.GenerateMesh();
+			r.isDynamic = true;
+		});
+		
+		AvaloniaRunUtils.RunAvalonia();
+	}
+	
 	public static void RunRuler() {
 		AvaloniaRunUtils.RunAfterStart(() => {
 			AvaloniaChartsCanvas canvas = AvaloniaRunUtils.AddCanvas();

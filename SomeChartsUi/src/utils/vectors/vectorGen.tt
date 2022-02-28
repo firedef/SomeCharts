@@ -136,6 +136,20 @@ public struct <#=vecName#> {
     public static implicit operator <#= vecName #>(float v) => new(v);
     public static implicit operator <#= vecName #>(int v) => new(v);
 
+<#
+    for (int i = 1; i < aCount - 1; i++) {
+        string vecName2 = $"float{i + 1}";
+#>
+    public <#= vecName #>(<#= vecName2 #> a, <#=string.Join(", ", curAxis.Skip(i+1).Select(v => $"float {v}"))#>) {
+<#=string.Join("", curAxis.Take(i+1).Select(v => $"        {v} = a.{v};\n"))#>
+<#=string.Join("", curAxis.Skip(i+1).Select(v => $"        this.{v} = {v};\n"))#>    }
+
+    public static implicit operator <#= vecName2 #>(<#= vecName #> v) => v.<#=string.Join("", curAxis.Take(i+1).Select(v => $"{v}"))#>;
+    public static implicit operator <#= vecName #>(<#= vecName2 #> v) => new(<#=string.Join(", ", curAxis.Take(i+1).Select(v => $"v.{v}"))#><#= string.Concat(Enumerable.Repeat(", 0", aCount - i - 1)) #>);
+<#
+    }
+#>
+
 #endregion operators
 
 #region staticFunc

@@ -6,6 +6,10 @@ public class Mesh : IDisposable {
 	public readonly HashedList<Vertex> vertices;
 	public readonly HashedList<ushort> indexes;
 
+	public Mesh() : this(new HashedList<Vertex>(16), new(16)) {
+		
+	}
+
 	public Mesh(HashedList<Vertex> vertices, HashedList<ushort> indexes) {
 		this.vertices = vertices;
 		this.indexes = indexes;

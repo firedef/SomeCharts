@@ -1,5 +1,6 @@
 using SomeChartsUi.data;
 using SomeChartsUi.ui.canvas;
+using SomeChartsUi.utils.mesh;
 using SomeChartsUi.utils.vectors;
 
 namespace SomeChartsUi.ui.elements; 
@@ -9,6 +10,9 @@ public abstract partial class RenderableBase {
 	/// <summary>owner canvas</summary>
 	public ChartsCanvas canvas { get; private set; } = null!;
 
+	/// <summary>mesh to be rendered</summary>
+	public Mesh mesh { get; protected set; } = new();
+
 	/// <summary>transform (position, scale and rotation) of current element</summary>
 	public ChartProperty<RenderableTransform> transform = new RenderableTransform(float2.zero);
 	
@@ -17,7 +21,19 @@ public abstract partial class RenderableBase {
 	
 	public void Render(ChartsCanvas owner) {
 		canvas = owner;
-		Render();
+		if (CheckMeshForUpdate()) GenerateMesh();
+		DrawMesh();
+		AfterDraw();
 	}
-	protected abstract void Render();
+	//protected abstract void Render();
+
+	protected virtual bool CheckMeshForUpdate() => isDynamic;
+
+	public abstract void GenerateMesh();
+
+	protected virtual void AfterDraw() {}
+
+	protected virtual void Destroy() {
+		canvas.renderer.backend.DestroyObject(this);
+	}
 }

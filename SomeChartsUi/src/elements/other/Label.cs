@@ -19,8 +19,11 @@ public class Label : RenderableBase {
 	
 	public Label(string txt) : this(new ChartPropertyValue<string>(txt)) { }
 
-	protected override void Render() {
-		string text = txt.Get(this);
-		DrawText(text, float2.zero, color.GetColor(), font, textScale.Get(this));
+	public override void GenerateMesh() {
+		
 	}
+	// protected override void Render() {
+	// 	string text = txt.Get(this);
+	// 	DrawText(text, float2.zero, color.GetColor(), font, textScale.Get(this));
+	// }
 }

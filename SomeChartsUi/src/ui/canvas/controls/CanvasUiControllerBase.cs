@@ -29,6 +29,8 @@ public abstract class CanvasUiControllerBase : ChartCanvasControllerBase {
 		if ((state.modifiers & keymods.alt) != 0) speed = 4;
 
 		float2 mov = (pointerPos - _start) / owner.transform.zoom.currentValue * speed;
+		//mov.x /= owner.transform.screenBounds.width;
+		//mov.y /= owner.transform.screenBounds.height;
 		Move(mov);
 
 		_start = pointerPos;
@@ -71,7 +73,8 @@ public abstract class CanvasUiControllerBase : ChartCanvasControllerBase {
 		pointerPos.y += owner.transform.screenBounds.height;
 		SetZoom(newScale);
 		float2 posOffset = pointerPos * zoomAdd / newScale;
-		
+		//posOffset.x /= owner.transform.screenBounds.width;
+		//posOffset.y /= owner.transform.screenBounds.height;
 		Move(posOffset);
 
 		if (disableAnim) owner.transform.SetAnimToCurrent();

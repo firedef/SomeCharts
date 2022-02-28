@@ -18,11 +18,15 @@ public abstract partial class RenderableBase {
 
 	protected ChartCanvasRenderer renderer => canvas.renderer;
 	
-	protected unsafe void DrawVertices(float2* points, float2* uvs, color* colors, ushort* indexes, int vertexCount, int indexCount) => 
-		renderer.backend.DrawMesh(points, uvs, colors, indexes, vertexCount, indexCount, transform.Get(this));
-	
-	protected void DrawVertices(float2[] points, float2[]? uvs, color[]? colors, ushort[] indexes) => 
-		renderer.backend.DrawMesh(points, uvs, colors, indexes, transform.Get(this));
+	// protected unsafe void DrawVertices(float2* points, float2* uvs, color* colors, ushort* indexes, int vertexCount, int indexCount) => 
+	// 	renderer.backend.DrawMesh(points, uvs, colors, indexes, vertexCount, indexCount, transform.Get(this));
+	//
+	// protected void DrawVertices(float2[] points, float2[]? uvs, color[]? colors, ushort[] indexes) => 
+	// 	renderer.backend.DrawMesh(points, uvs, colors, indexes, transform.Get(this));
+
+	protected void DrawMesh() {
+		canvas.renderer.backend.DrawMesh(mesh, null, transform.Get(this));
+	}
 
 	protected void DrawText(string txt, float2 pos, color col, FontData font, float scale = 12) =>
 		renderer.backend.DrawText(txt, col, font, transform.Get(this) + new RenderableTransform(pos, scale, float3.zero));

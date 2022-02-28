@@ -6,7 +6,7 @@ using SomeChartsUi.utils.vectors;
 namespace SomeChartsUi.ui.elements; 
 
 public abstract partial class RenderableBase {
-	/// <summary>draws non-connected lines</summary>
+/*	/// <summary>draws non-connected lines</summary>
 	/// <param name="linePoints">first and second points of lines <br/>the length is 2 * lineCount</param>
 	/// <param name="lineColors">first and second point colors of lines <br/>the length is 2 * lineCount</param>
 	/// <param name="thickness">thickness of lines</param>
@@ -190,7 +190,7 @@ public abstract partial class RenderableBase {
 
 		DrawVertices(points, null, colors, indexes, vCount, iCount);
 	}
-
+*/
 	
 	/// <summary>draws text at specified positions</summary>
 	/// <param name="txt">texts</param>
