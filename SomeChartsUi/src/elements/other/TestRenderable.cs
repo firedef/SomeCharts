@@ -1,4 +1,5 @@
 using SomeChartsUi.themes.colors;
+using SomeChartsUi.ui.canvas;
 using SomeChartsUi.ui.elements;
 using SomeChartsUi.utils.mesh;
 using SomeChartsUi.utils.rects;
@@ -28,4 +29,5 @@ public class TestRenderable : RenderableBase {
 	// 	DrawVertices(points, null, colors, indexes);
 	// 	//Console.WriteLine("render");
 	// }
+	public TestRenderable(ChartsCanvas owner) : base(owner) { }
 }

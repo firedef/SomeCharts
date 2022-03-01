@@ -25,11 +25,11 @@ public abstract partial class RenderableBase {
 	// 	renderer.backend.DrawMesh(points, uvs, colors, indexes, transform.Get(this));
 
 	protected void DrawMesh() {
-		canvas.renderer.backend.DrawMesh(mesh, null, transform.Get(this));
+		canvas.renderer.backend.DrawMesh(mesh, null, transform);
 	}
 
 	protected void DrawText(string txt, float2 pos, color col, FontData font, float scale = 12) =>
-		renderer.backend.DrawText(txt, col, font, transform.Get(this) + new RenderableTransform(pos, scale, float3.zero));
+		renderer.backend.DrawText(txt, col, font, transform + new RenderableTransform(pos, scale, float3.zero));
 
 	/// <summary>rotate vector by 90 degrees and set length</summary>
 	protected static float2 Rot90DegFastWithLen(float2 p, float len) {
@@ -62,7 +62,7 @@ public abstract partial class RenderableBase {
 	/// <summary>clamp start and end positions to screen bounds</summary>
 	protected (float start, float end) GetStartEndPos(float startLim, float endLim, Orientation orientation) {
 		float2 s = 1/canvasZoom;
-		RenderableTransform tr = transform.Get(this);
+		RenderableTransform tr = transform;
 		if ((orientation & Orientation.vertical) != 0)
 			return (orientation & Orientation.reversed) != 0 
 				? (math.max(startLim, canvas.transform.worldBounds.top - tr.position.y), math.min(endLim, canvas.transform.worldBounds.bottom - tr.position.y)) 

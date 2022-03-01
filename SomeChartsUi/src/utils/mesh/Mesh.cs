@@ -39,7 +39,7 @@ public class Mesh : IDisposable {
 		vertices.Dispose();
 		indexes.Dispose();
 	}
-	public void Dispose() {
+	public virtual void Dispose() {
 		Dispose(true);
 		GC.SuppressFinalize(this);
 	}

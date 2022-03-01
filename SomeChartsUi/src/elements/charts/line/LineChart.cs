@@ -1,5 +1,6 @@
 using SomeChartsUi.data;
 using SomeChartsUi.themes.colors;
+using SomeChartsUi.ui.canvas;
 using SomeChartsUi.ui.elements;
 using SomeChartsUi.utils.vectors;
 
@@ -17,12 +18,12 @@ public class LineChart : RenderableBase, IDownsample {
 	public float downsampleMultiplier { get; set; } = .5f;
 	public float elementScale { get; set; } = 100;
 
-	public LineChart(IChartData<float> values, IChartData<indexedColor> colors) {
+	public LineChart(IChartData<float> values, IChartData<indexedColor> colors, ChartsCanvas c) : base(c) {
 		this.values = values;
 		this.colors = colors;
 	}
 	
-	public LineChart(IChartData<float> values, indexedColor color) : this(values, new ConstChartData<indexedColor>(color)) {}
+	public LineChart(IChartData<float> values, indexedColor color, ChartsCanvas c) : this(values, new ConstChartData<indexedColor>(color), c) {}
 
 	public override void GenerateMesh() {
 		

@@ -22,7 +22,7 @@ public class CanvasLayer {
 	public void Render() {
 		if (background != null) owner.renderer.backend.ClearScreen(background.Value.GetColor());
 		foreach (RenderableBase element in elements) {
-			element.Render(owner);
+			element.Render();
 		}
 	}
 }

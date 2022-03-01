@@ -1,11 +1,12 @@
 using System.Text;
 using SomeChartsUi.data;
+using SomeChartsUi.ui.canvas;
 using SomeChartsUi.ui.elements;
 
 namespace SomeChartsUi.elements.other; 
 
 public class DebugLabel : Label {
-	public DebugLabel() : base("") {
+	public DebugLabel(ChartsCanvas c) : base("", c) {
 		txt = new ChartPropertyFunc<string>(GetString);
 	}
 

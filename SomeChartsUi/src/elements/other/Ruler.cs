@@ -1,6 +1,7 @@
 using SomeChartsUi.data;
 using SomeChartsUi.themes.colors;
 using SomeChartsUi.themes.themes;
+using SomeChartsUi.ui.canvas;
 using SomeChartsUi.ui.elements;
 using SomeChartsUi.ui.text;
 using SomeChartsUi.utils;
@@ -74,4 +75,5 @@ public class Ruler : RenderableBase {
 	// 		}
 	// 	}
 	// }
+	public Ruler(ChartsCanvas owner) : base(owner) { }
 }

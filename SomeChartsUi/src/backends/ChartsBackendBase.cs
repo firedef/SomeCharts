@@ -29,5 +29,7 @@ public abstract class ChartsBackendBase {
 	
 	public abstract void DrawMesh(Mesh mesh, Shader? shader, RenderableTransform transform);
 
-	public abstract void DestroyObject(RenderableBase obj);
+	//public abstract void DestroyObject(RenderableBase obj);
+
+	public virtual Mesh CreateMesh() => new();
 }

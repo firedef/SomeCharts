@@ -8,19 +8,23 @@ namespace SomeChartsUi.ui.elements;
 /// <summary>base class of all canvas elements</summary>
 public abstract partial class RenderableBase {
 	/// <summary>owner canvas</summary>
-	public ChartsCanvas canvas { get; private set; } = null!;
+	public ChartsCanvas canvas { get; private set; }
 
 	/// <summary>mesh to be rendered</summary>
-	public Mesh mesh { get; protected set; } = new();
+	public Mesh? mesh { get; protected set; }
 
 	/// <summary>transform (position, scale and rotation) of current element</summary>
-	public ChartProperty<RenderableTransform> transform = new RenderableTransform(float2.zero);
+	public RenderableTransform transform = new(float2.zero);
 	
 	/// <summary>set to true if data updates frequently <br/>default is false <br/>affects on caching in some elements</summary>
 	public bool isDynamic = false;
-	
-	public void Render(ChartsCanvas owner) {
+
+	public RenderableBase(ChartsCanvas owner) {
 		canvas = owner;
+		mesh = canvas.renderer.backend.CreateMesh();
+	}
+	
+	public void Render() {
 		if (CheckMeshForUpdate()) GenerateMesh();
 		DrawMesh();
 		AfterDraw();
@@ -34,6 +38,7 @@ public abstract partial class RenderableBase {
 	protected virtual void AfterDraw() {}
 
 	protected virtual void Destroy() {
-		canvas.renderer.backend.DestroyObject(this);
+		mesh?.Dispose();
+		mesh = null;
 	}
 }

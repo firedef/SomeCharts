@@ -17,7 +17,7 @@ public partial class AvaloniaChartsCanvas : Panel {
 	/// <summary>redraw loop timer</summary>
 	// ReSharper disable once NotAccessedField.Local
 	private Timer? _updateTimer;
-	private readonly ChartsCanvas canvas = CreateCanvas();
+	public readonly ChartsCanvas canvas = CreateCanvas();
 	
 	/// <summary>name of current canvas</summary>
 	public string canvasName = "???";

@@ -1,4 +1,5 @@
 using SomeChartsUi.ui.elements;
+using SomeChartsUi.utils.vectors;
 
 namespace SomeChartsUi.data;
 
@@ -21,4 +22,28 @@ public class ChartPropertyFunc<T> : ChartProperty<T> {
 	public Func<RenderableBase, T> value;
 	public ChartPropertyFunc(Func<RenderableBase, T> value) => this.value = value;
 	public override T Get(RenderableBase owner) => value(owner);
+}
+
+public static class ChartPropertyExtensions {
+	public static float2 Position(this ChartProperty<RenderableTransform> v, RenderableBase o) => v.Get(o).position;
+	public static float3 Rotation(this ChartProperty<RenderableTransform> v, RenderableBase o) => v.Get(o).rotation;
+	public static float2 Scale(this ChartProperty<RenderableTransform> v, RenderableBase o) => v.Get(o).scale;
+
+	public static bool TrySetPosition(this ChartProperty<RenderableTransform> v, float2 p) {
+		if (v is not ChartPropertyValue<RenderableTransform> a) return false;
+		a.value.position = p;
+		return true;
+	}
+	
+	public static bool TrySetRotation(this ChartProperty<RenderableTransform> v, float3 r) {
+		if (v is not ChartPropertyValue<RenderableTransform> a) return false;
+		a.value.rotation = r;
+		return true;
+	}
+	
+	public static bool TrySetScale(this ChartProperty<RenderableTransform> v, float2 s) {
+		if (v is not ChartPropertyValue<RenderableTransform> a) return false;
+		a.value.scale = s;
+		return true;
+	}
 }

@@ -38,28 +38,25 @@ public class GlChartsBackend : ChartsBackendBase {
 		gl.Clear(GlConsts.GL_COLOR_BUFFER_BIT | GlConsts.GL_DEPTH_BUFFER_BIT);
 	}
 
-	//TODO: fix camera position
 	public override void DrawMesh(Mesh mesh, Shader? shader, RenderableTransform transform) {
-		GlObject.gl = gl;
-		GlObject obj = GlObject.Get(mesh);
+		if (mesh is not GlMesh obj) throw new NotImplementedException("opengl backend support only GlMesh mesh type; use CreateMesh() in ChartsBackendBase");
 		
-		Matrix4x4 projection = Matrix4x4.CreatePerspectiveFieldOfView(100 / 180f * MathF.PI, (owner.transform.screenBounds.width / owner.transform.screenBounds.height), .001f, 10000f);
+		GlMesh.gl = gl;
 
 		float z = 1 / owner.transform.zoom.animatedValue.x;
-		// float z = 1/transform.scale.x;
+		Matrix4x4 projection = Matrix4x4.CreateOrthographic(owner.transform.screenBounds.width*z, owner.transform.screenBounds.height*z, .001f, 10000);
+		// Matrix4x4 projection = Matrix4x4.CreatePerspectiveFieldOfView(100 / 180f * MathF.PI, (owner.transform.screenBounds.width / owner.transform.screenBounds.height), .001f, 10000f);
+
 
 		float3 camPos = owner.transform.position.animatedValue;
-		//camPos /= new float3(owner.transform.screenBounds.widthHeight,1);
+		//Console.WriteLine(camPos);
 		Matrix4x4 view = Matrix4x4.CreateLookAt(new(camPos.x, -camPos.y, z), new(camPos.x,-camPos.y,0), new(0, 1, 0));
 
-		// float p = MathF.Sin((float)DateTime.Now.TimeOfDay.TotalMilliseconds * .003f) * 20;
 		float3 p = transform.position;
-		//p *= 2;
 		Matrix4x4 model = Matrix4x4.CreateTranslation(new(p.x, -p.y, p.z));
 
 		obj.Render(shader, model, view, projection);
 	}
-	public override void DestroyObject(RenderableBase obj) {
-		GlObject.Remove(obj.mesh);
-	}
+
+	public override Mesh CreateMesh() => new GlMesh();
 }

@@ -89,9 +89,6 @@ public class SkiaChartsBackend : ChartsBackendBase, IDisposable {
 	public override void DrawMesh(Mesh mesh, Shader? shader, RenderableTransform transform) {
 		throw new NotImplementedException();
 	}
-	public override void DestroyObject(RenderableBase obj) {
-		
-	}
 	// public override void DrawRect(rect rectangle, color color) {
 	// 	_paint!.Color = color.sk();
 	// 	_canvas!.Save();

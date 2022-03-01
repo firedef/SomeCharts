@@ -1,6 +1,7 @@
 using SomeChartsUi.data;
 using SomeChartsUi.themes.colors;
 using SomeChartsUi.themes.themes;
+using SomeChartsUi.ui.canvas;
 using SomeChartsUi.ui.elements;
 using SomeChartsUi.ui.text;
 using SomeChartsUi.utils.vectors;
@@ -13,11 +14,11 @@ public class Label : RenderableBase {
 	public ChartProperty<string> txt;
 	public indexedColor color = theme.default8_ind;
 
-	public Label(ChartProperty<string> txt) {
+	public Label(ChartProperty<string> txt, ChartsCanvas c) : base(c) {
 		this.txt = txt;
 	}
 	
-	public Label(string txt) : this(new ChartPropertyValue<string>(txt)) { }
+	public Label(string txt, ChartsCanvas c) : this(new ChartPropertyValue<string>(txt), c) { }
 
 	public override void GenerateMesh() {
 		

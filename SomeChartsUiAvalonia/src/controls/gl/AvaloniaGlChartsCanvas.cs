@@ -28,7 +28,7 @@ namespace SomeChartsUiAvalonia.controls.gl;
 
 public class AvaloniaGlChartsCanvas : OpenGlControlBase {
 	private GlExtrasInterface _glExtras;
-	private readonly ChartsCanvas canvas = CreateCanvas();
+	public readonly ChartsCanvas canvas = CreateCanvas();
 	
 	/// <summary>pause redraw loop</summary>
 	public bool stopRender;
@@ -62,8 +62,8 @@ public class AvaloniaGlChartsCanvas : OpenGlControlBase {
 
 	protected override void OnOpenGlInit(GlInterface gl, int fb) {
 		_glExtras = new(gl);
-		GlObject.gl = gl;
-		GlObject.glExtras = _glExtras;
+		GlMesh.gl = gl;
+		GlMesh.glExtras = _glExtras;
 		GlShaders.glVersion = GlVersion;
 		GlShaderData.gl = gl;
 		GlChartsBackend.gl = gl;

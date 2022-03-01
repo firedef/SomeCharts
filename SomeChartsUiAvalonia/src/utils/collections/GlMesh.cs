@@ -8,27 +8,22 @@ using SomeChartsUiAvalonia.controls.gl;
 using static Avalonia.OpenGL.GlConsts;
 namespace SomeChartsUiAvalonia.utils.collections; 
 
-public class GlObject : IDisposable {
-	public static GlInterface gl;
-	public static GlExtrasInterface glExtras;
+public class GlMesh : Mesh {
+	public static GlInterface? gl;
+	public static GlExtrasInterface? glExtras;
 
-	public static Dictionary<Mesh, GlObject> objects = new();
+	//public static Dictionary<Mesh, GlMesh> objects = new();
 
-	public readonly Mesh mesh;
+	//public readonly Mesh mesh;
 	public int vertexBufferObject = 0;
 	public int indexBufferObject = 0;
 	public int vertexArrayObject = 0;
 
 	public bool isDynamic;
 
-	public GlObject(Mesh mesh) {
-		this.mesh = mesh;
-		objects.Add(mesh, this);
-		
-		GenBuffers();
-	}
-
 	protected unsafe void GenBuffers() {
+		if (gl == null || glExtras == null) return;
+		
 		int[] buffers = new int[2];
 		gl.GenBuffers(2, buffers);
 		vertexBufferObject = buffers[0];
@@ -53,7 +48,6 @@ public class GlObject : IDisposable {
 	protected void BindBuffers() {
 		gl.BindBuffer(GL_ARRAY_BUFFER, vertexBufferObject);
 		gl.BindBuffer(GL_ELEMENT_ARRAY_BUFFER, indexBufferObject);
-		//gl.BindBuffer(GL_VERTEX_ARRAY, vertexArrayObject);
 		glExtras.BindVertexArray(vertexArrayObject);
 	}
 
@@ -62,35 +56,38 @@ public class GlObject : IDisposable {
 		const int iSize = sizeof(ushort);
 		
 		// vertices
-		bool sizeChanged = isDynamic ? mesh.vertices.GetCapacityChange() : mesh.vertices.GetCountChange();
+		bool sizeChanged = isDynamic ? vertices.GetCapacityChange() : vertices.GetCountChange();
 		gl.BindBuffer(GL_ARRAY_BUFFER, vertexBufferObject);
 		if (sizeChanged) {
-			int c = isDynamic ? mesh.vertices.capacity : mesh.vertices.count;
-			gl.BufferData(GL_ARRAY_BUFFER, (IntPtr)(c * vSize), (IntPtr)mesh.vertices.dataPtr, GL_DYNAMIC_DRAW);
-			mesh.vertices.ResetChanges();
+			int c = isDynamic ? vertices.capacity : vertices.count;
+			gl.BufferData(GL_ARRAY_BUFFER, (IntPtr)(c * vSize), (IntPtr)vertices.dataPtr, GL_DYNAMIC_DRAW);
+			vertices.ResetChanges();
 		}
 		else {
-			List<Range> changes = mesh.vertices.GetChanges();
+			List<Range> changes = vertices.GetChanges();
 			foreach (Range r in changes)
-				glExtras.BufferSubData(GL_ARRAY_BUFFER, r.Start.Value * vSize, (r.End.Value - r.Start.Value) * vSize, mesh.vertices.dataPtr);
+				glExtras.BufferSubData(GL_ARRAY_BUFFER, r.Start.Value * vSize, (r.End.Value - r.Start.Value) * vSize, vertices.dataPtr);
 		}
 		
 		// indexes
-		sizeChanged = isDynamic ? mesh.indexes.GetCapacityChange() : mesh.indexes.GetCountChange();
+		sizeChanged = isDynamic ? indexes.GetCapacityChange() : indexes.GetCountChange();
 		gl.BindBuffer(GL_ELEMENT_ARRAY_BUFFER, indexBufferObject);
 		if (sizeChanged) {
-			int c = isDynamic ? mesh.indexes.capacity : mesh.indexes.count;
-			gl.BufferData(GL_ELEMENT_ARRAY_BUFFER, (IntPtr)(c * iSize), (IntPtr)mesh.indexes.dataPtr, GL_DYNAMIC_DRAW);
-			mesh.indexes.ResetChanges();
+			int c = isDynamic ? indexes.capacity : indexes.count;
+			gl.BufferData(GL_ELEMENT_ARRAY_BUFFER, (IntPtr)(c * iSize), (IntPtr)indexes.dataPtr, GL_DYNAMIC_DRAW);
+			indexes.ResetChanges();
 		}
 		else {
-			List<Range> changes = mesh.indexes.GetChanges();
+			List<Range> changes = indexes.GetChanges();
 			foreach (Range r in changes)
-				glExtras.BufferSubData(GL_ELEMENT_ARRAY_BUFFER, r.Start.Value * iSize, (r.End.Value - r.Start.Value) * iSize, mesh.indexes.dataPtr);
+				glExtras.BufferSubData(GL_ELEMENT_ARRAY_BUFFER, r.Start.Value * iSize, (r.End.Value - r.Start.Value) * iSize, indexes.dataPtr);
 		}
 	}
 
 	public unsafe void Render(Shader? shader, Matrix4x4 model, Matrix4x4 view, Matrix4x4 projection) {
+		if (vertexArrayObject == 0) GenBuffers();
+		if (vertexArrayObject == 0) return;
+		
 		UpdateBuffers();
 		GlShaderData shaderData = shader == null ? GlShaders.basicShader : GlShaders.Get(shader);
 		if (shaderData.shaderProgram == 0) shaderData.TryCompile();
@@ -106,25 +103,25 @@ public class GlObject : IDisposable {
 		gl.UniformMatrix4fv(viewLoc, 1, false, &view);
 		gl.UniformMatrix4fv(projectionLoc, 1, false, &projection);
 		BindBuffers();
-		gl.DrawElements(GL_TRIANGLES, mesh.indexes.count, GL_UNSIGNED_SHORT, IntPtr.Zero);
+		gl.DrawElements(GL_TRIANGLES, indexes.count, GL_UNSIGNED_SHORT, IntPtr.Zero);
 	}
 
-	public void Dispose() {
-		if (vertexBufferObject != 0) gl.DeleteBuffers(1, new[] {vertexBufferObject});
-		if (indexBufferObject != 0) gl.DeleteBuffers(1, new[] {indexBufferObject});
-		glExtras.DeleteVertexArrays(1, new[] { vertexArrayObject });
+	public override void Dispose() {
+		if (vertexBufferObject != 0) {
+			gl.DeleteBuffers(2, new[] {vertexBufferObject, indexBufferObject});
+			glExtras.DeleteVertexArrays(1, new[] {vertexArrayObject});
+		}
 
-		vertexBufferObject = 0;
-		indexBufferObject = 0;
+		vertexBufferObject = vertexArrayObject = indexBufferObject = 0;
 		gl.BindBuffer(GL_ARRAY_BUFFER, 0);
 		gl.BindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 		
-		mesh.Dispose();
+		base.Dispose();
 	}
 
-	public static GlObject Get(Mesh mesh) => objects.TryGetValue(mesh, out GlObject? existing) ? existing : new(mesh);
+	//public static GlMesh Get(Mesh mesh) => objects.TryGetValue(mesh, out GlMesh? existing) ? existing : new(mesh);
 
-	public static void Remove(Mesh mesh) {
-		objects.Remove(mesh);
-	}
+	// public static void Remove(Mesh mesh) {
+	// 	objects.Remove(mesh);
+	// }
 }

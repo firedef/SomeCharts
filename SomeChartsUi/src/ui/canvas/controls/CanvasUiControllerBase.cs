@@ -1,3 +1,4 @@
+using SomeChartsUi.data;
 using SomeChartsUi.themes.themes;
 using SomeChartsUi.ui.elements;
 using SomeChartsUi.utils.vectors;
@@ -19,22 +20,25 @@ public abstract class CanvasUiControllerBase : ChartCanvasControllerBase {
 	protected abstract bool IsCaptured();
 	protected abstract void SetCursor(string name);
 
+	protected virtual float2 ScreenToWorld(float2 pos) => (pos - new float2(owner.transform.screenBounds.midX, -owner.transform.screenBounds.midY)) / owner.transform.zoom.currentValue + owner.transform.position;
+
 	//TODO: add rotation support
 	public override void OnMouseMove(MouseState state) {
 		float2 pointerPos = state.pos;
 		pointerPos.FlipY();
+
+		owner.GetLayer("normal")!.elements[1].transform.position = ScreenToWorld(pointerPos);
 		if (!IsCaptured()) return;
 
 		float speed = 1;
 		if ((state.modifiers & keymods.alt) != 0) speed = 4;
 
-		float2 mov = (pointerPos - _start) / owner.transform.zoom.currentValue * speed;
-		//mov.x /= owner.transform.screenBounds.width;
-		//mov.y /= owner.transform.screenBounds.height;
+		float2 mov = (pointerPos - _start) / owner.transform.zoom.currentValue * -speed;
 		Move(mov);
-
 		_start = pointerPos;
 		_origin += mov;
+
+		//owner.GetLayer("normal")!.elements[0].transform.TrySetPosition(ScreenToWorld(pointerPos));
 	}
 	public override void OnMouseDown(MouseState state) {
 		float2 pointerPos = state.pos;
@@ -72,28 +76,28 @@ public abstract class CanvasUiControllerBase : ChartCanvasControllerBase {
 		
 		pointerPos.y += owner.transform.screenBounds.height;
 		SetZoom(newScale);
-		float2 posOffset = pointerPos * zoomAdd / newScale;
+		float2 posOffset = (pointerPos - new float2(owner.transform.screenBounds.midX, owner.transform.screenBounds.midY)) * zoomAdd / newScale;
 		//posOffset.x /= owner.transform.screenBounds.width;
 		//posOffset.y /= owner.transform.screenBounds.height;
-		Move(posOffset);
+		Move(-posOffset);
 
 		if (disableAnim) owner.transform.SetAnimToCurrent();
 	}
 
-	protected float2 ScreenToWorld(float2 screen) {
-		float2 zoom = owner.transform.zoom.currentValue;
-		float2 pos = owner.transform.position.currentValue;
-		screen -= pos;
-		screen /= zoom;
-		return screen;
-	}
-	
-	protected float2 ScreenToWorldFixedPos(float2 screen) {
-		float2 zoom = owner.transform.zoom.currentValue;
-		float2 pos = owner.transform.position.currentValue;
-		screen /= zoom;
-		return screen;
-	}
+	// protected float2 ScreenToWorld(float2 screen) {
+	// 	float2 zoom = owner.transform.zoom.currentValue;
+	// 	float2 pos = owner.transform.position.currentValue;
+	// 	screen -= pos;
+	// 	screen /= zoom;
+	// 	return screen;
+	// }
+	//
+	// protected float2 ScreenToWorldFixedPos(float2 screen) {
+	// 	float2 zoom = owner.transform.zoom.currentValue;
+	// 	float2 pos = owner.transform.position.currentValue;
+	// 	screen /= zoom;
+	// 	return screen;
+	// }
 
 	public override void OnUpdate(float deltatime) { }
 

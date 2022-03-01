@@ -19,7 +19,13 @@ public static class ElementsExamples {
 		AvaloniaRunUtils.RunAfterStart(() => {
 			AvaloniaGlChartsCanvas canvas = AvaloniaRunUtils.AddGlCanvas();
 
-			TestRenderable r = new();
+			TestRenderable r = new(canvas.canvas);
+			canvas.AddElement(r);
+			r.GenerateMesh();
+			r.isDynamic = true;
+			
+			r = new(canvas.canvas);
+			r.transform = new(new(220, 220), float2.one, 0);
 			canvas.AddElement(r);
 			r.GenerateMesh();
 			r.isDynamic = true;
@@ -31,14 +37,14 @@ public static class ElementsExamples {
 	public static void RunRuler() {
 		AvaloniaRunUtils.RunAfterStart(() => {
 			AvaloniaChartsCanvas canvas = AvaloniaRunUtils.AddCanvas();
-			canvas.AddElement(new Ruler {
+			canvas.AddElement(new Ruler(canvas.canvas)  {
 				orientation = Orientation.vertical, 
 				names = new FuncChartManagedData<string>(i => i.ToString(), -1), 
 				stickRange = new(0, 0, 10_000, 0),
 				length = 1_000,
 				lineLength = 10_000,
 			});
-			canvas.AddElement(new Ruler {
+			canvas.AddElement(new Ruler(canvas.canvas)  {
 				orientation = Orientation.horizontal, 
 				names = new FuncChartManagedData<string>(i => i.ToString(), -1), 
 				stickRange = new(0, 0, 0, 10_000),
@@ -50,7 +56,7 @@ public static class ElementsExamples {
 				float2 screenSize = canvas.screenSize;
 				return new(screenSize- new float2(200,100), 1, float3.zero, TransformType.screenSpace);
 			};
-			canvas.AddElement(new DebugLabel() {textScale = 16, transform = trFunc}, "top");
+			canvas.AddElement(new DebugLabel(canvas.canvas) {textScale = 16/*, transform = trFunc*/}, "top");
 		});
 		
 		AvaloniaRunUtils.RunAvalonia();
@@ -61,7 +67,7 @@ public static class ElementsExamples {
 			AvaloniaChartsCanvas canvas = AvaloniaRunUtils.AddCanvas();
 			const int rulerOffset = 1_000_000;
 
-			canvas.AddElement(new Ruler {
+			canvas.AddElement(new Ruler(canvas.canvas) {
 				drawLabels = true,
 				orientation = Orientation.horizontal,
 				length = rulerOffset,
@@ -69,7 +75,7 @@ public static class ElementsExamples {
 				stickRange = new(0, 0, 0, rulerOffset),
 			});
 			
-			canvas.AddElement(new Ruler {
+			canvas.AddElement(new Ruler(canvas.canvas) {
 				drawLabels = true,
 				orientation = Orientation.vertical,
 				length = rulerOffset,
@@ -79,7 +85,7 @@ public static class ElementsExamples {
 			
 			IChartData<float> data = new FuncChartData<float>(i => MathF.Sin(i * .1f) * 1000, 2048);
 			IChartData<indexedColor> colors = new ConstChartData<indexedColor>(new(theme.good_ind));
-			canvas.AddElement(new LineChart(data, colors));
+			canvas.AddElement(new LineChart(data, colors, canvas.canvas));
 		});
 		
 		AvaloniaRunUtils.RunAvalonia();
