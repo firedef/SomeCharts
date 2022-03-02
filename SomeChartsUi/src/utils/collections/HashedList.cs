@@ -19,16 +19,44 @@ public class HashedList<T> : NativeList<T> where T : unmanaged {
 		ResetChanges();
 	}
 
-	protected int ComputeHash(int blockIndex) {
-		int hash = 0;
+	protected unsafe int ComputeHash(int blockIndex) {
 		int iterCount = math.min(blockSize, count - blockIndex * blockSize);
+		byte* start = (byte*) (dataPtr + blockIndex * blockSize);
 
-		int startIndex = blockIndex * blockSize;
-		for (int i = 0; i < iterCount; i++) {
-			int elementHash = this[i + startIndex].GetHashCode();
-			hash = HashCode.Combine(hash, elementHash, i + startIndex);
+		return (int)HashBytes(start, iterCount * sizeof(T), (uint) blockIndex);
+	}
+
+	private static uint Murmur32Scramble(uint k) {
+		k *= 0xcc9e2d51;
+		k = (k << 15) | (k >> 17);
+		k *= 0x1b873593;
+		return k;
+	}
+
+	/// <summary>murmur 32 hash</summary>
+	protected static unsafe uint HashBytes(byte* start, int c, uint hash = 0) {
+		uint* hashEnd = (uint*) (start + (c & -4));
+		for (uint* s = (uint*) start; s < hashEnd; s++) {
+			hash ^= Murmur32Scramble(*s);
+			hash = (hash << 13) | (hash >> 19);
+			hash = hash * 5 + 0xe6546b64;
+		}
+		
+		uint key = 0;
+		start = (byte*)hashEnd;
+		byte* end = start + (c & 4);
+		for (; start < end; start++) {
+			key <<= 8;
+			key |= *start;
 		}
 
+		hash ^= Murmur32Scramble(key);
+		hash ^= (uint) c;
+		hash ^= hash >> 16;
+		hash *= 0x85ebca6b;
+		hash ^= hash >> 13;
+		hash *= 0xc2b2ae35;
+		hash ^= hash >> 16;
 		return hash;
 	}
 
