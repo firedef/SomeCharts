@@ -12,10 +12,10 @@ public class TestRenderable : RenderableBase {
 		const float s = 100; 
 		rect r = new(-s, -s, s*2, s*2);
 		Vertex[] vertices = {
-			new(r.leftBottom,		new(0, 0), color.red),
-			new(r.leftTop,		new(0, 1), color.softRed),
-			new(r.rightTop,		new(1, 1), color.blue),
-			new(r.rightBottom,	new(1, 0), color.softBlue),
+			new(r.leftBottom,		float3.front,	new(0, 0), color.red),
+			new(r.leftTop,		float3.front,	new(0, 1), color.softRed),
+			new(r.rightTop,		float3.front,	new(1, 1), color.blue),
+			new(r.rightBottom,	float3.front,	new(1, 0), color.softBlue),
 		};
 		ushort[] indexes = {0, 1, 2, 0, 2, 3};
 		mesh!.SetVertices(vertices);

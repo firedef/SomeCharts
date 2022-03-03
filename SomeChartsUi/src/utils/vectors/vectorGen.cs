@@ -13,6 +13,11 @@ public struct float2 {
     public static readonly float2 one = new(1);
     public static readonly float2 maxValue = new(float.MaxValue);
     public static readonly float2 minValue = new(float.MinValue);
+    public static readonly float2 up = new(0,1);
+    public static readonly float2 down = new(0,-1);
+    public static readonly float2 right = new(1,0);
+    public static readonly float2 left = new(-1,0);
+
 
 #endregion staticFields
 
@@ -55,7 +60,7 @@ public struct float2 {
 
 #region constructors
     
-    public float2(float x, float y) {
+    public float2(float x = 0, float y = 0) {
         this.x = x;
         this.y = y;
     }
@@ -160,7 +165,7 @@ public struct float2 {
 #region other
 
     public static float2 SinCos(float radians, float length) => new(MathF.Sin(radians) * length, MathF.Cos(radians) * length);
-
+    public static float Dot(float2 a, float2 b) => a.x * b.x + a.y * b.y;
 
 #endregion other
 }
@@ -171,6 +176,13 @@ public struct float3 {
     public static readonly float3 one = new(1);
     public static readonly float3 maxValue = new(float.MaxValue);
     public static readonly float3 minValue = new(float.MinValue);
+    public static readonly float3 up = new(0,1);
+    public static readonly float3 down = new(0,-1);
+    public static readonly float3 right = new(1,0);
+    public static readonly float3 left = new(-1,0);
+
+    public static readonly float3 front = new(0,0,1);
+    public static readonly float3 back = new(0,0,-1);
 
 #endregion staticFields
 
@@ -304,7 +316,7 @@ public struct float3 {
 
 #region constructors
     
-    public float3(float x, float y, float z) {
+    public float3(float x = 0, float y = 0, float z = 0) {
         this.x = x;
         this.y = y;
         this.z = z;
@@ -422,6 +434,8 @@ public struct float3 {
     public static implicit operator float3(color v) => new(v.rF, v.gF, v.bF);
     public static implicit operator color(float3 v) => new(v.x, v.y, v.z);
 
+    public static float3 Cross(float3 a, float3 b) => new(a.y * b.z - a.z * b.y, a.z * b.x - a.x * b.z, a.x * b.y - a.y * b.x);
+    public static float Dot(float3 a, float3 b) => a.x * b.x + a.y * b.y + a.z * b.z;
 
 #endregion other
 }
@@ -432,6 +446,13 @@ public struct float4 {
     public static readonly float4 one = new(1);
     public static readonly float4 maxValue = new(float.MaxValue);
     public static readonly float4 minValue = new(float.MinValue);
+    public static readonly float4 up = new(0,1);
+    public static readonly float4 down = new(0,-1);
+    public static readonly float4 right = new(1,0);
+    public static readonly float4 left = new(-1,0);
+
+    public static readonly float4 front = new(0,0,1);
+    public static readonly float4 back = new(0,0,-1);
 
 #endregion staticFields
 
@@ -786,7 +807,7 @@ public struct float4 {
 
 #region constructors
     
-    public float4(float x, float y, float z, float w) {
+    public float4(float x = 0, float y = 0, float z = 0, float w = 0) {
         this.x = x;
         this.y = y;
         this.z = z;
@@ -916,7 +937,7 @@ public struct float4 {
 
     public static implicit operator float4(color v) => new(v.rF, v.gF, v.bF, v.aF);
     public static implicit operator color(float4 v) => new(v.x, v.y, v.z, v.w);
-
+    public static float Dot(float4 a, float4 b) => a.x * b.x + a.y * b.y + a.z * b.z + a.w * b.w;
 
 #endregion other
 }

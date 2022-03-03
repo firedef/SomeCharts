@@ -30,6 +30,19 @@ public struct <#=vecName#> {
     public static readonly <#=vecName#> one = new(1);
     public static readonly <#=vecName#> maxValue = new(float.MaxValue);
     public static readonly <#=vecName#> minValue = new(float.MinValue);
+    public static readonly <#=vecName#> up = new(0,1);
+    public static readonly <#=vecName#> down = new(0,-1);
+    public static readonly <#=vecName#> right = new(1,0);
+    public static readonly <#=vecName#> left = new(-1,0);
+
+<#
+    if (aCount > 2) {
+#>
+    public static readonly <#=vecName#> front = new(0,0,1);
+    public static readonly <#=vecName#> back = new(0,0,-1);
+<#
+    }
+#>
 
 #endregion staticFields
 
@@ -69,7 +82,7 @@ public struct <#=vecName#> {
 
 #region constructors
     
-    public <#=vecName#>(<#=string.Join(", ", axisNames.Take(aCount).Select(v => $"float {v}"))#>) {
+    public <#=vecName#>(<#=string.Join(", ", axisNames.Take(aCount).Select(v => $"float {v} = 0"))#>) {
         <#=string.Join("\n        ", axisNames.Take(aCount).Select(v => $"this.{v} = {v};"))#>
     }
     public <#=vecName#>(float v) : this(<#=string.Join(", ", axisNames.Take(aCount).Select(_ => "v"))#>) {}
@@ -190,6 +203,8 @@ public struct <#=vecName#> {
 #>
     public static implicit operator <#= vecName #>(color v) => new(v.rF, v.gF, v.bF);
     public static implicit operator color(<#= vecName #> v) => new(v.x, v.y, v.z);
+
+    public static float3 Cross(float3 a, float3 b) => new(a.y * b.z - a.z * b.y, a.z * b.x - a.x * b.z, a.x * b.y - a.y * b.x);
 <#
             break;
         }
@@ -202,7 +217,7 @@ public struct <#=vecName#> {
         }
     }
 #>
-
+    public static float Dot(<#= vecName #> a, <#= vecName #> b) => <#= string.Join(" + ", curAxis.Select(v => $"a.{v} * b.{v}"))#>;
 
 #endregion other
 }

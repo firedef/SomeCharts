@@ -1,24 +1,19 @@
 using System;
-using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using Avalonia.OpenGL;
 using SomeChartsUi.utils.shaders;
 using static Avalonia.OpenGL.GlConsts;
 
-namespace SomeChartsUiAvalonia.utils; 
+namespace SomeChartsUiAvalonia.utils;
 
 public static class GlShaders {
-	public static GlVersion glVersion;
-
-	private static readonly Shader _basic = new("", ProcessShader(false,@"
-attribute vec3 pos;
-attribute vec2 uv;
-attribute vec4 col;
-uniform mat4 model;
-uniform mat4 projection;
-uniform mat4 view;
+	public static readonly GlShader basic = new("", @"
+// PROCESS VERTEX
+// ADD ATTRIBUTES
+// ADD MATRICES
 
 varying vec3 fragPos;
+varying vec3 fragNormal;
 varying vec2 fragUv;
 varying vec4 fragCol;
 
@@ -30,127 +25,148 @@ void main() {
 	fragPos = vec3(model * vec4(pos,1.0));
 	fragUv = uv;
 	fragCol = col;
+	fragNormal = normal;
 }
-"), ProcessShader(true,@"
+", @"
+// PROCESS FRAGMENT
+// DECLAREGLFRAG
+
 varying vec3 fragPos;
+varying vec3 fragNormal;
 varying vec2 fragUv;
 varying vec4 fragCol;
-//DECLAREGLFRAG
 
 void main() {
 	gl_FragColor = fragCol;
 }
-"));
+");
 	
-	public static Dictionary<string, GlShaderData> shaders = new() {
-		{"", new(_basic)}
-	};
+	public static readonly GlShader diffuse = new("", @"
+// PROCESS VERTEX
+// ADD ATTRIBUTES
+// ADD MATRICES
 
-	public static GlShaderData basicShader = shaders[""];
-	
-	
-	public static string ProcessShader(bool isFragment, string shader) {
-		bool isOsX = RuntimeInformation.IsOSPlatform(OSPlatform.OSX);
-		bool isOpenGLES = glVersion.Type == GlProfileType.OpenGLES;
-		
-		int version = !isOpenGLES 
-			? isOsX 
-				? 150 
-				: 120 
-			: 100;
-		string data = "#version " + version + "\n";
-		if (isOpenGLES) data += "precision mediump float;\n";
-		if (version >= 150)
-		{
-			shader = shader.Replace("attribute", "in");
-			if (isFragment)
-				shader = shader
-				        .Replace("varying", "in")
-				        .Replace("//DECLAREGLFRAG", "out vec4 outFragColor;")
-				        .Replace("gl_FragColor", "outFragColor");
-			else
-				shader = shader.Replace("varying", "out");
-		}
+varying vec3 fragPos;
+varying vec3 fragNormal;
+varying vec2 fragUv;
+varying vec4 fragCol;
+varying vec3 viewPos;
 
-		data += shader;
+#extension GL_ARB_gpu_shader5 : enable
 
-		return data;
-	}
-	
-	public static GlShaderData? Get(string name) {
-		shaders.TryGetValue(name, out GlShaderData? s);
-		return s;
-	}
-	
-	public static GlShaderData Get(Shader shader) {
-		if (shaders.TryGetValue(shader.name, out GlShaderData? s)) return s;
-		//shaders.Add(shader.name, GlShaderData.Compile(shader));
-		shaders.Add(shader.name, new(shader));
-		return shaders[shader.name];
-	}
+void main() {
+	float scale = 1.0;
+	vec3 scaledPos = pos * scale;
+
+	gl_Position = projection * view * model * vec4(scaledPos, 1.0);
+	fragPos = vec3(model * vec4(pos,1.0));
+	fragUv = uv;
+	fragCol = col;
+	fragNormal = normalize(mat3(transpose(inverse(model))) * normal);
+}
+", @"
+// PROCESS FRAGMENT
+// DECLAREGLFRAG
+
+varying vec3 fragPos;
+varying vec3 fragNormal;
+varying vec2 fragUv;
+varying vec4 fragCol;
+
+uniform vec3 cameraPos;
+
+uniform vec3 lightDir = normalize(vec3(-0.2,1,0.1));
+uniform float lightIntensity = 2;
+uniform vec3 lightCol = vec3(1, 0.6, 0.4);
+uniform vec3 ambientCol = vec3(0.1, 0.1, 0.15);
+uniform vec3 diffuseCol = vec3(0.7, 0.7, 0.8);
+uniform float specularIntensity = 0.5;
+
+void main() {
+	vec3 viewDir = normalize(cameraPos - fragPos);
+	vec3 reflectDir = reflect(-lightDir, fragNormal); 
+	float specularStrength = pow(max(dot(viewDir, reflectDir), 0.0), 32);
+	vec3 specular = specularIntensity * specularStrength * lightCol; 
+
+	float diff = max(dot(fragNormal,lightDir), 0);
+	vec3 diffuse = diff * lightCol * diffuseCol * lightIntensity;
+
+	gl_FragColor = vec4(diffuse + ambientCol + specular, 1);
+}
+");
 }
 
-public class GlShaderData {
+public class GlShader : Shader {
+
+	
+	public static GlVersion glVersion;
 	public static GlInterface? gl;
-	public Shader shader;
 	public int vertexShader;
 	public int fragmentShader;
 	public int shaderProgram;
-
-	public GlShaderData(Shader shader) {
-		this.shader = shader;
-	}
-
-	public GlShaderData(Shader shader, int vertexShader, int fragmentShader, int shaderProgram) {
-		this.shader = shader;
-		this.vertexShader = vertexShader;
-		this.fragmentShader = fragmentShader;
-		this.shaderProgram = shaderProgram;
-	}
 
 	public void TryCompile() {
 		if (gl == null) return;
 		
 		vertexShader = gl.CreateShader(GL_VERTEX_SHADER);
-		Console.WriteLine(gl.CompileShaderAndGetError(vertexShader, shader.vertexShaderSrc));
+		Console.WriteLine(gl.CompileShaderAndGetError(vertexShader, vertexShaderSrc));
 		
 		fragmentShader = gl.CreateShader(GL_FRAGMENT_SHADER);
-		Console.WriteLine(gl.CompileShaderAndGetError(fragmentShader, shader.fragmentShaderSrc));
+		Console.WriteLine(gl.CompileShaderAndGetError(fragmentShader, fragmentShaderSrc));
 
 		shaderProgram = gl.CreateProgram();
 		gl.AttachShader(shaderProgram, vertexShader);
 		gl.AttachShader(shaderProgram, fragmentShader);
 		
 		const int posLoc = 0;
-		const int uvLoc = 1;
-		const int colLoc = 2;
+		const int normalLoc = 1;
+		const int uvLoc = 2;
+		const int colLoc = 3;
 		gl.BindAttribLocationString(shaderProgram, posLoc, "pos");
+		gl.BindAttribLocationString(shaderProgram, normalLoc, "normal");
 		gl.BindAttribLocationString(shaderProgram, uvLoc, "uv");
 		gl.BindAttribLocationString(shaderProgram, colLoc, "col");
 		
 		Console.WriteLine(gl.LinkProgramAndGetError(shaderProgram));
 	}
+	
+	public static string ProcessShader(bool isFragment, string shader) {
+		bool isOsX = RuntimeInformation.IsOSPlatform(OSPlatform.OSX);
+		bool isOpenGles = glVersion.Type == GlProfileType.OpenGLES;
 
-	public static GlShaderData Compile(Shader shader) {
-		int vertexShader = gl.CreateShader(GL_VERTEX_SHADER);
-		Console.WriteLine(gl.CompileShaderAndGetError(vertexShader, shader.vertexShaderSrc));
+		shader = shader.Replace("// ADD ATTRIBUTES", @"
+attribute vec3 pos;
+attribute vec3 normal;
+attribute vec2 uv;
+attribute vec4 col;")
+		               .Replace("// ADD MATRICES", @"
+uniform mat4 model;
+uniform mat4 projection;
+uniform mat4 view;");
 		
-		int fragmentShader = gl.CreateShader(GL_FRAGMENT_SHADER);
-		Console.WriteLine(gl.CompileShaderAndGetError(fragmentShader, shader.fragmentShaderSrc));
+		int version = !isOpenGles ? isOsX ? 150 : 120 : 100;
+		
+		string data = "#version " + version + "\n";
+		if (isOpenGles) data += "precision mediump float;\n";
+		if (version >= 150)
+		{
+			shader = shader.Replace("attribute", "in");
+			if (isFragment)
+				shader = shader
+				        .Replace("varying", "in")
+				        .Replace("// DECLAREGLFRAG", "out vec4 outFragColor;")
+				        .Replace("gl_FragColor", "outFragColor");
+			else
+				shader = shader.Replace("varying", "out");
+		}
 
-		int shaderProgram = gl.CreateProgram();
-		gl.AttachShader(shaderProgram, vertexShader);
-		gl.AttachShader(shaderProgram, fragmentShader);
-		
-		const int posLoc = 0;
-		const int uvLoc = 1;
-		const int colLoc = 2;
-		gl.BindAttribLocationString(shaderProgram, posLoc, "pos");
-		gl.BindAttribLocationString(shaderProgram, uvLoc, "uv");
-		gl.BindAttribLocationString(shaderProgram, colLoc, "col");
-		
-		Console.WriteLine(gl.LinkProgramAndGetError(shaderProgram));
+		data += shader.Replace("// PROCESS VERTEX", "").Replace("// PROCESS FRAGMENT", "");
 
-		return new(shader, vertexShader, fragmentShader, shaderProgram);
+		return data;
+	}
+
+	public GlShader(string name, string vertexShaderSrc, string fragmentShaderSrc) : base(name, vertexShaderSrc, fragmentShaderSrc) {
+		if (vertexShaderSrc.Trim().StartsWith("// PROCESS VERTEX")) this.vertexShaderSrc = ProcessShader(false, vertexShaderSrc);
+		if (fragmentShaderSrc.Trim().StartsWith("// PROCESS FRAGMENT")) this.fragmentShaderSrc = ProcessShader(true, fragmentShaderSrc);
 	}
 }

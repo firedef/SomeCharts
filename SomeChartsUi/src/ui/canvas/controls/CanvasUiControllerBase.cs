@@ -27,7 +27,7 @@ public abstract class CanvasUiControllerBase : ChartCanvasControllerBase {
 		float2 pointerPos = state.pos;
 		pointerPos.FlipY();
 
-		owner.GetLayer("normal")!.elements[1].transform.position = ScreenToWorld(pointerPos);
+		//owner.GetLayer("normal")!.elements[1].transform.position = ScreenToWorld(pointerPos);
 		if (!IsCaptured()) return;
 
 		float speed = 1;

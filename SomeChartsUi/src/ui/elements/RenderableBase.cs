@@ -1,6 +1,7 @@
 using SomeChartsUi.data;
 using SomeChartsUi.ui.canvas;
 using SomeChartsUi.utils.mesh;
+using SomeChartsUi.utils.shaders;
 using SomeChartsUi.utils.vectors;
 
 namespace SomeChartsUi.ui.elements; 
@@ -9,6 +10,8 @@ namespace SomeChartsUi.ui.elements;
 public abstract partial class RenderableBase {
 	/// <summary>owner canvas</summary>
 	public ChartsCanvas canvas { get; private set; }
+
+	public Action beforeRender = () => {};
 
 	/// <summary>mesh to be rendered</summary>
 	public Mesh? mesh { get; protected set; }
@@ -19,14 +22,17 @@ public abstract partial class RenderableBase {
 	/// <summary>set to true if data updates frequently <br/>default is false <br/>affects on caching in some elements</summary>
 	public bool isDynamic = false;
 
+	public Shader? shader;
+
 	public RenderableBase(ChartsCanvas owner) {
 		canvas = owner;
 		mesh = canvas.renderer.backend.CreateMesh();
 	}
 	
 	public void Render() {
+		beforeRender();
 		if (CheckMeshForUpdate()) GenerateMesh();
-		DrawMesh();
+		DrawMesh(shader);
 		AfterDraw();
 	}
 	//protected abstract void Render();

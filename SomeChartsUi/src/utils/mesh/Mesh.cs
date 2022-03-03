@@ -1,4 +1,6 @@
+using System.Numerics;
 using SomeChartsUi.utils.collections;
+using SomeChartsUi.utils.vectors;
 
 namespace SomeChartsUi.utils.mesh; 
 
@@ -28,11 +30,35 @@ public class Mesh : IDisposable {
 			this.indexes = new(iPtr, indexes.Length);
 	}
 
-	public unsafe void SetVertices(Vertex* v, int s) => vertices.CopyFrom(v, s);
+	public unsafe void SetVertices(Vertex* v, int s) {
+		vertices.CopyFrom(v, s);
+		OnModified();
+	}
 	public unsafe void SetVertices(Vertex[] v) { fixed(Vertex* vPtr = v) SetVertices(vPtr, v.Length); }
 
-	public unsafe void SetIndexes(ushort* v, int s) => indexes.CopyFrom(v, s);
+	public unsafe void SetIndexes(ushort* v, int s) {
+		indexes.CopyFrom(v, s);
+		OnModified();
+	}
 	public unsafe void SetIndexes(ushort[] v) { fixed(ushort* vPtr = v) SetIndexes(vPtr, v.Length); }
+
+	public unsafe void RecalculateNormals() {
+		int c = indexes.count;
+
+		for (int i = 0; i < c; i += 3) {
+			ushort i1 = indexes[i];
+			ushort i2 = indexes[(i + 1) % c];
+			ushort i3 = indexes[(i + 2) % c];
+			
+			float3 p0 = vertices[i1].position - vertices[i2].position;
+			float3 p1 = vertices[i1].position - vertices[i3].position;
+			float3 normal = float3.Cross(p0, p1).normalized;
+
+			vertices.dataPtr[i1].normal = normal;
+			vertices.dataPtr[i2].normal = normal;
+			vertices.dataPtr[i3].normal = normal;
+		}
+	}
 
 	private void Dispose(bool disposing) {
 		if (!disposing) return;
@@ -44,4 +70,6 @@ public class Mesh : IDisposable {
 		GC.SuppressFinalize(this);
 	}
 	~Mesh() => Dispose(false);
+
+	public virtual void OnModified() {}
 }

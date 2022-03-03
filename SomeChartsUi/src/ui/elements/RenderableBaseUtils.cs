@@ -7,6 +7,7 @@ using SomeChartsUi.themes.colors;
 using SomeChartsUi.ui.canvas;
 using SomeChartsUi.ui.text;
 using SomeChartsUi.utils;
+using SomeChartsUi.utils.shaders;
 using SomeChartsUi.utils.vectors;
 
 namespace SomeChartsUi.ui.elements;
@@ -24,8 +25,8 @@ public abstract partial class RenderableBase {
 	// protected void DrawVertices(float2[] points, float2[]? uvs, color[]? colors, ushort[] indexes) => 
 	// 	renderer.backend.DrawMesh(points, uvs, colors, indexes, transform.Get(this));
 
-	protected void DrawMesh() {
-		canvas.renderer.backend.DrawMesh(mesh, null, transform);
+	protected void DrawMesh(Shader? shader) {
+		canvas.renderer.backend.DrawMesh(mesh!, shader, transform);
 	}
 
 	protected void DrawText(string txt, float2 pos, color col, FontData font, float scale = 12) =>

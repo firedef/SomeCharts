@@ -3,19 +3,19 @@ using SomeChartsUi.utils.vectors;
 namespace SomeChartsUi.ui.elements; 
 
 public record RenderableTransform {
-	public float2 position;
-	public float2 scale;
+	public float3 position;
+	public float3 scale;
 	public float3 rotation;
 	public TransformType type;
 
-	public RenderableTransform(float2 position, float2 scale, float3 rotation, TransformType type = TransformType.worldSpace) {
+	public RenderableTransform(float3 position, float3 scale, float3 rotation, TransformType type = TransformType.worldSpace) {
 		this.position = position;
 		this.scale = scale;
 		this.rotation = rotation;
 		this.type = type;
 	}
 	
-	public RenderableTransform(float2 position, float scale = 1, float rotation = 0, TransformType type = TransformType.worldSpace) {
+	public RenderableTransform(float3 position, float scale = 1, float rotation = 0, TransformType type = TransformType.worldSpace) {
 		this.position = position;
 		this.scale = scale;
 		this.rotation = rotation;

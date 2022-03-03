@@ -8,7 +8,7 @@ namespace SomeChartsAvaloniaExamples {
 	class Program {
 		[STAThread]
 		public static void Main(string[] args) {
-			ElementsExamples.RunTest();
+			ElementsExamples.RunTeapot();
 		}
 	}
 }

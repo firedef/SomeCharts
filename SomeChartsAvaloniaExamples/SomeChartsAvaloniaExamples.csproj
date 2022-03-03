@@ -17,6 +17,12 @@
     </PropertyGroup>
     <ItemGroup>
         <None Remove=".gitignore" />
+        <None Update="data\teapot.obj">
+          <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </None>
+        <None Update="data\cube.obj">
+          <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </None>
     </ItemGroup>
     <ItemGroup>
         <PackageReference Include="Avalonia" Version="0.10.12" />

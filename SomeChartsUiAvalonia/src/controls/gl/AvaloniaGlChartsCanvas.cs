@@ -64,8 +64,8 @@ public class AvaloniaGlChartsCanvas : OpenGlControlBase {
 		_glExtras = new(gl);
 		GlMesh.gl = gl;
 		GlMesh.glExtras = _glExtras;
-		GlShaders.glVersion = GlVersion;
-		GlShaderData.gl = gl;
+		GlShader.glVersion = GlVersion;
+		GlShader.gl = gl;
 		GlChartsBackend.gl = gl;
 	}
 
@@ -81,6 +81,8 @@ public class AvaloniaGlChartsCanvas : OpenGlControlBase {
 		gl.Enable(GL_DEPTH_TEST);
 		
 		gl.Enable(GL_MULTISAMPLE);
+		gl.Enable(GL_CULL_FACE);
+		_glExtras.CullFace(GL_FRONT);
 		
 		gl.Viewport(0, 0, (int)Bounds.Width, (int)Bounds.Height);
 		
@@ -376,6 +378,11 @@ public class GlExtrasInterface : GlInterfaceBase<GlInterface.GlContextInfo>
 	public delegate void GlBindVertexArray(int array);
 	public delegate void GlGenVertexArrays(int n, int[] rv);
 	public unsafe delegate void GlBufferSubData(int trgt, nint offset, nint size, void* data);
+	public delegate void GlCullFace(int n);
+	
+	public delegate void GlUniform2f(int location, float x, float y);
+	public delegate void GlUniform3f(int location, float x, float y, float z);
+	public delegate void GlUniform4f(int location, float x, float y, float z, float w);
 	
 	public GlExtrasInterface(GlInterface gl) : base(gl.GetProcAddress, gl.ContextInfo) { }
             
@@ -391,6 +398,18 @@ public class GlExtrasInterface : GlInterfaceBase<GlInterface.GlContextInfo>
 	[GlExtensionEntryPoint("glGenVertexArraysOES", "GL_OES_vertex_array_object")]
 	public GlGenVertexArrays GenVertexArrays { get; } = null!;
 	
+	[GlEntryPoint("glCullFace")]
+	public GlCullFace CullFace { get; } = null!;
+	
+	[GlEntryPoint("glUniform2f")]
+	public GlUniform2f Uniform2f { get; } = null!;
+	
+	[GlEntryPoint("glUniform3f")]
+	public GlUniform3f Uniform3f { get; } = null!;
+	
+	[GlEntryPoint("glUniform4f")]
+	public GlUniform4f Uniform4f { get; } = null!;
+
 	[GlEntryPoint("glBufferSubData")]
 	public GlBufferSubData BufferSubData { get; } = null!;
 

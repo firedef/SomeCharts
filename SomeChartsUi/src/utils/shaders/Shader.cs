@@ -2,8 +2,8 @@ namespace SomeChartsUi.utils.shaders;
 
 public class Shader {
 	public readonly string name;
-	public readonly string vertexShaderSrc;
-	public readonly string fragmentShaderSrc;
+	public string vertexShaderSrc;
+	public string fragmentShaderSrc;
 
 	public Shader(string name, string vertexShaderSrc, string fragmentShaderSrc) {
 		this.name = name;

@@ -32,4 +32,5 @@ public abstract class ChartsBackendBase {
 	//public abstract void DestroyObject(RenderableBase obj);
 
 	public virtual Mesh CreateMesh() => new();
+	public virtual Shader CreateShader(string name, string vertex, string fragment) => new(name, vertex, fragment);
 }
