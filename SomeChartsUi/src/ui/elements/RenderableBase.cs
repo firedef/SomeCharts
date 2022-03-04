@@ -22,7 +22,7 @@ public abstract partial class RenderableBase {
 	/// <summary>set to true if data updates frequently <br/>default is false <br/>affects on caching in some elements</summary>
 	public bool isDynamic = false;
 
-	public Shader? shader;
+	public Material? material;
 
 	public RenderableBase(ChartsCanvas owner) {
 		canvas = owner;
@@ -32,7 +32,7 @@ public abstract partial class RenderableBase {
 	public void Render() {
 		beforeRender();
 		if (CheckMeshForUpdate()) GenerateMesh();
-		DrawMesh(shader);
+		DrawMesh(material);
 		AfterDraw();
 	}
 	//protected abstract void Render();

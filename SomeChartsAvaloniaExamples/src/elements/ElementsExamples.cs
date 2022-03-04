@@ -10,6 +10,7 @@ using SomeChartsUi.themes.themes;
 using SomeChartsUi.ui.elements;
 using SomeChartsUi.utils;
 using SomeChartsUi.utils.mesh;
+using SomeChartsUi.utils.shaders;
 using SomeChartsUi.utils.vectors;
 using SomeChartsUiAvalonia.controls;
 using SomeChartsUiAvalonia.controls.gl;
@@ -46,7 +47,9 @@ public static class ElementsExamples {
 			r.transform = new(new(0, -100), float3.one * 32, 0);
 			canvas.AddElement(r);
 			r.GenerateMesh();
-			r.shader = GlShaders.diffuse;
+			r.material = new(GlShaders.diffuse);
+			//r.material.SetProperty("lightCol", new float3(1,0,0));
+			r.material.SetProperty("shininess", 32);
 			MeshRenderer r2 = r;
 			r.beforeRender += () => {
 				float time = (float)DateTime.Now.TimeOfDay.TotalMilliseconds;

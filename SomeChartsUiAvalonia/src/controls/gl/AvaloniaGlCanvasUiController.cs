@@ -20,7 +20,7 @@ public class AvaloniaGlCanvasUiController : CanvasUiControllerBase {
 	public override void OnKey(keycode key, keymods mods) {
 		base.OnKey(key, mods);
 
-		if (key == keycode.y) GlMesh.wireframeMode = !GlMesh.wireframeMode;
+		if (key == keycode.y) AvaloniaGlChartsCanvas.polygonMode = (PolygonMode)(((int)AvaloniaGlChartsCanvas.polygonMode + 1) % 3);
 		if (key == keycode.p) GlChartsBackend.perspectiveMode = !GlChartsBackend.perspectiveMode;
 	}
 }

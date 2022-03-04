@@ -23,6 +23,9 @@
         <None Update="data\cube.obj">
           <CopyToOutputDirectory>Always</CopyToOutputDirectory>
         </None>
+        <None Update="data\monkey.obj">
+          <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </None>
     </ItemGroup>
     <ItemGroup>
         <PackageReference Include="Avalonia" Version="0.10.12" />

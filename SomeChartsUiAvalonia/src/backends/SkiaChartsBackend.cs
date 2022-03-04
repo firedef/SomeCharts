@@ -86,7 +86,7 @@ public class SkiaChartsBackend : ChartsBackendBase, IDisposable {
 	public override void ClearScreen(color col) {
 		throw new NotImplementedException();
 	}
-	public override void DrawMesh(Mesh mesh, Shader? shader, RenderableTransform transform) {
+	public override void DrawMesh(Mesh mesh, Material? material, RenderableTransform transform) {
 		throw new NotImplementedException();
 	}
 	// public override void DrawRect(rect rectangle, color color) {

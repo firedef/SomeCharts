@@ -5,6 +5,8 @@ public class Shader {
 	public string vertexShaderSrc;
 	public string fragmentShaderSrc;
 
+	public ShaderUniform[] uniforms = Array.Empty<ShaderUniform>();
+
 	public Shader(string name, string vertexShaderSrc, string fragmentShaderSrc) {
 		this.name = name;
 		this.vertexShaderSrc = vertexShaderSrc;

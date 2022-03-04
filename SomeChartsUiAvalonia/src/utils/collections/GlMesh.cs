@@ -32,7 +32,8 @@ public class GlMesh : Mesh {
 		gl.GenBuffers(2, buffers);
 		vertexBufferObject = buffers[0];
 		indexBufferObject = buffers[1];
-		vertexArrayObject = glExtras.GenVertexArray();
+		glExtras.GenVertexArrays(1, buffers);
+		vertexArrayObject = buffers[0];
 
 		BindBuffers();
 		
@@ -95,27 +96,24 @@ public class GlMesh : Mesh {
 
 	public override void OnModified() => updateRequired = true;
 
-	public unsafe void Render(Shader? shader, Matrix4x4 model, Matrix4x4 view, Matrix4x4 projection, float3 cameraPos) {
+	public unsafe void Render(Material? material, Matrix4x4 model, Matrix4x4 view, Matrix4x4 projection, float3 cameraPos) {
 		if (vertexArrayObject == 0) GenBuffers();
 		if (vertexArrayObject == 0) return;
-		if (shader != null && shader is not GlShader) return;
+		if (material is {shader: not GlShader}) return;
 		
 		if (updateRequired | isDynamic) UpdateBuffers();
-		GlShader shaderData = shader == null ? GlShaders.basic : (GlShader) shader;
-		if (shaderData.shaderProgram == 0) shaderData.TryCompile();
-		if (shaderData.shaderProgram == 0) return;
+		GlShader shader = material == null ? GlShaders.basic : (GlShader) material.shader;
+		if (shader.shaderProgram == 0) shader.TryCompile();
+		if (shader.shaderProgram == 0) return;
 
-		gl!.UseProgram(shaderData.shaderProgram);
+		gl!.UseProgram(shader.shaderProgram);
 		
-		int modelLoc = gl.GetUniformLocationString(shaderData.shaderProgram, "model");
-		int viewLoc = gl.GetUniformLocationString(shaderData.shaderProgram, "view");
-		int projectionLoc = gl.GetUniformLocationString(shaderData.shaderProgram, "projection");
-		int cameraLoc = gl.GetUniformLocationString(shaderData.shaderProgram, "cameraPos");
-		
-		gl.UniformMatrix4fv(modelLoc, 1, false, &model);
-		gl.UniformMatrix4fv(viewLoc, 1, false, &view);
-		gl.UniformMatrix4fv(projectionLoc, 1, false, &projection);
-		if (cameraLoc != -1) glExtras!.Uniform3f(cameraLoc, cameraPos.x, cameraPos.y, cameraPos.z);
+		shader.TrySetUniform("model", model);
+		shader.TrySetUniform("view", view);
+		shader.TrySetUniform("projection", projection);
+		shader.TrySetUniform("cameraPos", cameraPos);
+		shader.TrySetUniform("time", (float)DateTime.Now.TimeOfDay.TotalMilliseconds);
+		if (material != null) shader.TryApplyMaterial(material);
 		
 		BindBuffers();
 		gl.DrawElements(wireframeMode ? GL_LINES : GL_TRIANGLES, indexes.count, GL_UNSIGNED_SHORT, IntPtr.Zero);

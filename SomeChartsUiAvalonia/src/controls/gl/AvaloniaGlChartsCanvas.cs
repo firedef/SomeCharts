@@ -26,9 +26,17 @@ using static Avalonia.OpenGL.GlConsts;
 
 namespace SomeChartsUiAvalonia.controls.gl;
 
+public enum PolygonMode {
+	fill,
+	line,
+	points
+}
+
 public class AvaloniaGlChartsCanvas : OpenGlControlBase {
 	private GlExtrasInterface _glExtras;
 	public readonly ChartsCanvas canvas = CreateCanvas();
+
+	public static PolygonMode polygonMode = PolygonMode.fill;
 	
 	/// <summary>pause redraw loop</summary>
 	public bool stopRender;
@@ -66,6 +74,7 @@ public class AvaloniaGlChartsCanvas : OpenGlControlBase {
 		GlMesh.glExtras = _glExtras;
 		GlShader.glVersion = GlVersion;
 		GlShader.gl = gl;
+		GlShader.glExtras = _glExtras;
 		GlChartsBackend.gl = gl;
 	}
 
@@ -81,8 +90,13 @@ public class AvaloniaGlChartsCanvas : OpenGlControlBase {
 		gl.Enable(GL_DEPTH_TEST);
 		
 		gl.Enable(GL_MULTISAMPLE);
-		gl.Enable(GL_CULL_FACE);
-		_glExtras.CullFace(GL_FRONT);
+		switch (polygonMode) {
+			case PolygonMode.fill: _glExtras.PolygonMode(GL_FRONT_AND_BACK, GL_FILL); break;
+			case PolygonMode.line: _glExtras.PolygonMode(GL_FRONT_AND_BACK, GL_LINE); break;
+			case PolygonMode.points: _glExtras.PolygonMode(GL_FRONT_AND_BACK, GL_POINT); break;
+		}
+		//gl.Enable(GL_CULL_FACE);
+		//_glExtras.CullFace(GL_FRONT);
 		
 		gl.Viewport(0, 0, (int)Bounds.Width, (int)Bounds.Height);
 		
@@ -370,53 +384,4 @@ void main() {
 	gl_FragColor = fragCol;
 }
 ");*/
-}
-
-public class GlExtrasInterface : GlInterfaceBase<GlInterface.GlContextInfo>
-{
-	public delegate void GlDeleteVertexArrays(int count, int[] buffers);
-	public delegate void GlBindVertexArray(int array);
-	public delegate void GlGenVertexArrays(int n, int[] rv);
-	public unsafe delegate void GlBufferSubData(int trgt, nint offset, nint size, void* data);
-	public delegate void GlCullFace(int n);
-	
-	public delegate void GlUniform2f(int location, float x, float y);
-	public delegate void GlUniform3f(int location, float x, float y, float z);
-	public delegate void GlUniform4f(int location, float x, float y, float z, float w);
-	
-	public GlExtrasInterface(GlInterface gl) : base(gl.GetProcAddress, gl.ContextInfo) { }
-            
-	[GlMinVersionEntryPoint("glDeleteVertexArrays", 3,0)]
-	[GlExtensionEntryPoint("glDeleteVertexArraysOES", "GL_OES_vertex_array_object")]
-	public GlDeleteVertexArrays DeleteVertexArrays { get; } = null!;
-
-	[GlMinVersionEntryPoint("glBindVertexArray", 3,0)]
-	[GlExtensionEntryPoint("glBindVertexArrayOES", "GL_OES_vertex_array_object")]
-	public GlBindVertexArray BindVertexArray { get; } = null!;
-	
-	[GlMinVersionEntryPoint("glGenVertexArrays",3,0)]
-	[GlExtensionEntryPoint("glGenVertexArraysOES", "GL_OES_vertex_array_object")]
-	public GlGenVertexArrays GenVertexArrays { get; } = null!;
-	
-	[GlEntryPoint("glCullFace")]
-	public GlCullFace CullFace { get; } = null!;
-	
-	[GlEntryPoint("glUniform2f")]
-	public GlUniform2f Uniform2f { get; } = null!;
-	
-	[GlEntryPoint("glUniform3f")]
-	public GlUniform3f Uniform3f { get; } = null!;
-	
-	[GlEntryPoint("glUniform4f")]
-	public GlUniform4f Uniform4f { get; } = null!;
-
-	[GlEntryPoint("glBufferSubData")]
-	public GlBufferSubData BufferSubData { get; } = null!;
-
-	public int GenVertexArray()
-	{
-		int[] rv = new int[1];
-		GenVertexArrays(1, rv);
-		return rv[0];
-	}
 }

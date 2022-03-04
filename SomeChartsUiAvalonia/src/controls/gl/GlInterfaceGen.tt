@@ -1,0 +1,43 @@
+<#@ template language="C#v3.5" #>
+<#@ import namespace="System"#>
+<#@ import namespace="System.Text"#>
+<#@ import namespace="System.Collections"#>
+<#@ import namespace="System.Collections.Generic"#>
+<#@ assembly name="System.Core"#>
+<#@ import namespace="System.Linq"#>
+<#
+    var functions = new[] {
+        new{name = "DeleteVertexArrays", ret = "void", args = "int count, int[] buffers"},
+        new{name = "BindVertexArray", ret = "void", args = "int array"},
+        new{name = "GenVertexArrays", ret = "void", args = "int count, int[] arrays"},
+        new{name = "BufferSubData", ret = "void", args = "int buffer, int offset, int size, void* data"},
+        new{name = "CullFace", ret = "void", args = "int face"},
+        
+        new{name = "Uniform2f", ret = "void", args = "int location, float x, float y"},
+        new{name = "Uniform3f", ret = "void", args = "int location, float x, float y, float z"},
+        new{name = "Uniform4f", ret = "void", args = "int location, float x, float y, float z, float w"},
+        
+        new{name = "GetActiveUniform", ret = "void", args = "int program, int index, int bufferSize, int* length, int* size, int* type, sbyte* name"},
+        
+        new{name = "PolygonMode", ret = "void", args = "int face, int mode"},
+    };
+#>
+using Avalonia.OpenGL;
+
+namespace SomeChartsUiAvalonia.controls.gl;
+
+public class GlExtrasInterface : GlInterfaceBase<GlInterface.GlContextInfo>
+{
+	public GlExtrasInterface(GlInterface gl) : base(gl.GetProcAddress, gl.ContextInfo) { }
+
+<#
+    foreach (var function in functions) {
+#>
+    [GlEntryPoint("<#=$"gl{function.name}"#>")]
+    public <#=$"Gl{function.name}"#> <#=function.name#> { get; } = null!;
+    public unsafe delegate <#=function.ret#> <#=$"Gl{function.name}"#>(<#=function.args#>);
+
+<#
+    }
+#>
+}

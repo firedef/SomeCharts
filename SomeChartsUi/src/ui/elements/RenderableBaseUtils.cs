@@ -25,8 +25,8 @@ public abstract partial class RenderableBase {
 	// protected void DrawVertices(float2[] points, float2[]? uvs, color[]? colors, ushort[] indexes) => 
 	// 	renderer.backend.DrawMesh(points, uvs, colors, indexes, transform.Get(this));
 
-	protected void DrawMesh(Shader? shader) {
-		canvas.renderer.backend.DrawMesh(mesh!, shader, transform);
+	protected void DrawMesh(Material? material) {
+		canvas.renderer.backend.DrawMesh(mesh!, material, transform);
 	}
 
 	protected void DrawText(string txt, float2 pos, color col, FontData font, float scale = 12) =>

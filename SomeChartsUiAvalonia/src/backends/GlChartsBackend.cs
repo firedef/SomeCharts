@@ -40,7 +40,7 @@ public class GlChartsBackend : ChartsBackendBase {
 		gl.Clear(GlConsts.GL_COLOR_BUFFER_BIT | GlConsts.GL_DEPTH_BUFFER_BIT);
 	}
 
-	public override void DrawMesh(Mesh mesh, Shader? shader, RenderableTransform transform) {
+	public override void DrawMesh(Mesh mesh, Material? material, RenderableTransform transform) {
 		if (mesh is not GlMesh obj) throw new NotImplementedException("opengl backend support only GlMesh mesh type; use CreateMesh() in ChartsBackendBase");
 		
 		GlMesh.gl = gl;
@@ -56,14 +56,14 @@ public class GlChartsBackend : ChartsBackendBase {
 
 		float3 camPos = owner.transform.position.animatedValue;
 		//Console.WriteLine(camPos);
-		Matrix4x4 view = Matrix4x4.CreateLookAt(new(camPos.x, -camPos.y, z), new(camPos.x,-camPos.y,0), new(0, 1, 0));
+		Matrix4x4 view = Matrix4x4.CreateLookAt(new(-camPos.x, camPos.y, z), new(-camPos.x,camPos.y,0), new(0, -1, 0));
 
 		float3 p = transform.position;
 		// Matrix4x4 model = Matrix4x4.CreateScale(new Vector3(transform.scale.x, transform.scale.y, transform.scale.z), new(p.x, -p.y, p.z));
-		Matrix4x4 model = Matrix4x4.CreateFromYawPitchRoll(transform.rotation.x, transform.rotation.y, transform.rotation.z) * Matrix4x4.CreateScale(new Vector3(transform.scale.x, -transform.scale.y, transform.scale.z)) * Matrix4x4.CreateTranslation(new(p.x, -p.y, p.z));
+		Matrix4x4 model = Matrix4x4.CreateFromYawPitchRoll(transform.rotation.x, transform.rotation.y, transform.rotation.z) * Matrix4x4.CreateScale(new Vector3(transform.scale.x, transform.scale.y, transform.scale.z)) * Matrix4x4.CreateTranslation(new(p.x, -p.y, p.z));
 		// Matrix4x4 model = Matrix4x4.CreateTranslation(new(p.x, -p.y, p.z));
 
-		obj.Render(shader, model, view, projection, camPos);
+		obj.Render(material, model, view, projection, camPos);
 	}
 
 	public override Mesh CreateMesh() => new GlMesh();

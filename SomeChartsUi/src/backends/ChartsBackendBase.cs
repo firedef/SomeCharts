@@ -27,7 +27,7 @@ public abstract class ChartsBackendBase {
 	
 	public abstract void ClearScreen(color col);
 	
-	public abstract void DrawMesh(Mesh mesh, Shader? shader, RenderableTransform transform);
+	public abstract void DrawMesh(Mesh mesh, Material? material, RenderableTransform transform);
 
 	//public abstract void DestroyObject(RenderableBase obj);
 
