@@ -10,44 +10,41 @@ using SomeChartsUiAvalonia.controls.gl;
 namespace SomeChartsUiAvalonia.utils;
 
 public class GlShader : Shader {
-	public static GlVersion glVersion;
-	public static GlInterface? gl;
-	public static GlExtrasInterface? glExtras;
 	public int vertexShader;
 	public int fragmentShader;
 	public int shaderProgram;
 
 	public void TryCompile() {
-		if (gl == null) return;
+		if (GlInfo.gl == null) return;
 		GetUniforms();
 		
-		vertexShader = gl.CreateShader(GlConsts.GL_VERTEX_SHADER);
-		Console.WriteLine(gl.CompileShaderAndGetError(vertexShader, vertexShaderSrc));
+		vertexShader = GlInfo.gl.CreateShader(GlConsts.GL_VERTEX_SHADER);
+		Console.WriteLine(GlInfo.gl.CompileShaderAndGetError(vertexShader, vertexShaderSrc));
 		
-		fragmentShader = gl.CreateShader(GlConsts.GL_FRAGMENT_SHADER);
-		Console.WriteLine(gl.CompileShaderAndGetError(fragmentShader, fragmentShaderSrc));
+		fragmentShader = GlInfo.gl.CreateShader(GlConsts.GL_FRAGMENT_SHADER);
+		Console.WriteLine(GlInfo.gl.CompileShaderAndGetError(fragmentShader, fragmentShaderSrc));
 
-		shaderProgram = gl.CreateProgram();
-		gl.AttachShader(shaderProgram, vertexShader);
-		gl.AttachShader(shaderProgram, fragmentShader);
+		shaderProgram = GlInfo.gl.CreateProgram();
+		GlInfo.gl.AttachShader(shaderProgram, vertexShader);
+		GlInfo.gl.AttachShader(shaderProgram, fragmentShader);
 		
 		const int posLoc = 0;
 		const int normalLoc = 1;
 		const int uvLoc = 2;
 		const int colLoc = 3;
-		gl.BindAttribLocationString(shaderProgram, posLoc, "pos");
-		gl.BindAttribLocationString(shaderProgram, normalLoc, "normal");
-		gl.BindAttribLocationString(shaderProgram, uvLoc, "uv");
-		gl.BindAttribLocationString(shaderProgram, colLoc, "col");
+		GlInfo.gl.BindAttribLocationString(shaderProgram, posLoc, "pos");
+		GlInfo.gl.BindAttribLocationString(shaderProgram, normalLoc, "normal");
+		GlInfo.gl.BindAttribLocationString(shaderProgram, uvLoc, "uv");
+		GlInfo.gl.BindAttribLocationString(shaderProgram, colLoc, "col");
 		
-		Console.WriteLine(gl.LinkProgramAndGetError(shaderProgram));
+		Console.WriteLine(GlInfo.gl.LinkProgramAndGetError(shaderProgram));
 		
 		GetUniforms();
 	}
 	
 	public static string ProcessShader(bool isFragment, string shader) {
 		bool isOsX = RuntimeInformation.IsOSPlatform(OSPlatform.OSX);
-		bool isOpenGles = glVersion.Type == GlProfileType.OpenGLES;
+		bool isOpenGles = GlInfo.version!.Value.Type == GlProfileType.OpenGLES;
 
 		shader = shader.Replace("// ADD ATTRIBUTES", @"
 attribute vec3 pos;
@@ -59,7 +56,8 @@ uniform mat4 model;
 uniform mat4 projection;
 uniform mat4 view;");
 		
-		int version = !isOpenGles ? isOsX ? 150 : 120 : 100;
+		int version = isOpenGles ? 110 : 330;
+		// int version = !isOpenGles ? isOsX ? 150 : 120 : 100;
 		
 		string data = "#version " + version + "\n";
 		if (isOpenGles) data += "precision mediump float;\n";
@@ -87,7 +85,7 @@ uniform mat4 view;");
 
 	private unsafe void GetUniforms() {
 		int uniformCount = 0;
-		gl!.GetProgramiv(shaderProgram, GlConsts.GL_ACTIVE_UNIFORMS, &uniformCount);
+		GlInfo.gl!.GetProgramiv(shaderProgram, GlConsts.GL_ACTIVE_UNIFORMS, &uniformCount);
 
 		const int stringBufferSize = 32;
 		sbyte* namePtr = stackalloc sbyte[stringBufferSize];
@@ -97,34 +95,34 @@ uniform mat4 view;");
 
 		uniforms = new ShaderUniform[uniformCount];
 		for (int i = 0; i < uniformCount; i++) {
-			glExtras!.GetActiveUniform(shaderProgram, i, stringBufferSize, &length, &size, &type, namePtr);
+			GlInfo.glExt!.GetActiveUniform(shaderProgram, i, stringBufferSize, &length, &size, &type, namePtr);
 			string varName = new(namePtr, 0, length);
 			uniforms[i] = new(varName, i, type, size);
 		}
 	}
 
-	public unsafe void TrySetUniform<T>(string uniformName, T v) {
+	public unsafe void TrySetUniform(string uniformName, object v) {
 		int loc = uniforms.FirstOrDefault(u => u.name == uniformName).location;
 		if (loc == -1) return;
 		
-		gl!.UseProgram(shaderProgram);
+		GlInfo.gl!.UseProgram(shaderProgram);
 
 		switch (v) {
-			case float v0:     gl.Uniform1f(loc, v0); return;
-			case float2 v0:    glExtras!.Uniform2f(loc, v0.x, v0.y); return;
-			case float3 v0:    glExtras!.Uniform3f(loc, v0.x, v0.y, v0.z); return;
-			case float4 v0:    glExtras!.Uniform4f(loc, v0.x, v0.y, v0.z, v0.w); return;
-			case Matrix4x4 v0: gl.UniformMatrix4fv(loc, 1, false, &v0); return;
-			case object obj:
-				switch (obj) {
-					case float v0:     gl.Uniform1f(loc, v0); return;
-					case float2 v0:    glExtras!.Uniform2f(loc, v0.x, v0.y); return;
-					case float3 v0:    glExtras!.Uniform3f(loc, v0.x, v0.y, v0.z); return;
-					case float4 v0:    glExtras!.Uniform4f(loc, v0.x, v0.y, v0.z, v0.w); return;
-					case Matrix4x4 v0: gl.UniformMatrix4fv(loc, 1, false, &v0); return;
+			case int v0:     GlInfo.gl.Uniform1f(loc, v0); return;
+			case float v0:     GlInfo.gl.Uniform1f(loc, v0); return;
+			case float2 v0:    GlInfo.glExt!.Uniform2f(loc, v0.x, v0.y); return;
+			case float3 v0:    GlInfo.glExt!.Uniform3f(loc, v0.x, v0.y, v0.z); return;
+			case float4 v0:    GlInfo.glExt!.Uniform4f(loc, v0.x, v0.y, v0.z, v0.w); return;
+			case Matrix4x4 v0: GlInfo.gl.UniformMatrix4fv(loc, 1, false, &v0); return;
+			default:
+				if (v.GetType().IsAssignableTo(typeof(Texture))) {
+					Texture v0 = (Texture)v;
+					if (v0 is not GlTexture tex) throw new NotSupportedException("opengl charts renderer supports only GlTexture");
+					GlInfo.gl.ActiveTexture(GlConsts.GL_TEXTURE0);
+					tex.Bind();
+					return;
 				}
-				return;
-			default:           throw new NotImplementedException();
+				throw new NotImplementedException();
 		}
 	}
 

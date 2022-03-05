@@ -6,17 +6,25 @@ public class GlExtrasInterface : GlInterfaceBase<GlInterface.GlContextInfo>
 {
 	public GlExtrasInterface(GlInterface gl) : base(gl.GetProcAddress, gl.ContextInfo) { }
 
+    [GlEntryPoint("glGenVertexArrays")]
+    public GlGenVertexArrays GenVertexArrays { get; } = null!;
+    public unsafe delegate void GlGenVertexArrays(int count, int[] arrays);
+
+    [GlEntryPoint("glGenTextures")]
+    public GlGenTextures GenTextures { get; } = null!;
+    public unsafe delegate void GlGenTextures(int count, int* textures);
+
     [GlEntryPoint("glDeleteVertexArrays")]
     public GlDeleteVertexArrays DeleteVertexArrays { get; } = null!;
     public unsafe delegate void GlDeleteVertexArrays(int count, int[] buffers);
 
+    [GlEntryPoint("glDeleteTextures")]
+    public GlDeleteTextures DeleteTextures { get; } = null!;
+    public unsafe delegate void GlDeleteTextures(int count, int* textures);
+
     [GlEntryPoint("glBindVertexArray")]
     public GlBindVertexArray BindVertexArray { get; } = null!;
     public unsafe delegate void GlBindVertexArray(int array);
-
-    [GlEntryPoint("glGenVertexArrays")]
-    public GlGenVertexArrays GenVertexArrays { get; } = null!;
-    public unsafe delegate void GlGenVertexArrays(int count, int[] arrays);
 
     [GlEntryPoint("glBufferSubData")]
     public GlBufferSubData BufferSubData { get; } = null!;
@@ -25,6 +33,10 @@ public class GlExtrasInterface : GlInterfaceBase<GlInterface.GlContextInfo>
     [GlEntryPoint("glCullFace")]
     public GlCullFace CullFace { get; } = null!;
     public unsafe delegate void GlCullFace(int face);
+
+    [GlEntryPoint("glUniform1i")]
+    public GlUniform1i Uniform1i { get; } = null!;
+    public unsafe delegate void GlUniform1i(int location, int v);
 
     [GlEntryPoint("glUniform2f")]
     public GlUniform2f Uniform2f { get; } = null!;

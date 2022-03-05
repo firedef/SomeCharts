@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Numerics;
-using Avalonia.OpenGL;
 using SomeChartsUi.utils.mesh;
 using SomeChartsUi.utils.shaders;
 using SomeChartsUi.utils.vectors;
@@ -10,29 +9,21 @@ using static Avalonia.OpenGL.GlConsts;
 namespace SomeChartsUiAvalonia.utils.collections; 
 
 public class GlMesh : Mesh {
-	public static bool wireframeMode = false;
-	
-	public static GlInterface? gl;
-	public static GlExtrasInterface? glExtras;
-
-	//public static Dictionary<Mesh, GlMesh> objects = new();
-
-	//public readonly Mesh mesh;
-	public int vertexBufferObject = 0;
-	public int indexBufferObject = 0;
-	public int vertexArrayObject = 0;
+	public int vertexBufferObject;
+	public int indexBufferObject;
+	public int vertexArrayObject;
 
 	public bool isDynamic;
 	public bool updateRequired = true;
 
 	protected unsafe void GenBuffers() {
-		if (gl == null || glExtras == null) return;
+		if (GlInfo.gl == null || GlInfo.glExt == null) return;
 		
 		int[] buffers = new int[2];
-		gl.GenBuffers(2, buffers);
+		GlInfo.gl.GenBuffers(2, buffers);
 		vertexBufferObject = buffers[0];
 		indexBufferObject = buffers[1];
-		glExtras.GenVertexArrays(1, buffers);
+		GlInfo.glExt.GenVertexArrays(1, buffers);
 		vertexArrayObject = buffers[0];
 
 		BindBuffers();
@@ -43,20 +34,20 @@ public class GlMesh : Mesh {
 		const int uvLoc = 2;
 		const int colLoc = 3;
 		
-		gl.VertexAttribPointer(posLoc, 3, GL_FLOAT, 0, vertexSize, IntPtr.Zero);
-		gl.VertexAttribPointer(normalLoc, 3, GL_FLOAT, 0, vertexSize, (IntPtr) (3 * sizeof(float)));
-		gl.VertexAttribPointer(uvLoc, 2, GL_FLOAT, 0, vertexSize, (IntPtr) ((3 + 3) * sizeof(float)));
-		gl.VertexAttribPointer(colLoc, 4, GL_FLOAT, 0, vertexSize, (IntPtr) ((3 + 3 + 2) * sizeof(float)));
-		gl.EnableVertexAttribArray(posLoc);
-		gl.EnableVertexAttribArray(normalLoc);
-		gl.EnableVertexAttribArray(uvLoc);
-		gl.EnableVertexAttribArray(colLoc);
+		GlInfo.gl.VertexAttribPointer(posLoc, 3, GL_FLOAT, 0, vertexSize, IntPtr.Zero);
+		GlInfo.gl.VertexAttribPointer(normalLoc, 3, GL_FLOAT, 0, vertexSize, (IntPtr) (3 * sizeof(float)));
+		GlInfo.gl.VertexAttribPointer(uvLoc, 2, GL_FLOAT, 0, vertexSize, (IntPtr) ((3 + 3) * sizeof(float)));
+		GlInfo.gl.VertexAttribPointer(colLoc, 4, GL_FLOAT, 0, vertexSize, (IntPtr) ((3 + 3 + 2) * sizeof(float)));
+		GlInfo.gl.EnableVertexAttribArray(posLoc);
+		GlInfo.gl.EnableVertexAttribArray(normalLoc);
+		GlInfo.gl.EnableVertexAttribArray(uvLoc);
+		GlInfo.gl.EnableVertexAttribArray(colLoc);
 	}
 
 	protected void BindBuffers() {
-		gl.BindBuffer(GL_ARRAY_BUFFER, vertexBufferObject);
-		gl.BindBuffer(GL_ELEMENT_ARRAY_BUFFER, indexBufferObject);
-		glExtras.BindVertexArray(vertexArrayObject);
+		GlInfo.gl!.BindBuffer(GL_ARRAY_BUFFER, vertexBufferObject);
+		GlInfo.gl.BindBuffer(GL_ELEMENT_ARRAY_BUFFER, indexBufferObject);
+		GlInfo.glExt!.BindVertexArray(vertexArrayObject);
 	}
 
 	protected unsafe void UpdateBuffers() {
@@ -65,30 +56,30 @@ public class GlMesh : Mesh {
 		
 		// vertices
 		bool sizeChanged = isDynamic ? vertices.GetCapacityChange() : vertices.GetCountChange();
-		gl.BindBuffer(GL_ARRAY_BUFFER, vertexBufferObject);
+		GlInfo.gl!.BindBuffer(GL_ARRAY_BUFFER, vertexBufferObject);
 		if (sizeChanged) {
 			int c = isDynamic ? vertices.capacity : vertices.count;
-			gl.BufferData(GL_ARRAY_BUFFER, (IntPtr)(c * vSize), (IntPtr)vertices.dataPtr, GL_DYNAMIC_DRAW);
+			GlInfo.gl.BufferData(GL_ARRAY_BUFFER, (IntPtr)(c * vSize), (IntPtr)vertices.dataPtr, GL_DYNAMIC_DRAW);
 			vertices.ResetChanges();
 		}
 		else {
 			List<Range> changes = vertices.GetChanges();
 			foreach (Range r in changes)
-				glExtras.BufferSubData(GL_ARRAY_BUFFER, r.Start.Value * vSize, (r.End.Value - r.Start.Value) * vSize, vertices.dataPtr);
+				GlInfo.glExt!.BufferSubData(GL_ARRAY_BUFFER, r.Start.Value * vSize, (r.End.Value - r.Start.Value) * vSize, vertices.dataPtr);
 		}
 		
 		// indexes
 		sizeChanged = isDynamic ? indexes.GetCapacityChange() : indexes.GetCountChange();
-		gl.BindBuffer(GL_ELEMENT_ARRAY_BUFFER, indexBufferObject);
+		GlInfo.gl.BindBuffer(GL_ELEMENT_ARRAY_BUFFER, indexBufferObject);
 		if (sizeChanged) {
 			int c = isDynamic ? indexes.capacity : indexes.count;
-			gl.BufferData(GL_ELEMENT_ARRAY_BUFFER, (IntPtr)(c * iSize), (IntPtr)indexes.dataPtr, GL_DYNAMIC_DRAW);
+			GlInfo.gl.BufferData(GL_ELEMENT_ARRAY_BUFFER, (IntPtr)(c * iSize), (IntPtr)indexes.dataPtr, GL_DYNAMIC_DRAW);
 			indexes.ResetChanges();
 		}
 		else {
 			List<Range> changes = indexes.GetChanges();
 			foreach (Range r in changes)
-				glExtras.BufferSubData(GL_ELEMENT_ARRAY_BUFFER, r.Start.Value * iSize, (r.End.Value - r.Start.Value) * iSize, indexes.dataPtr);
+				GlInfo.glExt!.BufferSubData(GL_ELEMENT_ARRAY_BUFFER, r.Start.Value * iSize, (r.End.Value - r.Start.Value) * iSize, indexes.dataPtr);
 		}
 
 		updateRequired = false;
@@ -96,7 +87,7 @@ public class GlMesh : Mesh {
 
 	public override void OnModified() => updateRequired = true;
 
-	public unsafe void Render(Material? material, Matrix4x4 model, Matrix4x4 view, Matrix4x4 projection, float3 cameraPos) {
+	public void Render(Material? material, Matrix4x4 model, Matrix4x4 view, Matrix4x4 projection, float3 cameraPos) {
 		if (vertexArrayObject == 0) GenBuffers();
 		if (vertexArrayObject == 0) return;
 		if (material is {shader: not GlShader}) return;
@@ -106,7 +97,7 @@ public class GlMesh : Mesh {
 		if (shader.shaderProgram == 0) shader.TryCompile();
 		if (shader.shaderProgram == 0) return;
 
-		gl!.UseProgram(shader.shaderProgram);
+		GlInfo.gl!.UseProgram(shader.shaderProgram);
 		
 		shader.TrySetUniform("model", model);
 		shader.TrySetUniform("view", view);
@@ -116,25 +107,19 @@ public class GlMesh : Mesh {
 		if (material != null) shader.TryApplyMaterial(material);
 		
 		BindBuffers();
-		gl.DrawElements(wireframeMode ? GL_LINES : GL_TRIANGLES, indexes.count, GL_UNSIGNED_SHORT, IntPtr.Zero);
+		GlInfo.gl.DrawElements(GL_TRIANGLES, indexes.count, GL_UNSIGNED_SHORT, IntPtr.Zero);
 	}
 
 	public override void Dispose() {
 		if (vertexBufferObject != 0) {
-			gl.DeleteBuffers(2, new[] {vertexBufferObject, indexBufferObject});
-			glExtras.DeleteVertexArrays(1, new[] {vertexArrayObject});
+			GlInfo.gl!.DeleteBuffers(2, new[] {vertexBufferObject, indexBufferObject});
+			GlInfo.glExt!.DeleteVertexArrays(1, new[] {vertexArrayObject});
 		}
 
 		vertexBufferObject = vertexArrayObject = indexBufferObject = 0;
-		gl.BindBuffer(GL_ARRAY_BUFFER, 0);
-		gl.BindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+		GlInfo.gl!.BindBuffer(GL_ARRAY_BUFFER, 0);
+		GlInfo.gl.BindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 		
 		base.Dispose();
 	}
-
-	//public static GlMesh Get(Mesh mesh) => objects.TryGetValue(mesh, out GlMesh? existing) ? existing : new(mesh);
-
-	// public static void Remove(Mesh mesh) {
-	// 	objects.Remove(mesh);
-	// }
 }

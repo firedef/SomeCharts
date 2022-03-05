@@ -43,18 +43,20 @@ public static class ElementsExamples {
 		AvaloniaRunUtils.RunAfterStart(() => {
 			AvaloniaGlChartsCanvas canvas = AvaloniaRunUtils.AddGlCanvas();
 
-			MeshRenderer r = new(canvas.canvas, Path.GetFullPath("data/teapot.obj"));
-			r.transform = new(new(0, -100), float3.one * 32, 0);
+			MeshRenderer r = new(canvas.canvas, Path.GetFullPath("data/monkey.obj"));
+			r.transform = new(new(0, -100), float3.one * 3200, 0);
 			canvas.AddElement(r);
 			r.GenerateMesh();
 			r.material = new(GlShaders.diffuse);
 			//r.material.SetProperty("lightCol", new float3(1,0,0));
-			r.material.SetProperty("shininess", 32);
+			r.material.SetProperty("shininess", 32f);
+			Texture tex = canvas.canvas.renderer.backend.CreateTexture(Path.GetFullPath("data/checker.png"));
+			r.material.SetProperty("Texture", tex);
 			MeshRenderer r2 = r;
-			r.beforeRender += () => {
-				float time = (float)DateTime.Now.TimeOfDay.TotalMilliseconds;
-				r2.transform.rotation = new(MathF.PI * .1f * (time * .0005f), MathF.PI * .25f, (time * .001f) * .1f);
-			};
+			// r.beforeRender += () => {
+			// 	float time = (float)DateTime.Now.TimeOfDay.TotalMilliseconds;
+			// 	r2.transform.rotation = new(MathF.PI * .1f * (time * .0005f), MathF.PI * .25f, (time * .001f) * .1f);
+			// };
 			
 			// for (int i = 0; i < 256; i++) {
 			// 	MeshRenderer r1 = new(canvas.canvas, r.mesh!);

@@ -37,14 +37,19 @@ void main() {
 	
 	public static readonly GlShader diffuse = new("", @"
 // PROCESS VERTEX
-// ADD ATTRIBUTES
 // ADD MATRICES
+
+attribute vec3 pos;
+attribute vec3 normal;
+attribute vec2 uv;
+attribute vec4 col;
 
 varying vec3 fragPos;
 varying vec3 fragNormal;
 varying vec2 fragUv;
 varying vec4 fragCol;
 varying vec3 viewPos;
+varying vec2 texCoord;
 
 #extension GL_ARB_gpu_shader5 : enable
 
@@ -58,6 +63,7 @@ void main() {
 	fragCol = col;
 	//fragNormal = normal;
 	fragNormal = normalize(mat3(transpose(inverse(model))) * normal);
+	texCoord = uv;
 }
 ", @"
 // PROCESS FRAGMENT
@@ -67,8 +73,11 @@ varying vec3 fragPos;
 varying vec3 fragNormal;
 varying vec2 fragUv;
 varying vec4 fragCol;
+varying vec2 texCoord;
 
 uniform vec3 cameraPos;
+
+uniform sampler2D texture0;
 
 uniform float time = 0;
 uniform vec3 lightDirr = normalize(vec3(10,-1,-1));
@@ -90,7 +99,9 @@ void main() {
 	float diff = max(dot(fragNormal,lightDir), 0);
 	vec3 diffuse = diff * lightCol * lightIntensity;
 
-	gl_FragColor = vec4(diffuse + ambientCol + specular, 1);
+	vec4 texColor = texture2D(texture0, texCoord);
+
+	gl_FragColor = vec4((diffuse + ambientCol + specular), 1) * texColor * fragCol;
 }
 ");
 }

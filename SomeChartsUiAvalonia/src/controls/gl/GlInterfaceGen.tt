@@ -7,12 +7,17 @@
 <#@ import namespace="System.Linq"#>
 <#
     var functions = new[] {
-        new{name = "DeleteVertexArrays", ret = "void", args = "int count, int[] buffers"},
-        new{name = "BindVertexArray", ret = "void", args = "int array"},
         new{name = "GenVertexArrays", ret = "void", args = "int count, int[] arrays"},
+        new{name = "GenTextures", ret = "void", args = "int count, int* textures"},
+        
+        new{name = "DeleteVertexArrays", ret = "void", args = "int count, int[] buffers"},
+        new{name = "DeleteTextures", ret = "void", args = "int count, int* textures"},
+        
+        new{name = "BindVertexArray", ret = "void", args = "int array"},
         new{name = "BufferSubData", ret = "void", args = "int buffer, int offset, int size, void* data"},
         new{name = "CullFace", ret = "void", args = "int face"},
         
+        new{name = "Uniform1i", ret = "void", args = "int location, int v"},
         new{name = "Uniform2f", ret = "void", args = "int location, float x, float y"},
         new{name = "Uniform3f", ret = "void", args = "int location, float x, float y, float z"},
         new{name = "Uniform4f", ret = "void", args = "int location, float x, float y, float z, float w"},
