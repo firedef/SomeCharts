@@ -1,12 +1,11 @@
+using MathStuff;
+using MathStuff.vectors;
 using SomeChartsUi.data;
 using SomeChartsUi.themes.colors;
 using SomeChartsUi.themes.themes;
 using SomeChartsUi.ui.canvas;
 using SomeChartsUi.ui.elements;
 using SomeChartsUi.ui.text;
-using SomeChartsUi.utils;
-using SomeChartsUi.utils.rects;
-using SomeChartsUi.utils.vectors;
 
 namespace SomeChartsUi.elements.other;
 

@@ -1,6 +1,6 @@
+using MathStuff;
+using MathStuff.vectors;
 using SomeChartsUi.ui.canvas.animation;
-using SomeChartsUi.utils.rects;
-using SomeChartsUi.utils.vectors;
 
 namespace SomeChartsUi.ui.canvas; 
 

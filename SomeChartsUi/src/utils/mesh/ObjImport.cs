@@ -1,5 +1,5 @@
-using SomeChartsUi.themes.colors;
-using SomeChartsUi.utils.vectors;
+using MathStuff;
+using MathStuff.vectors;
 
 namespace SomeChartsUi.utils.mesh; 
 

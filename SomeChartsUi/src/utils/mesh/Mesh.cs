@@ -1,6 +1,5 @@
-using System.Numerics;
+using MathStuff.vectors;
 using SomeChartsUi.utils.collections;
-using SomeChartsUi.utils.vectors;
 
 namespace SomeChartsUi.utils.mesh; 
 

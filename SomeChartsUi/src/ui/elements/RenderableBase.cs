@@ -1,8 +1,7 @@
-using SomeChartsUi.data;
+using MathStuff.vectors;
 using SomeChartsUi.ui.canvas;
 using SomeChartsUi.utils.mesh;
 using SomeChartsUi.utils.shaders;
-using SomeChartsUi.utils.vectors;
 
 namespace SomeChartsUi.ui.elements; 
 

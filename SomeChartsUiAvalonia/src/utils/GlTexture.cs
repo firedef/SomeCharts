@@ -1,10 +1,7 @@
 using System;
-using System.Drawing.Drawing2D;
 using System.IO;
-using Avalonia.Controls;
 using Avalonia.Media.Imaging;
 using Avalonia.OpenGL;
-using Avalonia.OpenGL.Imaging;
 using Avalonia.Platform;
 using SomeChartsUi.utils.shaders;
 using SomeChartsUiAvalonia.controls.gl;

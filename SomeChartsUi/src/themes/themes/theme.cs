@@ -1,4 +1,4 @@
-using SomeChartsUi.themes.colors;
+using MathStuff;
 using SomeChartsUi.themes.palettes;
 
 namespace SomeChartsUi.themes.themes; 

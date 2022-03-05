@@ -1,3 +1,5 @@
+using MathStuff;
+
 namespace SomeChartsUi.utils.collections; 
 
 public class HashedList<T> : NativeList<T> where T : unmanaged {

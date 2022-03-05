@@ -1,5 +1,5 @@
 using System.Runtime.InteropServices;
-using SomeChartsUi.utils.vectors;
+using MathStuff.vectors;
 
 namespace SomeChartsUi.utils.mesh;
 

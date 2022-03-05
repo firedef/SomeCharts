@@ -1,14 +1,12 @@
 using System.Buffers;
-using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
+using MathStuff;
+using MathStuff.vectors;
 using SomeChartsUi.data;
 using SomeChartsUi.elements;
-using SomeChartsUi.themes.colors;
 using SomeChartsUi.ui.canvas;
 using SomeChartsUi.ui.text;
-using SomeChartsUi.utils;
 using SomeChartsUi.utils.shaders;
-using SomeChartsUi.utils.vectors;
 
 namespace SomeChartsUi.ui.elements;
 

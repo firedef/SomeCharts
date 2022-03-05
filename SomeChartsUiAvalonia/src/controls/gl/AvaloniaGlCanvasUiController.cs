@@ -3,7 +3,6 @@ using SomeChartsUi.ui;
 using SomeChartsUi.ui.canvas;
 using SomeChartsUi.ui.canvas.controls;
 using SomeChartsUiAvalonia.backends;
-using SomeChartsUiAvalonia.utils.collections;
 
 namespace SomeChartsUiAvalonia.controls.gl; 
 

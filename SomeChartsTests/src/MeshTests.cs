@@ -1,10 +1,9 @@
 using System;
 using System.Collections.Generic;
+using MathStuff;
+using MathStuff.vectors;
 using NUnit.Framework;
-using SomeChartsUi.themes.colors;
-using SomeChartsUi.utils.collections;
 using SomeChartsUi.utils.mesh;
-using SomeChartsUi.utils.vectors;
 
 namespace SomeChartsTests; 
 

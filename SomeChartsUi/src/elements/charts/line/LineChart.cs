@@ -2,7 +2,6 @@ using SomeChartsUi.data;
 using SomeChartsUi.themes.colors;
 using SomeChartsUi.ui.canvas;
 using SomeChartsUi.ui.elements;
-using SomeChartsUi.utils.vectors;
 
 namespace SomeChartsUi.elements.charts.line;
 

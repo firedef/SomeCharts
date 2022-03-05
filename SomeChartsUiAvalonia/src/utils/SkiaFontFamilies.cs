@@ -1,10 +1,9 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
+using MathStuff;
 using SkiaSharp;
 using SkiaSharp.HarfBuzz;
 using SomeChartsUi.ui.text;
-using SomeChartsUi.utils;
 
 namespace SomeChartsUiAvalonia.utils; 
 

@@ -1,11 +1,9 @@
-using SomeChartsUi.themes.colors;
+using MathStuff;
 using SomeChartsUi.ui.canvas;
 using SomeChartsUi.ui.elements;
 using SomeChartsUi.ui.text;
 using SomeChartsUi.utils.mesh;
-using SomeChartsUi.utils.rects;
 using SomeChartsUi.utils.shaders;
-using SomeChartsUi.utils.vectors;
 
 namespace SomeChartsUi.backends; 
 

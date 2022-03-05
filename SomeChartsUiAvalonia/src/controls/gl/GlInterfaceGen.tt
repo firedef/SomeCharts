@@ -1,10 +1,5 @@
 <#@ template language="C#v3.5" #>
-<#@ import namespace="System"#>
-<#@ import namespace="System.Text"#>
-<#@ import namespace="System.Collections"#>
-<#@ import namespace="System.Collections.Generic"#>
 <#@ assembly name="System.Core"#>
-<#@ import namespace="System.Linq"#>
 <#
     var functions = new[] {
         new{name = "GenVertexArrays", ret = "void", args = "int count, int[] arrays"},

@@ -1,5 +1,5 @@
+using MathStuff.vectors;
 using SomeChartsUi.ui.elements;
-using SomeChartsUi.utils.vectors;
 
 namespace SomeChartsUi.data;
 

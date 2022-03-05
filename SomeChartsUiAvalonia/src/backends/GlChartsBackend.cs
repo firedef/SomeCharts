@@ -1,13 +1,13 @@
 using System;
 using System.Numerics;
 using Avalonia.OpenGL;
+using MathStuff;
+using MathStuff.vectors;
 using SomeChartsUi.backends;
-using SomeChartsUi.themes.colors;
 using SomeChartsUi.ui.elements;
 using SomeChartsUi.ui.text;
 using SomeChartsUi.utils.mesh;
 using SomeChartsUi.utils.shaders;
-using SomeChartsUi.utils.vectors;
 using SomeChartsUiAvalonia.controls.gl;
 using SomeChartsUiAvalonia.utils;
 using SomeChartsUiAvalonia.utils.collections;

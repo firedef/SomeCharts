@@ -1,9 +1,9 @@
 using System;
 using System.Collections.Generic;
 using System.Numerics;
+using MathStuff.vectors;
 using SomeChartsUi.utils.mesh;
 using SomeChartsUi.utils.shaders;
-using SomeChartsUi.utils.vectors;
 using SomeChartsUiAvalonia.controls.gl;
 using static Avalonia.OpenGL.GlConsts;
 namespace SomeChartsUiAvalonia.utils.collections; 

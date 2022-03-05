@@ -1,8 +1,7 @@
 using System;
 using System.Runtime.InteropServices;
+using MathStuff.vectors;
 using SkiaSharp;
-using SomeChartsUi.utils.vectors;
-using SomeChartsUiAvalonia.utils;
 
 namespace SomeChartsUiAvalonia.backends;
 

@@ -1,8 +1,8 @@
-using SomeChartsUi.themes.colors;
+using MathStuff;
+using MathStuff.vectors;
 using SomeChartsUi.ui.canvas;
 using SomeChartsUi.ui.elements;
 using SomeChartsUi.utils.mesh;
-using SomeChartsUi.utils.vectors;
 
 namespace SomeChartsUi.elements.other; 
 

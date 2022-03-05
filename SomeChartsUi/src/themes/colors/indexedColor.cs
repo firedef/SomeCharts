@@ -1,3 +1,4 @@
+using MathStuff;
 using SomeChartsUi.themes.palettes;
 using SomeChartsUi.themes.themes;
 

@@ -1,7 +1,6 @@
 using SomeChartsUi.themes.colors;
 using SomeChartsUi.ui.canvas;
 using SomeChartsUi.ui.elements;
-using SomeChartsUi.utils.rects;
 
 namespace SomeChartsUi.ui.layers; 
 

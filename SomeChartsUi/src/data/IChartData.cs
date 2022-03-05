@@ -1,4 +1,4 @@
-using System.Buffers;
+using MathStuff;
 using SomeChartsUi.themes.colors;
 
 namespace SomeChartsUi.data; 

@@ -2,10 +2,10 @@ using System.Diagnostics;
 using Avalonia;
 using Avalonia.Input;
 using Avalonia.Media;
+using MathStuff.vectors;
 using SomeChartsUi.themes.themes;
 using SomeChartsUi.ui;
 using SomeChartsUi.ui.canvas;
-using SomeChartsUi.utils.vectors;
 using SomeChartsUiAvalonia.utils;
 
 namespace SomeChartsUiAvalonia.controls.skia;

@@ -1,5 +1,3 @@
-using SomeChartsUi.utils.vectors;
-
 namespace SomeChartsUi.ui.canvas.animation; 
 
 public class CanvasAnimVariable<T> : ICanvasUpdate where T : unmanaged {

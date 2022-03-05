@@ -1,15 +1,15 @@
 using System;
 using Avalonia.Platform;
 using Avalonia.Skia;
+using MathStuff;
+using MathStuff.vectors;
 using SkiaSharp;
 using SkiaSharp.HarfBuzz;
 using SomeChartsUi.backends;
-using SomeChartsUi.themes.colors;
 using SomeChartsUi.ui.elements;
 using SomeChartsUi.ui.text;
 using SomeChartsUi.utils.mesh;
 using SomeChartsUi.utils.shaders;
-using SomeChartsUi.utils.vectors;
 using SomeChartsUiAvalonia.utils;
 
 namespace SomeChartsUiAvalonia.backends;

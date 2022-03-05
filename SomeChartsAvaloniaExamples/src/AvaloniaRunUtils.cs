@@ -2,14 +2,9 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Avalonia;
-using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.OpenGL;
-using Avalonia.OpenGL.Angle;
-using Avalonia.OpenGL.Controls;
-using Avalonia.OpenGL.Egl;
 using Avalonia.Threading;
-using SomeChartsUiAvalonia.controls;
 using SomeChartsUiAvalonia.controls.gl;
 using SomeChartsUiAvalonia.controls.skia;
 

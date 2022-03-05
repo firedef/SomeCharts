@@ -1,10 +1,9 @@
 using Avalonia;
 using Avalonia.Input;
+using MathStuff;
+using MathStuff.vectors;
 using SkiaSharp;
-using SomeChartsUi.themes.colors;
 using SomeChartsUi.ui;
-using SomeChartsUi.utils.rects;
-using SomeChartsUi.utils.vectors;
 
 namespace SomeChartsUiAvalonia.utils; 
 

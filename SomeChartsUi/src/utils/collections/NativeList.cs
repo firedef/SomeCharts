@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Runtime.InteropServices;
+using MathStuff;
 
 namespace SomeChartsUi.utils.collections; 
 

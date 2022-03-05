@@ -4,7 +4,6 @@ using SomeChartsUi.themes.themes;
 using SomeChartsUi.ui.canvas;
 using SomeChartsUi.ui.elements;
 using SomeChartsUi.ui.text;
-using SomeChartsUi.utils.vectors;
 
 namespace SomeChartsUi.elements.other; 
 

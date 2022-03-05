@@ -2,10 +2,10 @@ using System;
 using System.Threading;
 using Avalonia.Controls;
 using Avalonia.Input;
+using MathStuff.vectors;
 using SkiaSharp;
 using SomeChartsUi.ui.canvas;
 using SomeChartsUi.ui.elements;
-using SomeChartsUi.utils.vectors;
 using SomeChartsUiAvalonia.backends;
 
 namespace SomeChartsUiAvalonia.controls.skia;

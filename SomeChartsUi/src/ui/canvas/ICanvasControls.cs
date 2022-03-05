@@ -1,4 +1,4 @@
-using SomeChartsUi.utils.vectors;
+using MathStuff.vectors;
 
 namespace SomeChartsUi.ui.canvas;
 

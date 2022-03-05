@@ -3,8 +3,8 @@ using System.Linq;
 using System.Numerics;
 using System.Runtime.InteropServices;
 using Avalonia.OpenGL;
+using MathStuff.vectors;
 using SomeChartsUi.utils.shaders;
-using SomeChartsUi.utils.vectors;
 using SomeChartsUiAvalonia.controls.gl;
 
 namespace SomeChartsUiAvalonia.utils;
