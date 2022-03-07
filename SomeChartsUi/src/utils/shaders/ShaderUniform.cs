@@ -1,6 +1,6 @@
 namespace SomeChartsUi.utils.shaders; 
 
-public readonly struct ShaderUniform {
+public readonly record struct ShaderUniform {
 	public readonly string name;
 	public readonly int location = -1;
 	public readonly int type;

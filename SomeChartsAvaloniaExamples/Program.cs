@@ -5,7 +5,7 @@ namespace SomeChartsAvaloniaExamples {
 	class Program {
 		[STAThread]
 		public static void Main(string[] args) {
-			ElementsExamples.RunTeapot();
+			ElementsExamples.RunLabel();
 		}
 	}
 }

@@ -47,7 +47,7 @@ public partial class AvaloniaChartsCanvas : Panel {
 	}
 
 	private static ChartsCanvas CreateCanvas() {
-		ChartsCanvas canvas = new(new SkiaChartsBackend());
+		ChartsCanvas canvas = new(new SkiaChartsBackend(), new GlChartFactory());
 		canvas.AddLayer("bg");
 		canvas.AddLayer("normal");
 		canvas.AddLayer("top");

@@ -25,7 +25,7 @@ public abstract partial class RenderableBase {
 
 	public RenderableBase(ChartsCanvas owner) {
 		canvas = owner;
-		mesh = canvas.renderer.backend.CreateMesh();
+		mesh = canvas.factory.CreateMesh();
 	}
 	
 	public void Render() {

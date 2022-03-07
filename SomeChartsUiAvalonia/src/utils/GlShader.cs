@@ -102,8 +102,9 @@ uniform mat4 view;");
 	}
 
 	public unsafe void TrySetUniform(string uniformName, object v) {
-		int loc = uniforms.FirstOrDefault(u => u.name == uniformName).location;
-		if (loc == -1) return;
+		ShaderUniform uniform = uniforms.FirstOrDefault(u => u.name == uniformName);
+		if (uniform == default) return;
+		int loc = uniform.location;
 		
 		GlInfo.gl!.UseProgram(shaderProgram);
 

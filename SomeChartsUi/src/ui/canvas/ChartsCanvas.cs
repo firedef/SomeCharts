@@ -5,8 +5,9 @@ using SomeChartsUi.ui.layers;
 namespace SomeChartsUi.ui.canvas; 
 
 public class ChartsCanvas {
-	public ChartCanvasTransform transform;
-	public ChartCanvasRenderer renderer;
+	public readonly ChartCanvasTransform transform;
+	public readonly ChartCanvasRenderer renderer;
+	public readonly ChartFactory factory;
 
 	public ChartCanvasControllerBase? controller;
 	private List<CanvasLayer> layers => renderer.layers;
@@ -14,15 +15,16 @@ public class ChartsCanvas {
 	
 	public TimeSpan renderTime;
 
-	public ChartsCanvas(ChartsBackendBase backend) {
+	public ChartsCanvas(ChartsBackendBase backend, ChartFactory factory) {
 		transform = new();
 		renderer = new(this, backend);
 		backend.owner = this;
 		backend.renderer = renderer;
+		this.factory = factory;
 	}
 
 	public CanvasLayer AddLayer(string name) {
-		CanvasLayer l = new(this, name);
+		CanvasLayer l = factory.CreateLayer(name);
 		renderer.layerNames.Add(name, layers.Count);
 		layers.Add(l);
 		return l;

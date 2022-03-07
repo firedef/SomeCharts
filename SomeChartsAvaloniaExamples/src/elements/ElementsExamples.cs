@@ -1,5 +1,6 @@
 using System;
 using System.IO;
+using MathStuff;
 using MathStuff.vectors;
 using SomeChartsUi.data;
 using SomeChartsUi.elements;
@@ -46,54 +47,64 @@ public static class ElementsExamples {
 			r.material = new(GlShaders.diffuse);
 			//r.material.SetProperty("lightCol", new float3(1,0,0));
 			r.material.SetProperty("shininess", 32f);
-			Texture tex = canvas.canvas.renderer.backend.CreateTexture(Path.GetFullPath("data/checker.png"));
-			r.material.SetProperty("Texture", tex);
+			Texture tex = canvas.canvas.factory.CreateTexture(Path.GetFullPath("data/checker.png"));
+			r.material.SetProperty("texture0", tex);
 			MeshRenderer r2 = r;
-			// r.beforeRender += () => {
-			// 	float time = (float)DateTime.Now.TimeOfDay.TotalMilliseconds;
-			// 	r2.transform.rotation = new(MathF.PI * .1f * (time * .0005f), MathF.PI * .25f, (time * .001f) * .1f);
-			// };
+		});
+		
+		AvaloniaRunUtils.RunAvalonia();
+	}
+
+	private static int rectCount = 0;
+	public static void RunRectPack() {
+		AvaloniaRunUtils.RunAfterStart(() => {
+			AvaloniaGlChartsCanvas canvas = AvaloniaRunUtils.AddGlCanvas();
+
+			const int c = 8;
+			RectPackVisualization[] packs = new RectPackVisualization[c];
+			for (int i = 0; i < c; i++) {
+				packs[i] = new(canvas.canvas);
+				packs[i].transform = new(new(3000 * i, 0));
+				canvas.AddElement(packs[i]);
+			}
 			
-			// for (int i = 0; i < 256; i++) {
-			// 	MeshRenderer r1 = new(canvas.canvas, r.mesh!);
-			// 	r1.transform = new(new(200 * (i % 16), 200 * (i / 16)), float3.one * 2, new(MathF.PI*.1f,MathF.PI*.25f,0));
-			// 	int i1 = i;
-			// 	r1.beforeRender += () => {
-			// 		float time = (float)DateTime.Now.TimeOfDay.TotalMilliseconds;
-			// 		r1.transform.rotation = new(MathF.PI * .1f * (i1 * .2f + time * .0005f), MathF.PI * .25f, (i1 * .5f + time * .001f) * .1f);
-			// 	};
-			// 	canvas.AddElement(r1);
-			// 	r1.shader = GlShaders.diffuse;
-			// }
-			//
-			//
-			// r = new(canvas.canvas, Path.GetFullPath("data/cube.obj"));
-			// r.transform = new(new(8000, -1000), float3.one * 500, 0);
-			// canvas.AddElement(r);
-			// r.GenerateMesh();
-			// //r.shader = GlShaders.diffuse;
-			// r.beforeRender += () => {
-			// 	float time = (float)DateTime.Now.TimeOfDay.TotalMilliseconds;
-			// 	r.transform.rotation = new(MathF.PI * .1f * (time * .0005f), MathF.PI * .25f, (.5f + time * .001f) * .1f);
-			// };
-			//
-			// for (int i = 0; i < 256; i++) {
-			// 	MeshRenderer r1 = new(canvas.canvas, r.mesh!);
-			// 	r1.transform = new(new(8000 + 200 * (i % 16), 200 * (i / 16)), float3.one * 50, new(MathF.PI*.1f,MathF.PI*.25f,0));
-			// 	int i1 = i;
-			// 	r1.beforeRender += () => {
-			// 		float time = (float)DateTime.Now.TimeOfDay.TotalMilliseconds;
-			// 		r1.transform.rotation = new(MathF.PI * .1f * (i1 * .2f + time * .0005f), MathF.PI * .25f, (i1 * .5f + time * .001f) * .1f);
-			// 	};
-			// 	canvas.AddElement(r1);
-			// 	r1.shader = GlShaders.diffuse;
-			// }
+			color[] cols = { color.softRed, color.softPurple, color.softBlue, color.softCyan, color.softGreen };
+			Random rnd = new();
+
+			packs[0].beforeRender += () => {
+				//if (rnd.NextDouble() < .5) return;
+				float w = (float)rnd.NextDouble() * 24 + 20;
+				float h = (float)rnd.NextDouble() * 32 + 10;
+				color col = cols[2];
+
+				for (int i = 0; i < c; i++) {
+					if (packs[i].AddRect(new(0, 0, w, h), col)) {
+						Console.WriteLine(rectCount++);
+						break;
+					}
+				}
+				//if (!r.AddRect(new(0, 0, w, h), c)) Console.WriteLine("failed");
+			};
+
+			//Console.WriteLine($"{sw.ElapsedMilliseconds}ms: {i}");
+		});
+		
+		AvaloniaRunUtils.RunAvalonia();
+	}
+	
+	public static void RunLabel() {
+		AvaloniaRunUtils.RunAfterStart(() => {
+			AvaloniaGlChartsCanvas canvas = AvaloniaRunUtils.AddGlCanvas();
+
+			Label l = new("amogus", canvas.canvas);
+			canvas.AddElement(l);
+			l.color = new("#FF8855");
+			l.GenerateMesh();
 			
-			// r = new(canvas.canvas, Path.GetFullPath("data/teapot.obj"));
-			// r.transform = new(new(-200, 100), float3.one * 3, 0);
-			// canvas.AddElement(r);
-			// r.GenerateMesh();
-			// r.shader = GlShaders.diffuse;
+			// l.beforeRender += () => {
+			// 	float time = (float)DateTime.Now.TimeOfDay.TotalMilliseconds;
+			// 	l.transform.rotation = new(0, MathF.PI * .1f * (time * .005f), 0);
+			// };
 		});
 		
 		AvaloniaRunUtils.RunAvalonia();

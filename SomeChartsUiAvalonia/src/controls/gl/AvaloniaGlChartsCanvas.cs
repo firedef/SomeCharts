@@ -40,11 +40,15 @@ public class AvaloniaGlChartsCanvas : OpenGlControlBase {
 		//_updateTimer = new(_ => Update(), null, 0, 10);
 		canvas.controller = new AvaloniaGlCanvasUiController(canvas, this);
 		Focusable = true;
+		
 		GlInfo.version = GlVersion;
 	}
+	
+	
 
 	private static ChartsCanvas CreateCanvas() {
-		ChartsCanvas canvas = new(new GlChartsBackend());
+		ChartsCanvas canvas = new(new GlChartsBackend(), new GlChartFactory());
+		canvas.factory.owner = canvas;
 		canvas.AddLayer("bg");
 		canvas.AddLayer("normal");
 		canvas.AddLayer("top");
@@ -75,6 +79,9 @@ public class AvaloniaGlChartsCanvas : OpenGlControlBase {
 	protected override void OnOpenGlRender(GlInterface gl, int fb) {
 		gl.Enable(GL_DEPTH_TEST);
 		gl.Enable(GL_MULTISAMPLE);
+		gl.Enable(GL_BLEND);
+		GlInfo.glExt!.BlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+		
 		switch (polygonMode) {
 			case PolygonMode.fill:
 				GlInfo.glExt!.PolygonMode(GL_FRONT_AND_BACK, GL_FILL);
@@ -101,7 +108,7 @@ public class AvaloniaGlChartsCanvas : OpenGlControlBase {
 			layer.Render();
 		GlInfo.CheckError("end");
 
-		Dispatcher.UIThread.Post(InvalidateVisual, DispatcherPriority.Render);
+		Dispatcher.UIThread.Post(InvalidateVisual, DispatcherPriority.Normal);
 		canvas.renderTime = sw.Elapsed;
 	}
 

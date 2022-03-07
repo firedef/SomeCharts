@@ -30,6 +30,10 @@ public class GlExtrasInterface : GlInterfaceBase<GlInterface.GlContextInfo>
     public GlBufferSubData BufferSubData { get; } = null!;
     public unsafe delegate void GlBufferSubData(int buffer, int offset, int size, void* data);
 
+    [GlEntryPoint("glTexSubImage2D")]
+    public GlTexSubImage2D TexSubImage2D { get; } = null!;
+    public unsafe delegate void GlTexSubImage2D(int target, int level, int xOff, int yOff, int w, int h, int format, int type, void* pixels);
+
     [GlEntryPoint("glCullFace")]
     public GlCullFace CullFace { get; } = null!;
     public unsafe delegate void GlCullFace(int face);
@@ -57,5 +61,17 @@ public class GlExtrasInterface : GlInterfaceBase<GlInterface.GlContextInfo>
     [GlEntryPoint("glPolygonMode")]
     public GlPolygonMode PolygonMode { get; } = null!;
     public unsafe delegate void GlPolygonMode(int face, int mode);
+
+    [GlEntryPoint("glBlendFunc")]
+    public GlBlendFunc BlendFunc { get; } = null!;
+    public unsafe delegate void GlBlendFunc(int sFactor, int dFactor);
+
+    [GlEntryPoint("glPixelStorei")]
+    public GlPixelStorei PixelStorei { get; } = null!;
+    public unsafe delegate void GlPixelStorei(int name, int param);
+
+    [GlEntryPoint("glGenerateMipmap")]
+    public GlGenerateMipmap GenerateMipmap { get; } = null!;
+    public unsafe delegate void GlGenerateMipmap(int target);
 
 }

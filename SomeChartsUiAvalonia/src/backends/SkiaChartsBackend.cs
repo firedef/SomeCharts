@@ -1,6 +1,7 @@
 using System;
 using Avalonia.Platform;
 using Avalonia.Skia;
+using FreeTypeSharp;
 using MathStuff;
 using MathStuff.vectors;
 using SkiaSharp;
@@ -76,7 +77,6 @@ public class SkiaChartsBackend : ChartsBackendBase, IDisposable {
 	public override void DrawMesh(Mesh mesh, Material? material, RenderableTransform transform) {
 		throw new NotImplementedException();
 	}
-	public override Texture CreateTexture(string path) => throw new NotImplementedException();
 
 	public void SetRenderingVariables(IDrawingContextImpl ctx) {
 		SKCanvas canvas = ((ISkiaDrawingContextImpl)ctx).SkCanvas;

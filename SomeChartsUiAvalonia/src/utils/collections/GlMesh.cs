@@ -25,9 +25,11 @@ public class GlMesh : Mesh {
 		indexBufferObject = buffers[1];
 		GlInfo.glExt.GenVertexArrays(1, buffers);
 		vertexArrayObject = buffers[0];
-
-		BindBuffers();
 		
+		GlInfo.glExt!.BindVertexArray(vertexArrayObject);
+		GlInfo.gl!.BindBuffer(GL_ARRAY_BUFFER, vertexBufferObject);
+		GlInfo.gl.BindBuffer(GL_ELEMENT_ARRAY_BUFFER, indexBufferObject);
+
 		int vertexSize = sizeof(Vertex);
 		const int posLoc = 0;
 		const int normalLoc = 1;
@@ -45,21 +47,20 @@ public class GlMesh : Mesh {
 	}
 
 	protected void BindBuffers() {
-		GlInfo.gl!.BindBuffer(GL_ARRAY_BUFFER, vertexBufferObject);
-		GlInfo.gl.BindBuffer(GL_ELEMENT_ARRAY_BUFFER, indexBufferObject);
 		GlInfo.glExt!.BindVertexArray(vertexArrayObject);
 	}
 
 	protected unsafe void UpdateBuffers() {
 		int vSize = sizeof(Vertex);
 		const int iSize = sizeof(ushort);
+		bool d = false;
 		
 		// vertices
-		bool sizeChanged = isDynamic ? vertices.GetCapacityChange() : vertices.GetCountChange();
 		GlInfo.gl!.BindBuffer(GL_ARRAY_BUFFER, vertexBufferObject);
+		bool sizeChanged = d ? vertices.GetCapacityChange() : vertices.GetCountChange();
 		if (sizeChanged) {
-			int c = isDynamic ? vertices.capacity : vertices.count;
-			GlInfo.gl.BufferData(GL_ARRAY_BUFFER, (IntPtr)(c * vSize), (IntPtr)vertices.dataPtr, GL_DYNAMIC_DRAW);
+			int c = d ? vertices.capacity : vertices.count;
+			GlInfo.gl!.BufferData(GL_ARRAY_BUFFER, (IntPtr)(c * vSize), (IntPtr)vertices.dataPtr, GL_DYNAMIC_DRAW);
 			vertices.ResetChanges();
 		}
 		else {
@@ -69,11 +70,11 @@ public class GlMesh : Mesh {
 		}
 		
 		// indexes
-		sizeChanged = isDynamic ? indexes.GetCapacityChange() : indexes.GetCountChange();
 		GlInfo.gl.BindBuffer(GL_ELEMENT_ARRAY_BUFFER, indexBufferObject);
+		sizeChanged = d ? indexes.GetCapacityChange() : indexes.GetCountChange();
 		if (sizeChanged) {
-			int c = isDynamic ? indexes.capacity : indexes.count;
-			GlInfo.gl.BufferData(GL_ELEMENT_ARRAY_BUFFER, (IntPtr)(c * iSize), (IntPtr)indexes.dataPtr, GL_DYNAMIC_DRAW);
+			int c = d ? indexes.capacity : indexes.count;
+			GlInfo.gl!.BufferData(GL_ELEMENT_ARRAY_BUFFER, (IntPtr)(c * iSize), (IntPtr)indexes.dataPtr, GL_DYNAMIC_DRAW);
 			indexes.ResetChanges();
 		}
 		else {
@@ -88,10 +89,12 @@ public class GlMesh : Mesh {
 	public override void OnModified() => updateRequired = true;
 
 	public void Render(Material? material, Matrix4x4 model, Matrix4x4 view, Matrix4x4 projection, float3 cameraPos) {
+		if (vertices.count == 0 || indexes.count == 0) return;
 		if (vertexArrayObject == 0) GenBuffers();
 		if (vertexArrayObject == 0) return;
 		if (material is {shader: not GlShader}) return;
 		
+		BindBuffers();
 		if (updateRequired | isDynamic) UpdateBuffers();
 		GlShader shader = material == null ? GlShaders.basic : (GlShader) material.shader;
 		if (shader.shaderProgram == 0) shader.TryCompile();
@@ -99,6 +102,7 @@ public class GlMesh : Mesh {
 
 		GlInfo.gl!.UseProgram(shader.shaderProgram);
 		
+		GlInfo.CheckError($"before uniforms");
 		shader.TrySetUniform("model", model);
 		shader.TrySetUniform("view", view);
 		shader.TrySetUniform("projection", projection);
@@ -106,8 +110,9 @@ public class GlMesh : Mesh {
 		shader.TrySetUniform("time", (float)DateTime.Now.TimeOfDay.TotalMilliseconds);
 		if (material != null) shader.TryApplyMaterial(material);
 		
-		BindBuffers();
+		GlInfo.CheckError($"after uniforms");
 		GlInfo.gl.DrawElements(GL_TRIANGLES, indexes.count, GL_UNSIGNED_SHORT, IntPtr.Zero);
+		GlInfo.CheckError($"after rendering object");
 	}
 
 	public override void Dispose() {

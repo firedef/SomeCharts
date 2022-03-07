@@ -29,6 +29,9 @@
         <None Update="data\checker.png">
           <CopyToOutputDirectory>Always</CopyToOutputDirectory>
         </None>
+        <None Update="data\Comfortaa-VariableFont_wght.ttf">
+          <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </None>
     </ItemGroup>
     <ItemGroup>
         <PackageReference Include="Avalonia" Version="0.10.12" />

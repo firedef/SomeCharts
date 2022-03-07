@@ -1,6 +1,9 @@
+using FreeTypeSharp;
 using MathStuff;
+using MathStuff.vectors;
 using SomeChartsUi.ui.canvas;
 using SomeChartsUi.ui.elements;
+using SomeChartsUi.ui.layers;
 using SomeChartsUi.ui.text;
 using SomeChartsUi.utils.mesh;
 using SomeChartsUi.utils.shaders;
@@ -19,8 +22,4 @@ public abstract class ChartsBackendBase {
 	public abstract void ClearScreen(color col);
 	
 	public abstract void DrawMesh(Mesh mesh, Material? material, RenderableTransform transform);
-
-	public virtual Mesh CreateMesh() => new();
-	public virtual Shader CreateShader(string name, string vertex, string fragment) => new(name, vertex, fragment);
-	public abstract Texture CreateTexture(string path);
 }

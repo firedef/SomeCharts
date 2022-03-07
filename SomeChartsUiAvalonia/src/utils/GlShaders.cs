@@ -35,6 +35,96 @@ void main() {
 }
 ");
 	
+	public static readonly GlShader basicTextured = new("", @"
+// PROCESS VERTEX
+// ADD ATTRIBUTES
+// ADD MATRICES
+
+varying vec3 fragPos;
+varying vec3 fragNormal;
+varying vec2 fragUv;
+varying vec4 fragCol;
+varying vec2 texCoord;
+
+#extension GL_ARB_gpu_shader5 : enable
+
+void main() {
+	float scale = 1.0;
+	vec3 scaledPos = pos * scale;
+
+	gl_Position = projection * view * model * vec4(scaledPos, 1.0);
+	fragPos = vec3(model * vec4(pos,1.0));
+	fragUv = uv;
+	fragCol = col;
+	fragNormal = normal;
+	texCoord = uv;
+}
+", @"
+// PROCESS FRAGMENT
+// DECLAREGLFRAG
+
+varying vec3 fragPos;
+varying vec3 fragNormal;
+varying vec2 fragUv;
+varying vec4 fragCol;
+varying vec2 texCoord;
+
+uniform sampler2D texture0;
+
+void main() {
+	vec4 texColor = texture2D(texture0, texCoord);
+
+	gl_FragColor = texColor * fragCol;
+}
+");
+	
+	public static readonly GlShader basicText = new("", @"
+// PROCESS VERTEX
+// ADD ATTRIBUTES
+// ADD MATRICES
+
+varying vec3 fragPos;
+varying vec3 fragNormal;
+varying vec2 fragUv;
+varying vec4 fragCol;
+varying vec2 texCoord;
+
+#extension GL_ARB_gpu_shader5 : enable
+
+void main() {
+	float scale = 1.0;
+	vec3 scaledPos = pos * scale;
+
+	gl_Position = projection * view * model * vec4(scaledPos, 1.0);
+	fragPos = vec3(model * vec4(pos,1.0));
+	fragUv = uv;
+	fragCol = col;
+	fragNormal = normal;
+	texCoord = uv;
+}
+", @"
+// PROCESS FRAGMENT
+// DECLAREGLFRAG
+
+varying vec3 fragPos;
+varying vec3 fragNormal;
+varying vec2 fragUv;
+varying vec4 fragCol;
+varying vec2 texCoord;
+
+uniform float u_gamma = 0.52;
+
+uniform sampler2D texture0;
+
+void main() {
+	vec4 texColor = texture2D(texture0, texCoord);
+	float dist = texColor.r;
+	float alpha = smoothstep(0, 1, smoothstep(1 - u_gamma, 1 + u_gamma, dist) * 1000);
+
+	gl_FragColor = vec4(1,1,1,alpha) * fragCol;
+}
+");
+	
 	public static readonly GlShader diffuse = new("", @"
 // PROCESS VERTEX
 // ADD MATRICES

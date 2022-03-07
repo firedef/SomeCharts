@@ -9,7 +9,10 @@
         new{name = "DeleteTextures", ret = "void", args = "int count, int* textures"},
         
         new{name = "BindVertexArray", ret = "void", args = "int array"},
+        
         new{name = "BufferSubData", ret = "void", args = "int buffer, int offset, int size, void* data"},
+        new{name = "TexSubImage2D", ret = "void", args = "int target, int level, int xOff, int yOff, int w, int h, int format, int type, void* pixels"},
+        
         new{name = "CullFace", ret = "void", args = "int face"},
         
         new{name = "Uniform1i", ret = "void", args = "int location, int v"},
@@ -20,6 +23,10 @@
         new{name = "GetActiveUniform", ret = "void", args = "int program, int index, int bufferSize, int* length, int* size, int* type, sbyte* name"},
         
         new{name = "PolygonMode", ret = "void", args = "int face, int mode"},
+        new{name = "BlendFunc", ret = "void", args = "int sFactor, int dFactor"},
+        new{name = "PixelStorei", ret = "void", args = "int name, int param"},
+        
+        new{name = "GenerateMipmap", ret = "void", args = "int target"},
     };
 #>
 using Avalonia.OpenGL;

@@ -1,3 +1,4 @@
+using MathStuff.vectors;
 using SomeChartsUi.data;
 using SomeChartsUi.themes.colors;
 using SomeChartsUi.themes.themes;
@@ -21,6 +22,11 @@ public class Label : RenderableBase {
 
 	public override void GenerateMesh() {
 		
+	}
+
+	protected override void AfterDraw() {
+		base.AfterDraw();
+		DrawText(txt.Get(this), float2.zero, color.GetColor(), new());
 	}
 	// protected override void Render() {
 	// 	string text = txt.Get(this);
