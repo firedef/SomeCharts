@@ -67,7 +67,7 @@ public class GlTexture : Texture, IDisposable {
 	}
 	
 	public static void SetFilter(TextureFilter v) {
-		SetParameter(GlConsts.GL_TEXTURE_MIN_FILTER, (v == TextureFilter.nearest ? GlConsts.GL_NEAREST : GlConsts.GL_LINEAR_MIPMAP_LINEAR));
+		SetParameter(GlConsts.GL_TEXTURE_MIN_FILTER, (v == TextureFilter.nearest ? GlConsts.GL_NEAREST : GlConsts.GL_LINEAR));
 		SetParameter(GlConsts.GL_TEXTURE_MAG_FILTER, (int)v);
 	}
 

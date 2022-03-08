@@ -98,7 +98,7 @@ public static class ElementsExamples {
 
 			Label l = new("amogus", canvas.canvas);
 			canvas.AddElement(l);
-			l.color = new("#FF8855");
+			l.color = new("#eb4034");
 			l.GenerateMesh();
 			
 			// l.beforeRender += () => {

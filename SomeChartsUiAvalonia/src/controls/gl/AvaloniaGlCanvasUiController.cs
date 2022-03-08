@@ -1,3 +1,4 @@
+using System;
 using Avalonia.Input;
 using SomeChartsUi.ui;
 using SomeChartsUi.ui.canvas;
@@ -20,6 +21,16 @@ public class AvaloniaGlCanvasUiController : CanvasUiControllerBase {
 		base.OnKey(key, mods);
 
 		if (key == keycode.y) AvaloniaGlChartsCanvas.polygonMode = (PolygonMode)(((int)AvaloniaGlChartsCanvas.polygonMode + 1) % 3);
+		if (key == keycode.u) AvaloniaGlChartsCanvas.useDefaultMat = !AvaloniaGlChartsCanvas.useDefaultMat;
+		if (key == keycode.I) AvaloniaGlChartsCanvas.debugTextMat = !AvaloniaGlChartsCanvas.debugTextMat;
 		if (key == keycode.p) GlChartsBackend.perspectiveMode = !GlChartsBackend.perspectiveMode;
+		if (key == keycode.o) {
+			float th = AvaloniaGlChartsCanvas.textThickness;
+			th += (mods & keymods.shift) != 0 ? -.01f : .01f;
+			if (th > 1) th -= 1;
+			if (th < 0) th += 1;
+			Console.WriteLine(th);
+			AvaloniaGlChartsCanvas.textThickness = th;
+		}
 	}
 }

@@ -23,7 +23,9 @@ public enum PolygonMode {
 }
 
 public class AvaloniaGlChartsCanvas : OpenGlControlBase {
-
+	public static bool useDefaultMat = false;
+	public static bool debugTextMat = false;
+	public static float textThickness = 0.52f;
 	public static PolygonMode polygonMode = PolygonMode.fill;
 	public readonly ChartsCanvas canvas = CreateCanvas();
 

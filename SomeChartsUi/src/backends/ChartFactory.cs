@@ -17,5 +17,5 @@ public abstract class ChartFactory {
 	
 	public abstract Texture CreateTexture(string path);
 	public abstract Texture CreateTexture(float2 size);
-	public abstract FontTextures CreateFontTextureAtlas(FreeTypeFaceFacade face);
+	public abstract FontTextures CreateFontTextureAtlas(FreeTypeFaceFacade face, uint resolution = 32);
 }

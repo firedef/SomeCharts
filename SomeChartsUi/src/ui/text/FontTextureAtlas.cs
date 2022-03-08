@@ -9,15 +9,14 @@ public abstract class FontTextureAtlas {
 	public List<FontCharData> characters = new();
 	protected RectPack packer;
 
-	protected FontTextureAtlas(int size = 1024) => packer = new(size, 0);
+	protected FontTextureAtlas(int size = 1024) => packer = new(size, 1);
 
 	public unsafe (int i, int x, int y) Pack(int width, int height, string character) {
 		float2 size = texture.size;
 		float2 pos = packer.Pack(new(width, height));
 		if (pos == new float2(-1, -1)) return (-1, 0, 0);
-		
-		AddChar((int) pos.x, (int) pos.y, width, height, character);
 
+		AddChar((int)pos.x, (int)pos.y, width, height, character);
 		return (characters.Count - 1, (int) pos.x, (int) pos.y);
 	}
 

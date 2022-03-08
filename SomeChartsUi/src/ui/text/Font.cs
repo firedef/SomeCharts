@@ -19,11 +19,11 @@ public class Font {
 		this.textures = textures;
 	}
 	
-	public static Font LoadFromPath(string path, ChartsCanvas canvas) {
+	public static Font LoadFromPath(string path, ChartsCanvas canvas, uint resolution = 32) {
 		using FileStream fs = new(path, FileMode.Open);
 		FT.FT_New_Face(FreeType.ftLib.Native, path, 0, out IntPtr face).CheckError();
 		FreeTypeFaceFacade faceF = new(FreeType.ftLib, face);
 
-		return new("todo", false, false, false, canvas.factory.CreateFontTextureAtlas(faceF));
+		return new("todo", false, false, false, canvas.factory.CreateFontTextureAtlas(faceF, resolution));
 	}
 }

@@ -22,7 +22,8 @@ public class GlChartsBackend : ChartsBackendBase {
 
 	//TODO: oof
 	public override unsafe void DrawText(string text, color col, FontData font, RenderableTransform transform) {
-		testFont ??= Font.LoadFromPath("data/Comfortaa-VariableFont_wght.ttf", renderer.owner);
+		uint resolution = 32;
+		testFont ??= Font.LoadFromPath("data/Comfortaa-VariableFont_wght.ttf", renderer.owner, resolution);
 		// (FontCharData ch, int atlas) glyph = "AMOGUSamogus".ToCharArray().Select(c => testFont.textures.GetGlyph(c.ToString())).Last();
 		Random rnd = new();
 		//char c = (char) rnd.Next(60, 200);
@@ -53,30 +54,39 @@ public class GlChartsBackend : ChartsBackendBase {
 
 		for (int i = 0; i < 1; i++) {
 			float xPos = 0;
-			float zPos = i * 0.1f;
-			foreach (char c in "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed tincidunt mollis pretium. Phasellus euismod tortor consequat, lobortis erat quis, accumsan ligula. Vestibulum at dolor congue ante ultricies lacinia. Vestibulum nec tellus nec mauris porttitor rhoncus. Nulla pellentesque placerat pulvinar. Nullam ut rutrum ante. Nulla nunc tellus, accumsan et facilisis ut, placerat vel neque. Proin feugiat eleifend justo nec posuere. Vestibulum convallis ipsum ut rutrum faucibus. Fusce faucibus suscipit nibh, ac pellentesque lorem pellentesque et. Donec at arcu a purus ultrices sagittis. Proin at congue diam.") {
+
+			string str =
+				"Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed tincidunt mollis pretium. Phasellus euismod tortor consequat, lobortis erat quis, accumsan ligula. Vestibulum at dolor congue ante ultricies lacinia. Vestibulum nec tellus nec mauris porttitor rhoncus. Nulla pellentesque placerat pulvinar. Nullam ut rutrum ante. Nulla nunc tellus, accumsan et facilisis ut, placerat vel neque. Proin feugiat eleifend justo nec posuere. Vestibulum convallis ipsum ut rutrum faucibus. Fusce faucibus suscipit nibh, ac pellentesque lorem pellentesque et. Donec at arcu a purus ultrices sagittis. Proin at congue diam.";
+
+			for (int index = 0; index < str.Length; index++) {
+				char c = str[index];
+				
+				float s = 16f / resolution;
+				
 				(FontCharData ch, int atlas) glyph = testFont.textures.GetGlyph(c.ToString());
-			
-				float s = 16 / 32f;
+				float zPos = index * 0.001f;
+				float yPos = -glyph.ch.baseline*s;
+
 				Vertex[] vertices = new Vertex[4] {
-					new(new(xPos, 0, zPos), new(0, 0), new(glyph.ch.position.x / 1024, glyph.ch.position.y / 1024 + glyph.ch.size.y / 1024), col),
-					new(new(xPos, s*glyph.ch.size.y, zPos), new(0, 1), new(glyph.ch.position.x / 1024, glyph.ch.position.y / 1024), col),
-					new(new(xPos+s*glyph.ch.size.x, s*glyph.ch.size.y, zPos), new(1, 1), new(glyph.ch.position.x / 1024 + glyph.ch.size.x / 1024, glyph.ch.position.y / 1024), col),
-					new(new(xPos+s*glyph.ch.size.x, 0, zPos), new(1, 0), new(glyph.ch.position.x / 1024 + glyph.ch.size.x / 1024, glyph.ch.position.y / 1024 + glyph.ch.size.y / 1024), col),
+					new(new(xPos, 0 + yPos, zPos), new(0, 0), new(glyph.ch.position.x / 1024, glyph.ch.position.y / 1024 + glyph.ch.size.y / 1024), col),
+					new(new(xPos, s * glyph.ch.size.y + yPos, zPos), new(0, 1), new(glyph.ch.position.x / 1024, glyph.ch.position.y / 1024), col),
+					new(new(xPos + s * glyph.ch.size.x, s * glyph.ch.size.y + yPos, zPos), new(1, 1), new(glyph.ch.position.x / 1024 + glyph.ch.size.x / 1024, glyph.ch.position.y / 1024), col),
+					new(new(xPos + s * glyph.ch.size.x, 0 + yPos, zPos), new(1, 0), new(glyph.ch.position.x / 1024 + glyph.ch.size.x / 1024, glyph.ch.position.y / 1024 + glyph.ch.size.y / 1024), col),
 				};
-			
+
 				using Mesh m = owner.factory.CreateMesh();
 				m.SetIndexes(indices);
 				m.SetVertices(vertices);
-		
+
 				if (testFont.textures.atlases.Count > 0) {
 					((GlTexture)testFont.textures.atlases[0].texture).Bind();
-					Material mat = new(GlShaders.basicText);
+					Material mat = new(AvaloniaGlChartsCanvas.debugTextMat ? GlShaders.basicTextured : GlShaders.basicText);
 					mat.SetProperty("texture0", ((GlTexture)testFont.textures.atlases[0].texture));
+					mat.SetProperty("u_gamma", AvaloniaGlChartsCanvas.textThickness);
 					DrawMesh(m, mat, transform);
 				}
 
-				xPos += 16;
+				xPos += glyph.ch.advance*s;
 			}
 		}
 

@@ -7,23 +7,25 @@ namespace SomeChartsUiAvalonia.utils;
 
 public class GlFontTextures : FontTextures {
 	public FreeTypeFaceFacade face;
-	
+	public uint resolution;
 
-	public unsafe GlFontTextures(FreeTypeFaceFacade face) => this.face = face;
+	public GlFontTextures(FreeTypeFaceFacade face, uint resolution) {
+		this.face = face;
+		this.resolution = resolution;
+	}
 
-	
 
 	protected override unsafe (FontCharData ch, int atlas) Add(string character) {
-		//CodePoint point = new(character[0]);
-		FT.FT_Set_Pixel_Sizes(face.Face, 0, GlFontTextureAtlas.resolution);
+		FT.FT_Set_Pixel_Sizes(face.Face, 0, resolution);
 		FT.FT_Load_Char(face.Face, character[0], FT.FT_LOAD_RENDER).CheckError();
 
 		uint charIndex = face.GetCharIndex(character[0]);
 		if (charIndex == 0) return (default, -1);
-
+		
+		FT.FT_Render_Glyph((IntPtr)face.GlyphSlot, FT_Render_Mode.FT_RENDER_MODE_SDF).CheckError();
 		uint width = face.FaceRec->glyph->bitmap.width;
 		uint height = face.FaceRec->glyph->bitmap.rows;
-		FT.FT_Render_Glyph((IntPtr)face.GlyphSlot, FT_Render_Mode.FT_RENDER_MODE_SDF).CheckError();
+		
 
 		for (int i = 0; i < atlases.Count; i++) {
 			int index = Add_(atlases[i]);

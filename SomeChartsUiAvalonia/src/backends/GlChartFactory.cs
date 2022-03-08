@@ -17,5 +17,5 @@ public class GlChartFactory : ChartFactory {
 	public override Shader CreateShader(string name, string vertex, string fragment) => new GlShader(name, vertex, fragment);
 	public override Texture CreateTexture(string path) => new GlTexture(path);
 	public override Texture CreateTexture(float2 size) => throw new NotImplementedException();
-	public override unsafe FontTextures CreateFontTextureAtlas(FreeTypeFaceFacade face) => new GlFontTextures(face);
+	public override unsafe FontTextures CreateFontTextureAtlas(FreeTypeFaceFacade face, uint resolution) => new GlFontTextures(face, resolution);
 }

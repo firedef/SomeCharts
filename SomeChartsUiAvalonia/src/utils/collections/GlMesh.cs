@@ -96,7 +96,7 @@ public class GlMesh : Mesh {
 		
 		BindBuffers();
 		if (updateRequired | isDynamic) UpdateBuffers();
-		GlShader shader = material == null ? GlShaders.basic : (GlShader) material.shader;
+		GlShader shader = material == null || AvaloniaGlChartsCanvas.useDefaultMat ? GlShaders.basic : (GlShader) material.shader;
 		if (shader.shaderProgram == 0) shader.TryCompile();
 		if (shader.shaderProgram == 0) return;
 
