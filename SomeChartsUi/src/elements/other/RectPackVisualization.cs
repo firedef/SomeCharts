@@ -4,16 +4,16 @@ using SomeChartsUi.ui.canvas;
 using SomeChartsUi.ui.elements;
 using SomeChartsUi.utils.collections;
 
-namespace SomeChartsUi.elements.other; 
+namespace SomeChartsUi.elements.other;
 
 public class RectPackVisualization : RenderableBase {
-	private bool isDirty = false;
+	private readonly List<(rect r, color c)> rectangles = new();
+	private bool isDirty;
 	public RectPack packer = new(2048, 0);
-	private List<(rect r, color c)> rectangles = new();
 
 	public RectPackVisualization(ChartsCanvas owner) : base(owner) { }
-	
-	public override void GenerateMesh() {
+
+	protected override void GenerateMesh() {
 		mesh!.vertices.Clear();
 		mesh.indexes.Clear();
 
@@ -34,33 +34,33 @@ public class RectPackVisualization : RenderableBase {
 			float2 x1y1 = rectangles[i].r.rightTop;
 			float2 x1y0 = rectangles[i].r.rightBottom;
 			float3 norm = float3.front;
-			
+
 			// inner
 			mesh.vertices.Add(new(x0y0, norm, x0y0 * texSize, col));
 			mesh.vertices.Add(new(x0y1, norm, x0y1 * texSize, col));
 			mesh.vertices.Add(new(x1y1, norm, x1y1 * texSize, col));
 			mesh.vertices.Add(new(x1y0, norm, x1y0 * texSize, col));
-			
+
 			mesh.vertices.Add(new(x1y0, norm, x0y0 * texSize, color.softBlue));
 			mesh.vertices.Add(new(x1y1, norm, x0y1 * texSize, color.softBlue));
 			mesh.vertices.Add(new(x1y1 + new float2(th * 2, 0), norm, x1y1 * texSize, color.softBlue));
 			mesh.vertices.Add(new(x1y0 + new float2(th * 2, 0), norm, x1y0 * texSize, color.softBlue));
-			
+
 			// inner
 			int vP = i * 8;
-			mesh.indexes.Add((ushort) (vP + 0));
-			mesh.indexes.Add((ushort) (vP + 1));
-			mesh.indexes.Add((ushort) (vP + 2));
-			mesh.indexes.Add((ushort) (vP + 0));
-			mesh.indexes.Add((ushort) (vP + 2));
-			mesh.indexes.Add((ushort) (vP + 3));
-			
-			mesh.indexes.Add((ushort) (vP + 4));
-			mesh.indexes.Add((ushort) (vP + 5));
-			mesh.indexes.Add((ushort) (vP + 6));
-			mesh.indexes.Add((ushort) (vP + 4));
-			mesh.indexes.Add((ushort) (vP + 6));
-			mesh.indexes.Add((ushort) (vP + 7));
+			mesh.indexes.Add((ushort)(vP + 0));
+			mesh.indexes.Add((ushort)(vP + 1));
+			mesh.indexes.Add((ushort)(vP + 2));
+			mesh.indexes.Add((ushort)(vP + 0));
+			mesh.indexes.Add((ushort)(vP + 2));
+			mesh.indexes.Add((ushort)(vP + 3));
+
+			mesh.indexes.Add((ushort)(vP + 4));
+			mesh.indexes.Add((ushort)(vP + 5));
+			mesh.indexes.Add((ushort)(vP + 6));
+			mesh.indexes.Add((ushort)(vP + 4));
+			mesh.indexes.Add((ushort)(vP + 6));
+			mesh.indexes.Add((ushort)(vP + 7));
 		}
 
 		for (int i = 0; i < shelfCount; i++) {
@@ -69,23 +69,23 @@ public class RectPackVisualization : RenderableBase {
 			float y = packer.shelfs[i].top;
 			float3 norm = float3.front;
 			float4 col = color.softBlue;
-			
+
 			// inner
 			mesh.vertices.Add(new(new(x0, y - th, .001f), norm, new float2(x0, y - th) * texSize, col));
 			mesh.vertices.Add(new(new(x0, y + th, .001f), norm, new float2(x0, y + th) * texSize, col));
 			mesh.vertices.Add(new(new(x1, y + th, .001f), norm, new float2(x1, y + th) * texSize, col));
 			mesh.vertices.Add(new(new(x1, y - th, .001f), norm, new float2(x1, y - th) * texSize, col));
-			
+
 			// inner
 			int vP = (i + objCount * 2) * 4;
-			mesh.indexes.Add((ushort) (vP + 0));
-			mesh.indexes.Add((ushort) (vP + 1));
-			mesh.indexes.Add((ushort) (vP + 2));
-			mesh.indexes.Add((ushort) (vP + 0));
-			mesh.indexes.Add((ushort) (vP + 2));
-			mesh.indexes.Add((ushort) (vP + 3));
+			mesh.indexes.Add((ushort)(vP + 0));
+			mesh.indexes.Add((ushort)(vP + 1));
+			mesh.indexes.Add((ushort)(vP + 2));
+			mesh.indexes.Add((ushort)(vP + 0));
+			mesh.indexes.Add((ushort)(vP + 2));
+			mesh.indexes.Add((ushort)(vP + 3));
 		}
-		
+
 		mesh.OnModified();
 	}
 

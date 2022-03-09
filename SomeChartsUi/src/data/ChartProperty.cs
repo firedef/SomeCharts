@@ -5,7 +5,7 @@ namespace SomeChartsUi.data;
 
 public abstract class ChartProperty<T> {
 	public abstract T Get(RenderableBase owner);
-	
+
 	public static implicit operator ChartProperty<T>(T v) => new ChartPropertyValue<T>(v);
 	public static implicit operator ChartProperty<T>(Func<RenderableBase, T> v) => new ChartPropertyFunc<T>(v);
 }
@@ -34,13 +34,13 @@ public static class ChartPropertyExtensions {
 		a.value.position = p;
 		return true;
 	}
-	
+
 	public static bool TrySetRotation(this ChartProperty<RenderableTransform> v, float3 r) {
 		if (v is not ChartPropertyValue<RenderableTransform> a) return false;
 		a.value.rotation = r;
 		return true;
 	}
-	
+
 	public static bool TrySetScale(this ChartProperty<RenderableTransform> v, float2 s) {
 		if (v is not ChartPropertyValue<RenderableTransform> a) return false;
 		a.value.scale = s;

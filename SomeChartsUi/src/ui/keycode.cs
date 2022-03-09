@@ -1,7 +1,7 @@
 namespace SomeChartsUi.ui;
 
 /// <summary>
-/// all values is copied from avalonia Key enum
+///     all values is copied from avalonia Key enum
 /// </summary>
 public enum keycode {
 	/// <summary>No key pressed.</summary>
@@ -71,7 +71,7 @@ public enum keycode {
 	/// <summary>The Down arrow key.</summary>
 	down = 26,// 0x0000001A
 	/// <summary>The Select key.</summary>
-	@select = 27,// 0x0000001B
+	select = 27,// 0x0000001B
 	/// <summary>The Print key.</summary>
 	print = 28,// 0x0000001C
 	/// <summary>The Execute key.</summary>

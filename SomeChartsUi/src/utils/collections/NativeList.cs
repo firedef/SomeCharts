@@ -2,18 +2,36 @@ using System.Collections;
 using System.Runtime.InteropServices;
 using MathStuff;
 
-namespace SomeChartsUi.utils.collections; 
+namespace SomeChartsUi.utils.collections;
 
 public unsafe class NativeList<T> : IList<T>, IDisposable where T : unmanaged {
+
+#region enumerator
+
+	public class Enumerator : IEnumerator<T> {
+		public readonly NativeList<T> owner;
+		public int position = -1;
+
+		public Enumerator(NativeList<T> owner) => this.owner = owner;
+
+		public bool MoveNext() => ++position < owner.count;
+		public void Reset() => position = -1;
+		object IEnumerator.Current => Current;
+
+		public T Current => owner[position];
+		public void Dispose() { }
+	}
+
+#endregion enumerator
 #region fields
-	
+
 	public T* dataPtr;
 	public int capacity;
 	public int count;
-	
+
 	public int freeSpace => capacity - count;
 	public bool isAllocated => dataPtr != null;
-	
+
 #endregion fields
 
 #region ctors
@@ -23,7 +41,7 @@ public unsafe class NativeList<T> : IList<T>, IDisposable where T : unmanaged {
 	/// <summary>data from ptr will been copied to new allocation</summary>
 	public NativeList(T* ptr, int size) : this(size) {
 		count = size;
-		MemCpy(ptr,dataPtr, size * sizeof(T));
+		MemCpy(ptr, dataPtr, size * sizeof(T));
 	}
 
 	public NativeList(int size) {
@@ -34,7 +52,7 @@ public unsafe class NativeList<T> : IList<T>, IDisposable where T : unmanaged {
 		if (freeSpace >= s) return;
 		Expand(s);
 	}
-	
+
 	public void EnsureCapacity(int s) {
 		if (capacity >= s) return;
 		Reallocate(s);
@@ -45,7 +63,7 @@ public unsafe class NativeList<T> : IList<T>, IDisposable where T : unmanaged {
 #region methods
 
 	public void Expand(int capacityMinAdd = 0) => Reallocate(capacity + math.max(capacityMinAdd, capacity));
-	
+
 	protected void Reallocate(int newCapacity) {
 		if (isAllocated) dataPtr = (T*)Realloc(dataPtr, newCapacity * sizeof(T));
 		else dataPtr = (T*)Alloc(newCapacity * sizeof(T));
@@ -58,10 +76,10 @@ public unsafe class NativeList<T> : IList<T>, IDisposable where T : unmanaged {
 		count = c;
 		MemCpy(src, dataPtr, c * sizeof(T));
 	}
-	
+
 	public void CopyTo(T* dest, int c) => MemCpy(dataPtr, dest, math.min(c, count) * sizeof(T));
 	public void CopyTo(T* dest) => MemCpy(dataPtr, dest, count * sizeof(T));
-	
+
 	protected static void* Alloc(int s) => NativeMemory.Alloc((nuint)s);
 	protected static void Free(void* p) => NativeMemory.Free(p);
 	protected static void* Realloc(void* p, int s) => NativeMemory.Realloc(p, (nuint)s);
@@ -94,7 +112,9 @@ public unsafe class NativeList<T> : IList<T>, IDisposable where T : unmanaged {
 	public bool Contains(T item) => IndexOf(item) != -1;
 	public void CopyTo(T[] array, int arrayIndex) {
 		int copyBytes = math.min(array.Length - arrayIndex, count) * sizeof(T);
-		fixed(T* ptr1 = array) Buffer.MemoryCopy(dataPtr, ptr1 + arrayIndex, copyBytes, copyBytes);
+		fixed(T* ptr1 = array) {
+			Buffer.MemoryCopy(dataPtr, ptr1 + arrayIndex, copyBytes, copyBytes);
+		}
 	}
 	public bool Remove(T item) {
 		int ind = IndexOf(item);
@@ -137,24 +157,4 @@ public unsafe class NativeList<T> : IList<T>, IDisposable where T : unmanaged {
 	}
 
 #endregion ilist
-
-#region enumerator
-
-	public class Enumerator : IEnumerator<T> {
-		public readonly NativeList<T> owner;
-		public int position = -1;
-
-		public Enumerator(NativeList<T> owner) {
-			this.owner = owner;
-		}
-
-		public bool MoveNext() => ++position < owner.count;
-		public void Reset() => position = -1;
-		object IEnumerator.Current => Current;
-
-		public T Current => owner[position];
-		public void Dispose() { }
-	}
-
-#endregion enumerator
 }

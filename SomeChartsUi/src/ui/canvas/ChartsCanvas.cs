@@ -2,17 +2,15 @@ using SomeChartsUi.backends;
 using SomeChartsUi.ui.canvas.controls;
 using SomeChartsUi.ui.layers;
 
-namespace SomeChartsUi.ui.canvas; 
+namespace SomeChartsUi.ui.canvas;
 
 public class ChartsCanvas {
-	public readonly ChartCanvasTransform transform;
-	public readonly ChartCanvasRenderer renderer;
 	public readonly ChartFactory factory;
+	public readonly ChartCanvasRenderer renderer;
+	public readonly ChartCanvasTransform transform;
 
 	public ChartCanvasControllerBase? controller;
-	private List<CanvasLayer> layers => renderer.layers;
-	private Dictionary<string, int> layerNames => renderer.layerNames;
-	
+
 	public TimeSpan renderTime;
 
 	public ChartsCanvas(ChartsBackendBase backend, ChartFactory factory) {
@@ -22,6 +20,8 @@ public class ChartsCanvas {
 		backend.renderer = renderer;
 		this.factory = factory;
 	}
+	private List<CanvasLayer> layers => renderer.layers;
+	private Dictionary<string, int> layerNames => renderer.layerNames;
 
 	public CanvasLayer AddLayer(string name) {
 		CanvasLayer l = factory.CreateLayer(name);

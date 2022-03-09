@@ -1,14 +1,11 @@
 using System;
 using Avalonia.Platform;
 using Avalonia.Skia;
-using FreeTypeSharp;
 using MathStuff;
 using MathStuff.vectors;
 using SkiaSharp;
-using SkiaSharp.HarfBuzz;
 using SomeChartsUi.backends;
 using SomeChartsUi.ui.elements;
-using SomeChartsUi.ui.text;
 using SomeChartsUi.utils.mesh;
 using SomeChartsUi.utils.shaders;
 using SomeChartsUiAvalonia.utils;
@@ -53,23 +50,6 @@ public class SkiaChartsBackend : ChartsBackendBase, IDisposable {
 		_canvas!.Scale(scale.sk());
 		_canvas.Translate(position.sk());
 		_canvas.RotateRadians(rotation.z);
-	}
-
-	public override void DrawText(string text, color col, FontData font, RenderableTransform transform) {
-		if (string.IsNullOrEmpty(text)) return;
-
-		// flip y axis of canvas back, so text will render not upside-down
-		_canvas!.Save();
-		_canvas!.Scale(1, -1);
-		ApplyTransform(transform, true);
-
-		_paint!.Color = col.sk();
-		_paint.TextSize = 1;
-		// _paint.TextAlign = SKTextAlign.Left;
-
-		_canvas.RotateRadians(transform.rotation.z);
-		_canvas.DrawShapedText(SkiaFontFamilies.Get(font), text, SKPoint.Empty, _paint);
-		_canvas.Restore();
 	}
 	public override void ClearScreen(color col) {
 		throw new NotImplementedException();

@@ -1,7 +1,7 @@
 using MathStuff;
 using MathStuff.vectors;
 
-namespace SomeChartsUi.utils.mesh; 
+namespace SomeChartsUi.utils.mesh;
 
 public static class ObjImport {
 	public static void LoadMesh(Mesh instance, string path) {
@@ -16,35 +16,35 @@ public static class ObjImport {
 		Dictionary<Vertex, ushort> vertices = new();
 		List<ushort> indexes = new();
 		ConvertParsedFile(parsedPositions, parsedNormals, parsedTexcoords, parsedFaces, vertices, indexes);
-		
+
 		instance.SetVertices(vertices.Keys.ToArray());
 		instance.SetIndexes(indexes.ToArray());
-		
+
 		instance.RecalculateNormals();
 	}
 
 	private static void ParseLines(IEnumerable<string> lines, ICollection<float3> positions, ICollection<float3> normals, ICollection<float2> texcoords, ICollection<(int p, int n, int uv)[]> faces) {
 		foreach (string s in lines) {
 			string[] parts = s.ToLower().Split(' ', StringSplitOptions.TrimEntries | StringSplitOptions.RemoveEmptyEntries);
-			if (parts.Length == 0 || parts[0][0] == '#') continue; // comments
-			
+			if (parts.Length == 0 || parts[0][0] == '#') continue;// comments
+
 			switch (parts[0]) {
-				case "v": // vertex points
+				case "v":// vertex points
 					positions.Add(ParseVector(parts.Skip(1)));
 					break;
-				case "vt": // texture coordinates
+				case "vt":// texture coordinates
 					texcoords.Add(ParseVector(parts.Skip(1)).xy);
 					break;
-				case "vn": // vertex normals
+				case "vn":// vertex normals
 					normals.Add(ParseVector(parts.Skip(1)));
 					break;
-				case "f": // face
+				case "f":// face
 					faces.Add(ParseFace(parts.Skip(1)));
 					break;
 			}
 		}
 	}
-	
+
 	private static float3 ParseVector(IEnumerable<string> parts) {
 		float[] values = parts.Select(float.Parse).ToArray();
 		float3 v = new();
@@ -79,29 +79,28 @@ public static class ObjImport {
 		int pCount = parsedPositions.Count;
 		int nCount = parsedNormals.Count;
 		int uvCount = parsedTexcoords.Count;
-		
+
 		float3 pos = float3.zero;
 		float3 normal = float3.zero;
 		float2 texcoord = float2.zero;
 		Vertex vert = new();
-		foreach ((int p, int n, int uv)[] face in parsedFaces) {
+		foreach ((int p, int n, int uv)[] face in parsedFaces)
 			switch (face.Length) {
-				case 3: // triangle
+				case 3:// triangle
 					ConvertVertex(face[0], pCount, nCount, uvCount, parsedPositions, parsedNormals, parsedTexcoords, vertices, indexes);
 					ConvertVertex(face[1], pCount, nCount, uvCount, parsedPositions, parsedNormals, parsedTexcoords, vertices, indexes);
 					ConvertVertex(face[2], pCount, nCount, uvCount, parsedPositions, parsedNormals, parsedTexcoords, vertices, indexes);
 					break;
-				case 4: // quad
+				case 4:// quad
 					ConvertVertex(face[0], pCount, nCount, uvCount, parsedPositions, parsedNormals, parsedTexcoords, vertices, indexes);
 					ConvertVertex(face[1], pCount, nCount, uvCount, parsedPositions, parsedNormals, parsedTexcoords, vertices, indexes);
 					ConvertVertex(face[2], pCount, nCount, uvCount, parsedPositions, parsedNormals, parsedTexcoords, vertices, indexes);
-					
+
 					ConvertVertex(face[0], pCount, nCount, uvCount, parsedPositions, parsedNormals, parsedTexcoords, vertices, indexes);
 					ConvertVertex(face[2], pCount, nCount, uvCount, parsedPositions, parsedNormals, parsedTexcoords, vertices, indexes);
 					ConvertVertex(face[3], pCount, nCount, uvCount, parsedPositions, parsedNormals, parsedTexcoords, vertices, indexes);
 					break;
 			}
-		}
 
 	}
 	private static void ConvertVertex((int p, int n, int uv) face, int pCount, int nCount, int uvCount, List<float3> parsedPositions, List<float3> parsedNormals, List<float2> parsedTexcoords, Dictionary<Vertex, ushort> vertices, List<ushort> indexes) {
@@ -110,8 +109,9 @@ public static class ObjImport {
 		float3 normal = n == 0 ? float3.zero : parsedNormals[ConvertIndex(n, nCount)];
 		float2 texcoord = uv == 0 ? float3.zero : parsedTexcoords[ConvertIndex(uv, uvCount)];
 		Vertex vertex = new(position, normal, texcoord, color.white);
-		if (vertices.TryGetValue(vertex, out ushort ind))
+		if (vertices.TryGetValue(vertex, out ushort ind)) {
 			indexes.Add(ind);
+		}
 		else {
 			ushort c = (ushort)vertices.Count;
 			vertices.Add(vertex, c);

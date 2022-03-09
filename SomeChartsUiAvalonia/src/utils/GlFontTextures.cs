@@ -3,11 +3,10 @@ using FreeTypeSharp;
 using FreeTypeSharp.Native;
 using SomeChartsUi.ui.text;
 
-namespace SomeChartsUiAvalonia.utils; 
+namespace SomeChartsUiAvalonia.utils;
 
 public class GlFontTextures : FontTextures {
 	public FreeTypeFaceFacade face;
-	public uint resolution;
 
 	public GlFontTextures(FreeTypeFaceFacade face, uint resolution) {
 		this.face = face;
@@ -21,11 +20,11 @@ public class GlFontTextures : FontTextures {
 
 		uint charIndex = face.GetCharIndex(character[0]);
 		if (charIndex == 0) return (default, -1);
-		
+
 		FT.FT_Render_Glyph((IntPtr)face.GlyphSlot, FT_Render_Mode.FT_RENDER_MODE_SDF).CheckError();
 		uint width = face.FaceRec->glyph->bitmap.width;
 		uint height = face.FaceRec->glyph->bitmap.rows;
-		
+
 
 		for (int i = 0; i < atlases.Count; i++) {
 			int index = Add_(atlases[i]);
@@ -45,9 +44,9 @@ public class GlFontTextures : FontTextures {
 			int h = (int)height;
 			(int index, int x, int y) = atlas.Pack(w, h, character);
 			if (index == -1) return -1;
-			
+
 			void* bitmap = (void*)face.FaceRec->glyph->bitmap.buffer;
-			atlas.WriteToTexture(bitmap, x, y, (int) width, (int) height, 0);
+			atlas.WriteToTexture(bitmap, x, y, (int)width, (int)height, 0);
 
 			// for (int j = 0; j < 4; j++) {
 			// 	if (j > 0) {

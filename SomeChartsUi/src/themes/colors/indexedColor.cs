@@ -2,13 +2,13 @@ using MathStuff;
 using SomeChartsUi.themes.palettes;
 using SomeChartsUi.themes.themes;
 
-namespace SomeChartsUi.themes.colors; 
+namespace SomeChartsUi.themes.colors;
 
 public readonly struct indexedColor {
 	private const byte _paletteMask = 0b1_0000;
 	private const byte _alphaMask = 0b0_1000;
 	private const byte _argbMask = 0b0_1111;
-	
+
 	public readonly color customColor;
 	public readonly ushort colorIndex;
 	public readonly byte colorMask;
@@ -31,11 +31,11 @@ public readonly struct indexedColor {
 		if ((colorMask & 0b10) != 0) mask |= 0xFF00;
 		if ((colorMask & 0b100) != 0) mask |= 0xFF0000;
 		if ((colorMask & 0b1000) != 0) mask |= 0xFF000000;
-			
+
 		return new((customColor.raw & mask) |
 		           (theme.globalTheme[colorIndex].raw & ~mask));
 	}
-	
+
 	public color GetColor(palette p) {
 		uint mask = 0;
 		if ((colorMask & 0b1) != 0) mask = 0xFF;
@@ -46,10 +46,10 @@ public readonly struct indexedColor {
 		uint mask2 = (mask & 0b1_000) == 0 ? 0 : uint.MaxValue;
 
 		return new(
-			(customColor.raw & mask) | 
+			(customColor.raw & mask) |
 			(theme.globalTheme[colorIndex].raw & ~mask & ~mask2) |
 			(p[colorIndex].raw & mask2)
-			);
+		);
 	}
 
 	public static indexedColor RandomFromPalette() => new(color.black, (ushort)new Random().Next(1024), _paletteMask);

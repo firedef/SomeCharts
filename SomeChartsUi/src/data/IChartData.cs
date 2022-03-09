@@ -1,7 +1,7 @@
 using MathStuff;
 using SomeChartsUi.themes.colors;
 
-namespace SomeChartsUi.data; 
+namespace SomeChartsUi.data;
 
 public interface IChartManagedData<T> {
 	public void GetValues(int start, int count, int downsample, T[] dest);
@@ -35,7 +35,7 @@ public class ArrayChartData<T> : ArrayChartManagedData<T>, IChartData<T> where T
 	}
 }
 
-public class CollectionChartManagedData<T> : IChartManagedData<T>{
+public class CollectionChartManagedData<T> : IChartManagedData<T> {
 	public readonly IEnumerable<T> data;
 
 	public CollectionChartManagedData(IEnumerable<T> data) => this.data = data;
@@ -49,25 +49,25 @@ public class CollectionChartManagedData<T> : IChartManagedData<T>{
 
 public class CollectionChartData<T> : CollectionChartManagedData<T>, IChartData<T> where T : unmanaged {
 	public CollectionChartData(IEnumerable<T> data) : base(data) { }
-	
+
 	public unsafe void GetValues(int start, int count, int downsample, T* dest) {
 		for (int i = 0; i < count; i++) dest[i] = data.ElementAt(start + (i << downsample));
 	}
 }
 
 public class FuncChartManagedData<T> : IChartManagedData<T> {
-	public readonly Func<int, T> sample;
 	public readonly int length;
+	public readonly Func<int, T> sample;
 
 	public FuncChartManagedData(Func<int, T> sample, int length) {
 		this.sample = sample;
 		this.length = length;
 	}
-	
+
 	public void GetValues(int start, int count, int downsample, T[] dest) {
 		for (int i = 0; i < count; i++) dest[i] = sample(start + (i << downsample));
 	}
-	
+
 	public T GetValue(int i) => sample(i);
 	public int GetLength() => length;
 }
@@ -81,8 +81,8 @@ public class FuncChartData<T> : FuncChartManagedData<T>, IChartData<T> where T :
 }
 
 public class ConstChartManagedData<T> : IChartManagedData<T> {
-	public T value;
 	public int length;
+	public T value;
 
 	public ConstChartManagedData(T value, int length = 1) {
 		this.value = value;
@@ -110,7 +110,7 @@ public static class ChartDataExtensions {
 		v.GetValues(start, count, downsample, arr);
 		return arr;
 	}
-	
+
 	/// <summary>get values using stride</summary>
 	/// <param name="v">data source</param>
 	/// <param name="start">start index</param>
@@ -121,15 +121,15 @@ public static class ChartDataExtensions {
 	public static unsafe void GetValuesWithStride<T>(this IChartData<T> v, int start, int count, int downsample, T* dest, int stride) where T : unmanaged {
 		T* temp = stackalloc T[count];
 		v.GetValues(start, count, downsample, temp);
-		
+
 		for (int i = 0, j = 0; i < count; i++, j += stride)
 			dest[j] = temp[i];
 	}
-	
-	public static unsafe void GetColors(this IChartData<indexedColor> v, int start, int count, int downsample, color* dest){
+
+	public static unsafe void GetColors(this IChartData<indexedColor> v, int start, int count, int downsample, color* dest) {
 		indexedColor* temp = stackalloc indexedColor[count];
 		v.GetValues(start, count, downsample, temp);
-		
+
 		for (int i = 0; i < count; i++)
 			dest[i] = temp[i].GetColor();
 	}

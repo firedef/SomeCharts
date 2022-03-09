@@ -4,12 +4,12 @@ using SomeChartsUi.themes.themes;
 namespace SomeChartsUi.ui.canvas.controls;
 
 public abstract class CanvasUiControllerBase : ChartCanvasControllerBase {
-	private float2 _start;
 	private float2 _origin;
-
-	public float zoomSpeed = .1f;
+	private float2 _start;
 	public float maxZoom = 1f;
 	public float minZoom = .001f;
+
+	public float zoomSpeed = .1f;
 
 	public CanvasUiControllerBase(ChartsCanvas owner) : base(owner) { }
 
@@ -52,7 +52,7 @@ public abstract class CanvasUiControllerBase : ChartCanvasControllerBase {
 		ReleaseCapture();
 		SetCursor("Arrow");
 	}
-	
+
 	public override void OnMouseScroll(MouseState state) {
 		float2 pointerPos = state.pos;
 		pointerPos.FlipY();
@@ -71,7 +71,7 @@ public abstract class CanvasUiControllerBase : ChartCanvasControllerBase {
 		float2 oldScale = owner.transform.zoom.currentValue;
 		float2 newScale = float2.Clamp(oldScale * (1 + zoomAdd), minZoom, maxZoom);
 		zoomAdd = 1 - newScale / oldScale;
-		
+
 		pointerPos.y += owner.transform.screenBounds.height;
 		SetZoom(newScale);
 		float2 posOffset = (pointerPos - new float2(owner.transform.screenBounds.midX, owner.transform.screenBounds.midY)) * zoomAdd / newScale;
@@ -101,11 +101,11 @@ public abstract class CanvasUiControllerBase : ChartCanvasControllerBase {
 
 	public override void OnKey(keycode key, keymods mods) {
 		//RenderableTransform tr = owner.GetLayer("normal")!.elements[0].transform.Get(owner.GetLayer("normal")!.elements[0]);
-		
+
 		//Rotate();
 		if (key == keycode.e) Rotate(.1f);
 		if (key == keycode.q) Rotate(-.1f);
-		
+
 		//if (key == keycode.x) tr.rotation.x += .1f;
 		//if (key == keycode.z) tr.rotation.x -= .1f;
 		//
@@ -119,12 +119,12 @@ public abstract class CanvasUiControllerBase : ChartCanvasControllerBase {
 		//
 		// if (key == keycode.v) Rotate(new float3(0,.1f,0));
 		// if (key == keycode.c) Rotate(new float3(0,.1f,0));
-		
-		if (key == keycode.w) Move(new(+000,+100));
-		if (key == keycode.s) Move(new(+000,-100));
-		if (key == keycode.d) Move(new(+100,+000));
-		if (key == keycode.a) Move(new(-100,+000));
-		
+
+		if (key == keycode.w) Move(new(+000, +100));
+		if (key == keycode.s) Move(new(+000, -100));
+		if (key == keycode.d) Move(new(+100, +000));
+		if (key == keycode.a) Move(new(-100, +000));
+
 		if (key == keycode.T) theme.CycleTheme();
 	}
 }

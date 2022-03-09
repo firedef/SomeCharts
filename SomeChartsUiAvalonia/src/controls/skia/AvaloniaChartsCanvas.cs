@@ -11,40 +11,46 @@ using SomeChartsUiAvalonia.backends;
 namespace SomeChartsUiAvalonia.controls.skia;
 
 public partial class AvaloniaChartsCanvas : Panel {
+	public readonly ChartsCanvas canvas = CreateCanvas();
 	/// <summary>time of latest redraw</summary>
 	private TimeSpan _prevUpdTime;
-	
+
 	/// <summary>redraw loop timer</summary>
 	// ReSharper disable once NotAccessedField.Local
 	private Timer? _updateTimer;
-	public readonly ChartsCanvas canvas = CreateCanvas();
-	
+
 	/// <summary>name of current canvas</summary>
 	public string canvasName = "???";
-	
-	/// <summary>pointer (mouse) instance</summary>
-	public IPointer? pointer;
-	
-	/// <summary>pause redraw loop</summary>
-	public bool stopRender;
-	
-	/// <summary>delay (in ms) between canvas redraw (when app is not hovered by mouse)<br/>Avalonia deferred renderer have max framerate of 30</summary>
-	public int updateInterval = 200;
-	/// <summary>delay (in ms) between canvas redraw (when app is hovered by mouse)<br/>Avalonia deferred renderer have max framerate of 30</summary>
-	public int updateInterval_hover = 16;
 
 	/// <summary>time of latest canvas move</summary>
 	public TimeSpan panUpdateTime;
+
+	/// <summary>pointer (mouse) instance</summary>
+	public IPointer? pointer;
+
+	/// <summary>pause redraw loop</summary>
+	public bool stopRender;
+
+	/// <summary>
+	///     delay (in ms) between canvas redraw (when app is not hovered by mouse)<br/>Avalonia deferred renderer have
+	///     max framerate of 30
+	/// </summary>
+	public int updateInterval = 200;
+	/// <summary>
+	///     delay (in ms) between canvas redraw (when app is hovered by mouse)<br/>Avalonia deferred renderer have max
+	///     framerate of 30
+	/// </summary>
+	public int updateInterval_hover = 16;
 	/// <summary>time of latest canvas zoom</summary>
 	public TimeSpan zoomUpdateTime;
-
-	public float2 screenSize => new((float)Bounds.Width, (float)Bounds.Height);
 
 	public AvaloniaChartsCanvas() {
 		_updateTimer = new(_ => Update(), null, 0, 10);
 		canvas.controller = new AvaloniaCanvasUiController(canvas, this);
 		Focusable = true;
 	}
+
+	public float2 screenSize => new((float)Bounds.Width, (float)Bounds.Height);
 
 	private static ChartsCanvas CreateCanvas() {
 		ChartsCanvas canvas = new(new SkiaChartsBackend(), new GlChartFactory());

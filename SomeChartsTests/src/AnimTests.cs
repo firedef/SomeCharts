@@ -1,7 +1,7 @@
 using NUnit.Framework;
 using SomeChartsUi.ui.canvas.animation;
 
-namespace SomeChartsTests; 
+namespace SomeChartsTests;
 
 [TestFixture]
 public class AnimTests {

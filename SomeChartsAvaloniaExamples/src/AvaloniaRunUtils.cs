@@ -8,7 +8,7 @@ using Avalonia.Threading;
 using SomeChartsUiAvalonia.controls.gl;
 using SomeChartsUiAvalonia.controls.skia;
 
-namespace SomeChartsAvaloniaExamples; 
+namespace SomeChartsAvaloniaExamples;
 
 public static class AvaloniaRunUtils {
 	/// <summary>must been called before RunAvalonia()</summary>
@@ -24,7 +24,7 @@ public static class AvaloniaRunUtils {
 		await Task.Delay(200);
 		a();
 	});
-	
+
 	public static void RunAfterStart(Func<Task> a) => Dispatcher.UIThread.InvokeAsync(async () => {
 		await Task.Delay(200);
 		await a();
@@ -38,13 +38,13 @@ public static class AvaloniaRunUtils {
 		App.mainWindow.Content = canvas;
 		return canvas;
 	}
-	
+
 	public static AvaloniaGlChartsCanvas AddGlCanvas() {
 		AvaloniaGlChartsCanvas canvas = new();
 		App.mainWindow.Content = canvas;
 		return canvas;
 	}
-	
+
 	[STAThread]
 	private static void RunAvalonia(params string[] args) => BuildAvaloniaApp()
 	   .StartWithClassicDesktopLifetime(args);
@@ -52,6 +52,6 @@ public static class AvaloniaRunUtils {
 	private static AppBuilder BuildAvaloniaApp() =>
 		AppBuilder.Configure<App>()
 		          .UsePlatformDetect()
-		          .With(new X11PlatformOptions{UseDeferredRendering = false, GlProfiles = new List<GlVersion> {new(GlProfileType.OpenGL, 4, 0)}})
+		          .With(new X11PlatformOptions {UseDeferredRendering = false, GlProfiles = new List<GlVersion> {new(GlProfileType.OpenGL, 4, 0)}})
 		          .LogToTrace();
 }

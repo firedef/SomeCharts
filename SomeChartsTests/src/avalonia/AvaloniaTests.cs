@@ -1,7 +1,7 @@
 using NUnit.Framework;
 using SomeChartsAvaloniaExamples;
 
-namespace SomeChartsTests.avalonia; 
+namespace SomeChartsTests.avalonia;
 
 [TestFixture]
 public class AvaloniaTests {

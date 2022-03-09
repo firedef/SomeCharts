@@ -1,10 +1,10 @@
-namespace SomeChartsUi.utils.shaders; 
+namespace SomeChartsUi.utils.shaders;
 
 public readonly record struct ShaderUniform {
-	public readonly string name;
 	public readonly int location = -1;
-	public readonly int type;
+	public readonly string name;
 	public readonly int size;
+	public readonly int type;
 
 	public ShaderUniform(string name, int location, int type, int size) {
 		this.name = name;

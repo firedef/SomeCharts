@@ -1,6 +1,6 @@
 using MathStuff;
 
-namespace SomeChartsUi.themes.palettes; 
+namespace SomeChartsUi.themes.palettes;
 
 public class palette {
 	private readonly color[] _colors;

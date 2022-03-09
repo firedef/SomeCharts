@@ -6,7 +6,7 @@ using SomeChartsUi.ui.text;
 using SomeChartsUi.utils.mesh;
 using SomeChartsUi.utils.shaders;
 
-namespace SomeChartsUi.backends; 
+namespace SomeChartsUi.backends;
 
 public abstract class ChartFactory {
 	public ChartsCanvas owner = null!;
@@ -14,8 +14,10 @@ public abstract class ChartFactory {
 	public virtual Mesh CreateMesh() => new();
 	public virtual Shader CreateShader(string name, string vertex, string fragment) => new(name, vertex, fragment);
 	public virtual CanvasLayer CreateLayer(string name) => new(owner, name);
-	
+
 	public abstract Texture CreateTexture(string path);
 	public abstract Texture CreateTexture(float2 size);
 	public abstract FontTextures CreateFontTextureAtlas(FreeTypeFaceFacade face, uint resolution = 32);
+
+	public abstract Material CreateTextMaterial();
 }

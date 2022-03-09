@@ -11,36 +11,32 @@ namespace SomeChartsUi.elements.other;
 
 //TODO: fix labels when using transform position
 public class Ruler : RenderableBase {
-	public Orientation orientation;
-	public int length = 1000;
 
-	public IChartManagedData<string>? names;
-
-	public int skipLabels = 1;
-	public bool useStyledText = false;
-	
-	public bool stickToScreen = true;
-	public rect stickRange = new(0, 0, 0, 0);
-	public float2 stickOffset = new(0, 0);
+	public int downsampleMul = 4;
+	public bool drawLabels = true;
 
 	public bool drawLines = true;
-	public bool drawLabels = true;
+	public FontData font = new();
+	public float fontSize = 10;
 	public indexedColor labelColor = theme.default8_ind;
+	public int length = 1000;
 	public indexedColor lineColor = theme.default1_ind;
 	public float lineLength = float.MaxValue;
 
-	public int downsampleMul = 4;
+	public IChartManagedData<string>? names;
+	public Orientation orientation;
 	public float scale = 100;
+	public bool screenSpaceLabels = true;
+	public bool screenSpaceThickness = true;
+
+	public int skipLabels = 1;
+	public float2 stickOffset = new(0, 0);
+	public rect stickRange = new(0, 0, 0, 0);
+
+	public bool stickToScreen = true;
 
 	public float thickness = 1;
-	public bool screenSpaceThickness = true;
-	public float fontSize = 10;
-	public bool screenSpaceLabels = true;
-	public FontData font = new();
-
-	public override void GenerateMesh() {
-		
-	}
+	public bool useStyledText = false;
 
 	// protected override void Render() {
 	// 	float2 pos = float2.zero;
@@ -75,4 +71,6 @@ public class Ruler : RenderableBase {
 	// 	}
 	// }
 	public Ruler(ChartsCanvas owner) : base(owner) { }
+
+	protected override void GenerateMesh() { }
 }

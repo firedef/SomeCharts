@@ -1,36 +1,36 @@
 using MathStuff;
 using SomeChartsUi.themes.palettes;
 
-namespace SomeChartsUi.themes.themes; 
+namespace SomeChartsUi.themes.themes;
 
 public partial record theme {
 	public static theme dark = GenerateDarkTheme(.4f);
 	public static theme light = GenerateLightTheme(.95f);
 	public static theme globalTheme = dark;
-	
+
 	private static theme GenerateDarkTheme(float accentHue, float defaultHue = .6f, int seed = 77) => GenerateDarkTheme(accentHue, defaultHue, GeneratePalettes(0, 1, .2f, .2f, .9f, .9f, seed));
 	private static theme GenerateLightTheme(float accentHue, float defaultHue = .1f, int seed = 99) => GenerateLightTheme(accentHue, defaultHue, GeneratePalettes(0, 1, .8f, .8f, .5f, .5f, seed));
-	
+
 	private static theme GenerateDarkTheme(float accentHue, float defaultHue, List<palette> palettes) {
 		theme t = new();
 
 		color[] defaultColors = GenerateColors(defaultHue, .4f, .15f, defaultHue, .1f, 1f, 12);
 		color[] accentColors = GenerateColors(accentHue, .5f, .7f, accentHue, .3f, .2f, 3);
 		color[] commonColors = {"#9effad", "#ffe59e", "#ffa39e"};
-		
+
 		ApplyColors(t, defaultColors, accentColors, commonColors);
 		t.palettes = palettes;
 
 		return t;
 	}
-	
+
 	private static theme GenerateLightTheme(float accentHue, float defaultHue, List<palette> palettes) {
 		theme t = new();
 
 		color[] defaultColors = GenerateColors(defaultHue, .1f, 1f, defaultHue, .4f, .15f, 12);
 		color[] accentColors = GenerateColors(accentHue, .3f, .2f, accentHue, .5f, .7f, 3);
 		color[] commonColors = {"#296662", "#293166", "#663029"};
-		
+
 		ApplyColors(t, defaultColors, accentColors, commonColors);
 		t.palettes = palettes;
 
@@ -51,16 +51,16 @@ public partial record theme {
 			l1 += lAdd;
 			a1 += aAdd;
 		}
-		
+
 		return colors;
 	}
 
 	private static void ApplyColors(theme t, color[] defaultColors, color[] accentColors, color[] commonColors) {
-		for (ushort i = theme.default0_ind; i <= theme.default11_ind; i++)
-			t[i] = defaultColors[i - theme.default0_ind];
-		
-		for (ushort i = theme.accent0_ind; i <= theme.accent2_ind; i++)
-			t[i] = accentColors[i - theme.accent0_ind];
+		for (ushort i = default0_ind; i <= default11_ind; i++)
+			t[i] = defaultColors[i - default0_ind];
+
+		for (ushort i = accent0_ind; i <= accent2_ind; i++)
+			t[i] = accentColors[i - accent0_ind];
 
 		t.good = commonColors[0];
 		t.normal = commonColors[1];
@@ -81,7 +81,7 @@ public partial record theme {
 			palette p = new(colors, i);
 			palettes.Add(p);
 		}
-		
+
 		return palettes;
 	}
 

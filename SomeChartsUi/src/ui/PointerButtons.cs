@@ -1,4 +1,4 @@
-namespace SomeChartsUi.ui; 
+namespace SomeChartsUi.ui;
 
 [Flags]
 public enum PointerButtons {
@@ -6,5 +6,5 @@ public enum PointerButtons {
 	right = 2,
 	middle = 4,
 	forward = 8,
-	backward = 16,
+	backward = 16
 }

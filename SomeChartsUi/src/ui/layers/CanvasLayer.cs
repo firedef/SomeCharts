@@ -2,13 +2,13 @@ using SomeChartsUi.themes.colors;
 using SomeChartsUi.ui.canvas;
 using SomeChartsUi.ui.elements;
 
-namespace SomeChartsUi.ui.layers; 
+namespace SomeChartsUi.ui.layers;
 
 public class CanvasLayer {
+	public readonly List<RenderableBase> elements = new();
 	public readonly string name;
 	public readonly ChartsCanvas owner;
 	public indexedColor? background;
-	public readonly List<RenderableBase> elements = new();
 
 	public CanvasLayer(ChartsCanvas owner, string name) {
 		this.owner = owner;
@@ -20,8 +20,6 @@ public class CanvasLayer {
 
 	public void Render() {
 		if (background != null) owner.renderer.backend.ClearScreen(background.Value.GetColor());
-		foreach (RenderableBase element in elements) {
-			element.Render();
-		}
+		foreach (RenderableBase element in elements) element.Render();
 	}
 }

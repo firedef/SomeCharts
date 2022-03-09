@@ -16,17 +16,7 @@ using static Avalonia.OpenGL.GlConsts;
 
 namespace SomeChartsUiAvalonia.controls.gl;
 
-public enum PolygonMode {
-	fill,
-	line,
-	points
-}
-
 public class AvaloniaGlChartsCanvas : OpenGlControlBase {
-	public static bool useDefaultMat = false;
-	public static bool debugTextMat = false;
-	public static float textThickness = 0.52f;
-	public static PolygonMode polygonMode = PolygonMode.fill;
 	public readonly ChartsCanvas canvas = CreateCanvas();
 
 	/// <summary>name of current canvas</summary>
@@ -42,11 +32,10 @@ public class AvaloniaGlChartsCanvas : OpenGlControlBase {
 		//_updateTimer = new(_ => Update(), null, 0, 10);
 		canvas.controller = new AvaloniaGlCanvasUiController(canvas, this);
 		Focusable = true;
-		
+
 		GlInfo.version = GlVersion;
 	}
-	
-	
+
 
 	private static ChartsCanvas CreateCanvas() {
 		ChartsCanvas canvas = new(new GlChartsBackend(), new GlChartFactory());
@@ -83,8 +72,8 @@ public class AvaloniaGlChartsCanvas : OpenGlControlBase {
 		gl.Enable(GL_MULTISAMPLE);
 		gl.Enable(GL_BLEND);
 		GlInfo.glExt!.BlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-		
-		switch (polygonMode) {
+
+		switch (ChartsRenderSettings.polygonMode) {
 			case PolygonMode.fill:
 				GlInfo.glExt!.PolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 				break;
@@ -110,7 +99,7 @@ public class AvaloniaGlChartsCanvas : OpenGlControlBase {
 			layer.Render();
 		GlInfo.CheckError("end");
 
-		Dispatcher.UIThread.Post(InvalidateVisual, DispatcherPriority.Normal);
+		Dispatcher.UIThread.Post(InvalidateVisual);
 		canvas.renderTime = sw.Elapsed;
 	}
 

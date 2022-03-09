@@ -34,7 +34,7 @@ void main() {
 	gl_FragColor = fragCol;
 }
 ");
-	
+
 	public static readonly GlShader basicTextured = new("", @"
 // PROCESS VERTEX
 // ADD ATTRIBUTES
@@ -77,7 +77,7 @@ void main() {
 	gl_FragColor = texColor * fragCol;
 }
 ");
-	
+
 	public static readonly GlShader basicText = new("", @"
 // PROCESS VERTEX
 // ADD ATTRIBUTES
@@ -115,16 +115,20 @@ varying vec2 texCoord;
 uniform float u_gamma = 0.52;
 
 uniform sampler2D texture0;
+uniform vec3 cameraPos;
+
+float sample(vec2 coord) {
+	float dist = texture2D(texture0, texCoord).r;
+	return smoothstep(0, 1, smoothstep(1 - u_gamma, 1 + u_gamma, dist) * 1000);
+}
 
 void main() {
-	vec4 texColor = texture2D(texture0, texCoord);
-	float dist = texColor.r;
-	float alpha = smoothstep(0, 1, smoothstep(1 - u_gamma, 1 + u_gamma, dist) * 1000);
+	float alpha = sample(texCoord);
 
 	gl_FragColor = vec4(1,1,1,alpha) * fragCol;
 }
 ");
-	
+
 	public static readonly GlShader diffuse = new("", @"
 // PROCESS VERTEX
 // ADD MATRICES

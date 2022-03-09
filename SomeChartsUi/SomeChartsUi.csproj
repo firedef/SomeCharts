@@ -7,33 +7,33 @@
     </PropertyGroup>
 
     <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
-      <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-      <PlatformTarget>x64</PlatformTarget>
+        <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+        <PlatformTarget>x64</PlatformTarget>
     </PropertyGroup>
 
     <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
-      <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-      <PlatformTarget>x64</PlatformTarget>
+        <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+        <PlatformTarget>x64</PlatformTarget>
     </PropertyGroup>
 
     <ItemGroup>
-      <Folder Include="src\elements\charts\bar" />
-      <Folder Include="src\elements\charts\flow" />
-      <Folder Include="src\elements\charts\graph" />
-      <Folder Include="src\elements\charts\heatmap" />
-      <Folder Include="src\elements\charts\pie" />
-      <Folder Include="src\elements\charts\radar" />
-      <Folder Include="src\elements\charts\scatter" />
-      <Folder Include="src\elements\ui" />
-      <Folder Include="src\utils\rects" />
-      <Folder Include="src\utils\vectors" />
+        <Folder Include="src\elements\charts\bar"/>
+        <Folder Include="src\elements\charts\flow"/>
+        <Folder Include="src\elements\charts\graph"/>
+        <Folder Include="src\elements\charts\heatmap"/>
+        <Folder Include="src\elements\charts\pie"/>
+        <Folder Include="src\elements\charts\radar"/>
+        <Folder Include="src\elements\charts\scatter"/>
+        <Folder Include="src\elements\ui"/>
+        <Folder Include="src\utils\rects"/>
+        <Folder Include="src\utils\vectors"/>
     </ItemGroup>
 
     <ItemGroup>
-      <PackageReference Include="FreeTypeSharp" Version="2.0.0.8-ci" />
-      <PackageReference Include="MathStuff" Version="1.0.0" />
-      <PackageReference Include="System.Drawing.Common" Version="7.0.0-preview.1.22076.8" />
-      <PackageReference Include="System.ValueTuple" Version="4.5.0" />
+        <PackageReference Include="FreeTypeSharp" Version="2.0.0.8-ci"/>
+        <PackageReference Include="MathStuff" Version="1.0.0"/>
+        <PackageReference Include="System.Drawing.Common" Version="7.0.0-preview.1.22076.8"/>
+        <PackageReference Include="System.ValueTuple" Version="4.5.0"/>
     </ItemGroup>
 
 </Project>

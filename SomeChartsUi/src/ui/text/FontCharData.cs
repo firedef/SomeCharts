@@ -1,6 +1,6 @@
 using MathStuff.vectors;
 
-namespace SomeChartsUi.ui.text; 
+namespace SomeChartsUi.ui.text;
 
 public readonly record struct FontCharData(float advance, float baseline, float2 position, float2 size, string glyph) {
 	/// <summary>x-shift of next character</summary>
@@ -9,8 +9,7 @@ public readonly record struct FontCharData(float advance, float baseline, float2
 	/// <summary>y-shift of current character <br/><br/>positive, if character goes bellow baseline (like j, p, g...)</summary>
 	public readonly float baseline = baseline;
 
-	/// <summary>distance between yMax and baseline</summary>
-	public float ascent => size.y - baseline;
+	public readonly string glyph = glyph;
 
 	/// <summary>position in atlas (x, y)</summary>
 	public readonly float2 position = position;
@@ -18,6 +17,6 @@ public readonly record struct FontCharData(float advance, float baseline, float2
 	/// <summary>size in atlas (width, height)</summary>
 	public readonly float2 size = size;
 
-	public readonly string glyph = glyph;
-
+	/// <summary>distance between yMax and baseline</summary>
+	public float ascent => size.y - baseline;
 }

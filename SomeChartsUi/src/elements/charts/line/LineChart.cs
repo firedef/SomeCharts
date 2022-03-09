@@ -7,26 +7,24 @@ namespace SomeChartsUi.elements.charts.line;
 
 /// <summary>simple line chart with uniform values</summary>
 public class LineChart : RenderableBase, IDownsample {
-	public IChartData<float> values;
 	public IChartData<indexedColor> colors;
+	public ChartProperty<float> lineAlphaMul = .5f;
+	public ChartProperty<float> lineThickness = new ChartPropertyFunc<float>(r => 1 / r.canvas.transform.zoom.animatedValue.x);
 
 	public Orientation orientation = Orientation.horizontal;
-	public ChartProperty<float> lineThickness = new ChartPropertyFunc<float>(r => 1 / r.canvas.transform.zoom.animatedValue.x);
 	public ChartProperty<float> pointThickness = new ChartPropertyFunc<float>(r => 2 / r.canvas.transform.zoom.animatedValue.x);
-	public ChartProperty<float> lineAlphaMul = .5f;
-	public float downsampleMultiplier { get; set; } = .5f;
-	public float elementScale { get; set; } = 100;
+	public IChartData<float> values;
 
 	public LineChart(IChartData<float> values, IChartData<indexedColor> colors, ChartsCanvas c) : base(c) {
 		this.values = values;
 		this.colors = colors;
 	}
-	
-	public LineChart(IChartData<float> values, indexedColor color, ChartsCanvas c) : this(values, new ConstChartData<indexedColor>(color), c) {}
 
-	public override void GenerateMesh() {
-		
-	}
+	public LineChart(IChartData<float> values, indexedColor color, ChartsCanvas c) : this(values, new ConstChartData<indexedColor>(color), c) { }
+	public float downsampleMultiplier { get; set; } = .5f;
+	public float elementScale { get; set; } = 100;
+
+	protected override void GenerateMesh() { }
 	// protected override unsafe void Render() {
 	// 	int length = values.GetLength();
 	// 	if (length < 1) return;

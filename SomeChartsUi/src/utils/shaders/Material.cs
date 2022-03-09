@@ -1,9 +1,9 @@
-namespace SomeChartsUi.utils.shaders; 
+namespace SomeChartsUi.utils.shaders;
 
 public class Material {
-	public Shader shader;
 
 	public List<MaterialProperty> properties = new();
+	public Shader shader;
 
 	public Material(Shader shader) => this.shader = shader;
 	public Material(Shader shader, params MaterialProperty[] properties) : this(shader) => this.properties = properties.ToList();

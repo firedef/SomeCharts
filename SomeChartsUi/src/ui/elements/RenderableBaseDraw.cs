@@ -1,9 +1,7 @@
-using MathStuff;
 using MathStuff.vectors;
 using SomeChartsUi.elements;
-using SomeChartsUi.ui.text;
 
-namespace SomeChartsUi.ui.elements; 
+namespace SomeChartsUi.ui.elements;
 
 public abstract partial class RenderableBase {
 /*	/// <summary>draws non-connected lines</summary>
@@ -191,15 +189,15 @@ public abstract partial class RenderableBase {
 		DrawVertices(points, null, colors, indexes, vCount, iCount);
 	}
 */
-	
+
 	/// <summary>draws text at specified positions</summary>
 	/// <param name="txt">texts</param>
 	/// <param name="positions">positions <br/>adds to transform of current element</param>
 	/// <param name="fontData">font type</param>
 	/// <param name="color">color</param>
 	/// <param name="scale">scale of text <br/>multiplies with transform of current element</param>
-	protected void DrawText(string[] txt, float2[] positions, FontData fontData, color color, float scale = 12) => DrawText(txt, positions, fontData, color, scale, ..);
-	
+	//protected void DrawText(string[] txt, float2[] positions, FontData fontData, color color, float scale = 12) => DrawText(txt, positions, fontData, color, scale, ..);
+
 	/// <summary>draws text at specified positions</summary>
 	/// <param name="txt">texts</param>
 	/// <param name="positions">positions <br/>adds to transform of current element</param>
@@ -207,12 +205,12 @@ public abstract partial class RenderableBase {
 	/// <param name="color">color</param>
 	/// <param name="scale">scale of text <br/>multiplies with transform of current element</param>
 	/// <param name="range">range of elements to render (from positions array) </param>
-	protected void DrawText(string[] txt, float2[] positions, FontData fontData, color color, float scale, Range range) {
-		int count = positions.Length;
-		int s = range.Start.IsFromEnd ? count - range.Start.Value : range.Start.Value;
-		int e = range.End.IsFromEnd ? count - range.End.Value : range.End.Value;
-		for (int i = s; i < e; i++) DrawText(txt[i], positions[i]/scale, color, fontData, scale);
-	}
+	// protected void DrawText(string[] txt, float2[] positions, FontData fontData, color color, float scale, Range range) {
+	// 	int count = positions.Length;
+	// 	int s = range.Start.IsFromEnd ? count - range.Start.Value : range.Start.Value;
+	// 	int e = range.End.IsFromEnd ? count - range.End.Value : range.End.Value;
+	// 	for (int i = s; i < e; i++) DrawText(txt[i], positions[i]/scale, color, fontData, scale);
+	// }
 
 	/// <summary>get positions on straight line</summary>
 	/// <param name="offset">offset of lines</param>
@@ -222,29 +220,29 @@ public abstract partial class RenderableBase {
 	/// <returns>positions</returns>
 	protected float2[] GetPositions(float2 offset, float space, int count, Orientation orientation) {
 		// get vector (direction)
-		float2 vec = (orientation & Orientation.vertical) != 0 ? new(0, 1) : new(1, 0); // vertical : horizontal
+		float2 vec = (orientation & Orientation.vertical) != 0 ? new(0, 1) : new(1, 0);// vertical : horizontal
 		float offsetOnMainAxis = (offset * vec).sum;
-		
+
 		// get start and end points
 		(float start, float end) = GetStartEndPos(offsetOnMainAxis, offsetOnMainAxis + count * space, orientation);
 		if (start > end - .01f) return Array.Empty<float2>();
-		
+
 		// get count
-		count = (int) Math.Floor((end - start) / space) + 1;
+		count = (int)Math.Floor((end - start) / space) + 1;
 		if (count < 1) return Array.Empty<float2>();
-		
+
 		// snap to grid
 		offset += MathF.Ceiling(start / space) * space * vec;
 
 		// calculate array fill vars
 		float2 add = vec * space;
-		
+
 		// reverse if necessary
 		if ((orientation & Orientation.reversed) != 0) {
 			offset += add;
 			add *= -1;
 		}
-		
+
 		// allocate and fill array
 		float2[] arr = new float2[count];
 		for (int i = 0; i < count; i++)

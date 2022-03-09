@@ -1,6 +1,6 @@
 using SomeChartsUi.themes.themes;
 
-namespace SomeChartsUi.themes.palettes; 
+namespace SomeChartsUi.themes.palettes;
 
 public struct indexedPalette {
 	public ushort paletteIndex;

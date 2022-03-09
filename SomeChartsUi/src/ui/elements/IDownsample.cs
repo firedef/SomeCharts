@@ -1,4 +1,4 @@
-namespace SomeChartsUi.ui.elements; 
+namespace SomeChartsUi.ui.elements;
 
 public interface IDownsample {
 	/// <summary>more value = less elements</summary>

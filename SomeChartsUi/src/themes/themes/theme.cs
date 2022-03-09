@@ -1,7 +1,7 @@
 using MathStuff;
 using SomeChartsUi.themes.palettes;
 
-namespace SomeChartsUi.themes.themes; 
+namespace SomeChartsUi.themes.themes;
 
 public partial record theme {
 	public bool isDark;

@@ -1,11 +1,11 @@
 using MathStuff.vectors;
 
-namespace SomeChartsUi.ui.elements; 
+namespace SomeChartsUi.ui.elements;
 
 public record RenderableTransform {
 	public float3 position;
-	public float3 scale;
 	public float3 rotation;
+	public float3 scale;
 	public TransformType type;
 
 	public RenderableTransform(float3 position, float3 scale, float3 rotation, TransformType type = TransformType.worldSpace) {
@@ -14,7 +14,7 @@ public record RenderableTransform {
 		this.rotation = rotation;
 		this.type = type;
 	}
-	
+
 	public RenderableTransform(float3 position, float scale = 1, float rotation = 0, TransformType type = TransformType.worldSpace) {
 		this.position = position;
 		this.scale = scale;
@@ -27,11 +27,11 @@ public record RenderableTransform {
 
 public enum TransformType : byte {
 	/// coordinates from -∞ to +∞
-	worldSpace = 0, 
-	
+	worldSpace = 0,
+
 	/// coordinates from 0 to screen width or height
-	screenSpace = 1, 
-	
+	screenSpace = 1,
+
 	/// coordinates from 0 to 1
-	viewportSpace = 2,
+	viewportSpace = 2
 }

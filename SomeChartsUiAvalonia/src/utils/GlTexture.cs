@@ -7,7 +7,7 @@ using MathStuff.vectors;
 using SomeChartsUi.utils.shaders;
 using SomeChartsUiAvalonia.controls.gl;
 
-namespace SomeChartsUiAvalonia.utils; 
+namespace SomeChartsUiAvalonia.utils;
 
 public class GlTexture : Texture, IDisposable {
 	public readonly WriteableBitmap? bitmap;
@@ -19,18 +19,24 @@ public class GlTexture : Texture, IDisposable {
 		bitmap = WriteableBitmap.Decode(fs);
 		bitmapSize = new((float)bitmap.Size.Width, (float)bitmap.Size.Height);
 	}
-	
+
 	public unsafe GlTexture(int width, int height, int format, int type) : base("") {
 		bitmap = null;
-		
+
 		int i = 0;
 		GlInfo.glExt!.GenTextures(1, &i);
 		id = i;
 		GlInfo.gl!.BindTexture(GlConsts.GL_TEXTURE_2D, id);
-		
+
 		SetWrap(TextureWrap.repeat);
 		SetFilter(TextureFilter.linear);
 		GlInfo.gl.TexImage2D(GlConsts.GL_TEXTURE_2D, 0, GlConsts.GL_RGB, width, height, 0, format, type, IntPtr.Zero);
+		bitmapSize = new(width, height);
+	}
+	public override float2 size => bitmapSize;
+	public void Dispose() {
+		ReleaseUnmanagedResources();
+		GC.SuppressFinalize(this);
 	}
 
 	public unsafe void TryLoad() {
@@ -39,10 +45,10 @@ public class GlTexture : Texture, IDisposable {
 		GlInfo.glExt!.GenTextures(1, &i);
 		id = i;
 		GlInfo.gl!.BindTexture(GlConsts.GL_TEXTURE_2D, id);
-		
+
 		SetWrap(TextureWrap.repeat);
 		SetFilter(TextureFilter.nearest);
-		
+
 		using ILockedFramebuffer lockedFramebuffer = bitmap!.Lock();
 		IntPtr ptr = lockedFramebuffer.Address;
 
@@ -52,7 +58,7 @@ public class GlTexture : Texture, IDisposable {
 			PixelFormat.Bgra8888 => (GlConsts.GL_UNSIGNED_INT_8_8_8_8, GlConsts.GL_BGRA),
 			_ => throw new ArgumentOutOfRangeException()
 		};
-		
+
 		GlInfo.gl.TexImage2D(GlConsts.GL_TEXTURE_2D, 0, GlConsts.GL_RGB, (int)bitmap.Size.Width, (int)bitmap.Size.Height, 0, format, type, ptr);
 	}
 
@@ -65,9 +71,9 @@ public class GlTexture : Texture, IDisposable {
 		SetParameter(GlConsts.GL_TEXTURE_WRAP_S, (int)v);
 		SetParameter(GlConsts.GL_TEXTURE_WRAP_T, (int)v);
 	}
-	
+
 	public static void SetFilter(TextureFilter v) {
-		SetParameter(GlConsts.GL_TEXTURE_MIN_FILTER, (v == TextureFilter.nearest ? GlConsts.GL_NEAREST : GlConsts.GL_LINEAR));
+		SetParameter(GlConsts.GL_TEXTURE_MIN_FILTER, v == TextureFilter.nearest ? GlConsts.GL_NEAREST : GlConsts.GL_LINEAR);
 		SetParameter(GlConsts.GL_TEXTURE_MAG_FILTER, (int)v);
 	}
 
@@ -78,18 +84,13 @@ public class GlTexture : Texture, IDisposable {
 		int i = id;
 		GlInfo.glExt!.DeleteTextures(1, &i);
 	}
-	public void Dispose() {
-		ReleaseUnmanagedResources();
-		GC.SuppressFinalize(this);
-	}
-	public override float2 size => bitmapSize;
 }
 
 public enum TextureWrap {
-	repeat = GlConsts.GL_REPEAT,
+	repeat = GlConsts.GL_REPEAT
 }
 
 public enum TextureFilter {
 	nearest = GlConsts.GL_NEAREST,
-	linear = GlConsts.GL_LINEAR,
+	linear = GlConsts.GL_LINEAR
 }

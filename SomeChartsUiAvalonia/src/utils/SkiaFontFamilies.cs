@@ -5,19 +5,19 @@ using SkiaSharp;
 using SkiaSharp.HarfBuzz;
 using SomeChartsUi.ui.text;
 
-namespace SomeChartsUiAvalonia.utils; 
+namespace SomeChartsUiAvalonia.utils;
 
 public static class SkiaFontFamilies {
-	public static SKShaper defaultShaper = new(SKTypeface.Default); 
+	public static SKShaper defaultShaper = new(SKTypeface.Default);
 	public static Dictionary<string, FontFamilyData?> fonts = new();
 
 	public static FontFamilyData? GetFontFamily(string name) {
-		
+
 		if (fonts.TryGetValue(name, out FontFamilyData? v)) return v;
 		TryLoad(name);
 		return fonts[name];
 	}
-	
+
 	private static void TryLoad(string name) {
 		if (SKTypeface.FromFamilyName(name) == null) {
 			fonts.Add(name, null);
@@ -26,12 +26,12 @@ public static class SkiaFontFamilies {
 		fonts.Add(name, FontFamilyData.Load(name));
 	}
 
-	public static SKShaper Get(string fontFamily, SKFontStyleWeight weight, SKFontStyleWidth width, SKFontStyleSlant slant) => 
+	public static SKShaper Get(string fontFamily, SKFontStyleWeight weight, SKFontStyleWidth width, SKFontStyleSlant slant) =>
 		GetFontFamily(fontFamily)?.Get(weight, width, slant) ?? defaultShaper;
 
-	public static SKShaper Get(FontData data) => Get(data.family, 
-	                                                 data.isBold ? SKFontStyleWeight.Bold : SKFontStyleWeight.Normal, 
-	                                                 data.isExpanded ? SKFontStyleWidth.Expanded : SKFontStyleWidth.Normal, 
+	public static SKShaper Get(FontData data) => Get(data.family,
+	                                                 data.isBold ? SKFontStyleWeight.Bold : SKFontStyleWeight.Normal,
+	                                                 data.isExpanded ? SKFontStyleWidth.Expanded : SKFontStyleWidth.Normal,
 	                                                 data.isItalic ? SKFontStyleSlant.Italic : SKFontStyleSlant.Upright);
 }
 
@@ -45,9 +45,7 @@ public class FontFamilyData : IDisposable {
 	public static FontFamilyData Load(string name) {
 		SKFontStyleSet styles = SKFontManager.Default.GetFontStyles(name);
 		FontFamilyData data = new();
-		foreach (SKFontStyle style in styles) {
-			data.fonts.Add(new(styles.CreateTypeface(style)));
-		}
+		foreach (SKFontStyle style in styles) data.fonts.Add(new(styles.CreateTypeface(style)));
 
 		return data;
 	}

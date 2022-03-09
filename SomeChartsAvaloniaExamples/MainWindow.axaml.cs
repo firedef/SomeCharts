@@ -1,17 +1,17 @@
 using Avalonia.Controls;
 using Avalonia.Markup.Xaml;
 
-namespace SomeChartsAvaloniaExamples {
-	public partial class MainWindow : Window {
-		public MainWindow() {
-			InitializeComponent();
-		#if DEBUG
-			this.AttachDevTools();
-		#endif
-		}
+namespace SomeChartsAvaloniaExamples;
 
-		private void InitializeComponent() {
-			AvaloniaXamlLoader.Load(this);
-		}
+public class MainWindow : Window {
+	public MainWindow() {
+		InitializeComponent();
+	#if DEBUG
+			this.AttachDevTools();
+	#endif
+	}
+
+	private void InitializeComponent() {
+		AvaloniaXamlLoader.Load(this);
 	}
 }
