@@ -1,3 +1,4 @@
+using System;
 using System.Diagnostics;
 using Avalonia;
 using Avalonia.Input;
@@ -16,7 +17,7 @@ using static Avalonia.OpenGL.GlConsts;
 
 namespace SomeChartsUiAvalonia.controls.gl;
 
-public class AvaloniaGlChartsCanvas : OpenGlControlBase {
+public class AvaloniaGlChartsCanvas : CustomGlControlBase {
 	public readonly ChartsCanvas canvas = CreateCanvas();
 
 	/// <summary>name of current canvas</summary>
@@ -33,7 +34,7 @@ public class AvaloniaGlChartsCanvas : OpenGlControlBase {
 		canvas.controller = new AvaloniaGlCanvasUiController(canvas, this);
 		Focusable = true;
 
-		GlInfo.version = GlVersion;
+		GlInfo.version = new();
 	}
 
 
@@ -53,13 +54,13 @@ public class AvaloniaGlChartsCanvas : OpenGlControlBase {
 	public void RemoveElement(RenderableBase el, string layer = "normal") => (canvas.GetLayer(layer) ?? canvas.GetLayer(1)).RemoveElement(el);
 
 
-	protected override void OnOpenGlInit(GlInterface glInterface, int fb) {
-		GlInfo.glExt = new(glInterface);
-		GlInfo.gl = glInterface;
-		GlInfo.version = GlVersion;
+	protected override void OnOpenGlInit(GlInterface glInterface, int framebuffer) {
+		//GlInfo.glExt = new(glInterface);
+		//GlInfo.gl = glInterface;
+		//GlInfo.version = GlVersion;
 	}
 
-	protected override void OnOpenGlDeinit(GlInterface gl, int fb) {
+	protected override void OnOpenGlDeinit(GlInterface gl, int framebuffer) {
 		// Unbind everything
 		gl.BindBuffer(GL_ARRAY_BUFFER, 0);
 		gl.BindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
@@ -67,7 +68,7 @@ public class AvaloniaGlChartsCanvas : OpenGlControlBase {
 		gl.UseProgram(0);
 	}
 
-	protected override void OnOpenGlRender(GlInterface gl, int fb) {
+	protected override void OnOpenGlRender(GlInterface gl, int framebuffer) {
 		gl.Enable(GL_DEPTH_TEST);
 		gl.Enable(GL_MULTISAMPLE);
 		gl.Enable(GL_BLEND);
@@ -99,8 +100,15 @@ public class AvaloniaGlChartsCanvas : OpenGlControlBase {
 			layer.Render();
 		GlInfo.CheckError("end");
 
-		Dispatcher.UIThread.Post(InvalidateVisual);
 		canvas.renderTime = sw.Elapsed;
+	}
+
+	protected override void OnOpenGlPostRender(GlInterface gl, int fb) {
+		GlInfo.glExt!.Disable(GL_DEPTH_TEST);
+		//GlInfo.glExt!.Disable(GL_CULL_FACE);
+		canvas.renderer.postProcessor?.Draw();
+		
+		Dispatcher.UIThread.Post(InvalidateVisual);
 	}
 
 

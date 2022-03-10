@@ -33,6 +33,7 @@ public class TextMesh : IDisposable {
 		if (textMaterial == null) return;
 
 		textMaterial.SetProperty("u_gamma", ChartsRenderSettings.textThickness);
+		textMaterial.SetProperty("textQuality", (float) ChartsRenderSettings.textQuality);
 
 		foreach (TextMeshBatch batch in batches) {
 			textMaterial.SetProperty("testure0", batch.texture);

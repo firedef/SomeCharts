@@ -2,91 +2,35 @@
 <#@ assembly name="System.Core"#>
 <#
     var functions = new[] {
-        new {
-            name = "GenVertexArrays",
-            ret = "void",
-            args = "int count, int[] arrays"
-        },
-        new {
-            name = "GenTextures",
-            ret = "void",
-            args = "int count, int* textures"
-        },
-        new {
-            name = "DeleteVertexArrays",
-            ret = "void",
-            args = "int count, int[] buffers"
-        },
-        new {
-            name = "DeleteTextures",
-            ret = "void",
-            args = "int count, int* textures"
-        },
-        new {
-            name = "BindVertexArray",
-            ret = "void",
-            args = "int array"
-        },
-        new {
-            name = "BufferSubData",
-            ret = "void",
-            args = "int buffer, int offset, int size, void* data"
-        },
-        new {
-            name = "TexSubImage2D",
-            ret = "void",
-            args = "int target, int level, int xOff, int yOff, int w, int h, int format, int type, void* pixels"
-        },
-        new {
-            name = "CullFace",
-            ret = "void",
-            args = "int face"
-        },
-        new {
-            name = "Uniform1i",
-            ret = "void",
-            args = "int location, int v"
-        },
-        new {
-            name = "Uniform2f",
-            ret = "void",
-            args = "int location, float x, float y"
-        },
-        new {
-            name = "Uniform3f",
-            ret = "void",
-            args = "int location, float x, float y, float z"
-        },
-        new {
-            name = "Uniform4f",
-            ret = "void",
-            args = "int location, float x, float y, float z, float w"
-        },
-        new {
-            name = "GetActiveUniform",
-            ret = "void",
-            args = "int program, int index, int bufferSize, int* length, int* size, int* type, sbyte* name"
-        },
-        new {
-            name = "PolygonMode",
-            ret = "void",
-            args = "int face, int mode"
-        },
-        new {
-            name = "BlendFunc",
-            ret = "void",
-            args = "int sFactor, int dFactor"
-        },
-        new {
-            name = "PixelStorei",
-            ret = "void",
-            args = "int name, int param"
-        },
-        new {
-            name = "GenerateMipmap",
-            ret = "void",
-            args = "int target"
-        }
+        // gen
+        new {name = "GenVertexArrays", ret = "void", args = "int count, int[] arrays"},
+        new {name = "GenTextures", ret = "void", args = "int count, int* textures"},
+        
+        // delete
+        new {name = "DeleteVertexArrays", ret = "void", args = "int count, int[] buffers"},
+        new {name = "DeleteTextures", ret = "void", args = "int count, int* textures"},
+        
+        // bufferization
+        new {name = "BufferSubData", ret = "void", args = "int buffer, int offset, int size, void* data"},
+        new {name = "TexSubImage2D", ret = "void", args = "int target, int level, int xOff, int yOff, int w, int h, int format, int type, void* pixels"},
+        
+        // bind
+        new {name = "BindVertexArray", ret = "void", args = "int array"},
+        
+        // uniforms
+        new {name = "Uniform1i", ret = "void", args = "int location, int v"},
+        new {name = "Uniform2f", ret = "void", args = "int location, float x, float y"},
+        new {name = "Uniform3f", ret = "void", args = "int location, float x, float y, float z"},
+        new {name = "Uniform4f", ret = "void", args = "int location, float x, float y, float z, float w"},
+        new {name = "GetActiveUniform", ret = "void", args = "int program, int index, int bufferSize, int* length, int* size, int* type, sbyte* name"},
+        
+        // other
+        new {name = "CullFace", ret = "void", args = "int face"},
+        new {name = "PolygonMode", ret = "void", args = "int face, int mode"},
+        new {name = "BlendFunc", ret = "void", args = "int sFactor, int dFactor"},
+        new {name = "PixelStorei", ret = "void", args = "int name, int param"},
+        new {name = "GenerateMipmap", ret = "void", args = "int target"},
+        new {name = "Disable", ret = "void", args = "int cap"},
     };
 #>
 using Avalonia.OpenGL;

@@ -22,10 +22,6 @@ public class GlExtrasInterface : GlInterfaceBase<GlInterface.GlContextInfo>
     public GlDeleteTextures DeleteTextures { get; } = null!;
     public unsafe delegate void GlDeleteTextures(int count, int* textures);
 
-    [GlEntryPoint("glBindVertexArray")]
-    public GlBindVertexArray BindVertexArray { get; } = null!;
-    public unsafe delegate void GlBindVertexArray(int array);
-
     [GlEntryPoint("glBufferSubData")]
     public GlBufferSubData BufferSubData { get; } = null!;
     public unsafe delegate void GlBufferSubData(int buffer, int offset, int size, void* data);
@@ -34,9 +30,9 @@ public class GlExtrasInterface : GlInterfaceBase<GlInterface.GlContextInfo>
     public GlTexSubImage2D TexSubImage2D { get; } = null!;
     public unsafe delegate void GlTexSubImage2D(int target, int level, int xOff, int yOff, int w, int h, int format, int type, void* pixels);
 
-    [GlEntryPoint("glCullFace")]
-    public GlCullFace CullFace { get; } = null!;
-    public unsafe delegate void GlCullFace(int face);
+    [GlEntryPoint("glBindVertexArray")]
+    public GlBindVertexArray BindVertexArray { get; } = null!;
+    public unsafe delegate void GlBindVertexArray(int array);
 
     [GlEntryPoint("glUniform1i")]
     public GlUniform1i Uniform1i { get; } = null!;
@@ -58,6 +54,10 @@ public class GlExtrasInterface : GlInterfaceBase<GlInterface.GlContextInfo>
     public GlGetActiveUniform GetActiveUniform { get; } = null!;
     public unsafe delegate void GlGetActiveUniform(int program, int index, int bufferSize, int* length, int* size, int* type, sbyte* name);
 
+    [GlEntryPoint("glCullFace")]
+    public GlCullFace CullFace { get; } = null!;
+    public unsafe delegate void GlCullFace(int face);
+
     [GlEntryPoint("glPolygonMode")]
     public GlPolygonMode PolygonMode { get; } = null!;
     public unsafe delegate void GlPolygonMode(int face, int mode);
@@ -73,5 +73,9 @@ public class GlExtrasInterface : GlInterfaceBase<GlInterface.GlContextInfo>
     [GlEntryPoint("glGenerateMipmap")]
     public GlGenerateMipmap GenerateMipmap { get; } = null!;
     public unsafe delegate void GlGenerateMipmap(int target);
+
+    [GlEntryPoint("glDisable")]
+    public GlDisable Disable { get; } = null!;
+    public unsafe delegate void GlDisable(int cap);
 
 }

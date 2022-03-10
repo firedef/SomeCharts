@@ -2,6 +2,7 @@ using System;
 using FreeTypeSharp;
 using MathStuff.vectors;
 using SomeChartsUi.backends;
+using SomeChartsUi.ui;
 using SomeChartsUi.ui.text;
 using SomeChartsUi.utils.mesh;
 using SomeChartsUi.utils.shaders;
@@ -17,4 +18,5 @@ public class GlChartFactory : ChartFactory {
 	public override Texture CreateTexture(float2 size) => throw new NotImplementedException();
 	public override FontTextures CreateFontTextureAtlas(FreeTypeFaceFacade face, uint resolution) => new GlFontTextures(face, resolution);
 	public override Material CreateTextMaterial() => new(GlShaders.basicText);
+	public override PostProcessor CreatePostProcessor(Material? mat) => new GlPostProcessor(owner) {material = mat};
 }

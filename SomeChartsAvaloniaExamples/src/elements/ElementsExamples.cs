@@ -134,6 +134,10 @@ Aenean suscipit odio vitae tellus placerat semper. Pellentesque interdum et orci
 			l.color = new("#eb4034");
 			l.MarkDirty();
 
+			//Shader postFx = GlShaders.postFxBloom;
+			//Material mat = new(postFx);
+			//canvas.canvas.renderer.postProcessor = canvas.canvas.factory.CreatePostProcessor(mat);
+
 			// l.beforeRender += () => {
 			// 	float time = (float)DateTime.Now.TimeOfDay.TotalMilliseconds;
 			// 	l.transform.rotation = new(0, MathF.PI * .1f * (time * .005f), 0);

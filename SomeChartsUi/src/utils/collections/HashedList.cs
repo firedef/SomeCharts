@@ -94,7 +94,7 @@ public class HashedList<T> : NativeList<T> where T : unmanaged {
 
 			if (reset) oldHashes[i] = newHash;
 
-			Range r = (i * blockSize)..((i + 1) * blockSize);
+			Range r = (i * blockSize)..math.min((i + 1) * blockSize, count);
 			if (changes.Count > 0 && changes[^1].End.Value == r.Start.Value) {
 				changes[^1] = changes[^1].Start..r.End;
 				continue;

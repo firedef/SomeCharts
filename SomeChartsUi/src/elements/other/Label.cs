@@ -25,12 +25,7 @@ public class Label : RenderableBase {
 	public Label(string txt, ChartsCanvas c) : this(new ChartPropertyValue<string>(txt), c) { }
 
 	protected override void GenerateMesh() {
-		_textMesh.ClearMeshes();
-		_textMesh.GenerateMesh("amogus", _font, 64, MathStuff.color.softRed, new(new(0, 100)));
-		_textMesh.GenerateMesh("amogus2", _font, 256, MathStuff.color.softYellow, new(new(50, 300)));
-		_textMesh.GenerateMesh("amogus2", _font, 16, MathStuff.color.softYellow, new(new(-100, 200)));
-
-		//_textMesh.UpdateTextMesh(txt.Get(this), _font, textScale.Get(this), MathStuff.color.softBlue);
+		_textMesh.UpdateTextMesh(txt.Get(this), _font, textScale.Get(this), MathStuff.color.softBlue, transform);
 	}
 
 	protected override void AfterDraw() {

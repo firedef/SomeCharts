@@ -1,5 +1,6 @@
 using FreeTypeSharp;
 using MathStuff.vectors;
+using SomeChartsUi.ui;
 using SomeChartsUi.ui.canvas;
 using SomeChartsUi.ui.layers;
 using SomeChartsUi.ui.text;
@@ -20,4 +21,5 @@ public abstract class ChartFactory {
 	public abstract FontTextures CreateFontTextureAtlas(FreeTypeFaceFacade face, uint resolution = 32);
 
 	public abstract Material CreateTextMaterial();
+	public abstract PostProcessor CreatePostProcessor(Material mat);
 }

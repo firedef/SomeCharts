@@ -13,26 +13,26 @@
         <PlatformTarget>x64</PlatformTarget>
     </PropertyGroup>
     <ItemGroup>
-        <None Remove=".gitignore"/>
+        <None Remove=".gitignore" />
         <None Update="src\controls\gl\GlInterfaceGen.tt">
             <Generator>TextTemplatingFileGenerator</Generator>
             <LastGenOutput>GlInterfaceGen.cs</LastGenOutput>
         </None>
     </ItemGroup>
     <ItemGroup>
-        <PackageReference Include="Avalonia" Version="0.10.12"/>
-        <PackageReference Include="Avalonia.Desktop" Version="0.10.12"/>
+        <PackageReference Include="Avalonia" Version="0.10.12" />
+        <PackageReference Include="Avalonia.Desktop" Version="0.10.12" />
         <!--Condition below is needed to remove Avalonia.Diagnostics package from build output in Release configuration.-->
-        <PackageReference Condition="'$(Configuration)' == 'Debug'" Include="Avalonia.Diagnostics" Version="0.10.11"/>
-        <PackageReference Include="FreeTypeSharp" Version="2.0.0.8-ci"/>
-        <PackageReference Include="HarfBuzzSharp" Version="2.8.2-preview.187"/>
-        <PackageReference Include="MathStuff" Version="1.0.0"/>
-        <PackageReference Include="SkiaSharp.HarfBuzz" Version="2.88.0-preview.187"/>
-        <PackageReference Include="System.IO.FileSystem.Primitives" Version="4.3.0"/>
-        <PackageReference Include="System.Text.Encoding.Extensions" Version="4.3.0"/>
+        <PackageReference Condition="'$(Configuration)' == 'Debug'" Include="Avalonia.Diagnostics" Version="0.10.11" />
+        <PackageReference Include="FreeTypeSharp" Version="2.0.0.8-ci" />
+        <PackageReference Include="HarfBuzzSharp" Version="2.8.2-preview.187" />
+        <PackageReference Include="MathStuff" Version="1.0.0" />
+        <PackageReference Include="SkiaSharp.HarfBuzz" Version="2.88.0-preview.187" />
+        <PackageReference Include="System.IO.FileSystem.Primitives" Version="4.3.0" />
+        <PackageReference Include="System.Text.Encoding.Extensions" Version="4.3.0" />
     </ItemGroup>
     <ItemGroup>
-        <ProjectReference Include="..\SomeChartsUi\SomeChartsUi.csproj"/>
+        <ProjectReference Include="..\SomeChartsUi\SomeChartsUi.csproj" />
     </ItemGroup>
     <ItemGroup>
         <Compile Update="src\controls\gl\GlInterfaceGen.cs">
