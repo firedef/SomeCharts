@@ -9,10 +9,10 @@ namespace SomeChartsUi.elements.charts.line;
 public class LineChart : RenderableBase, IDownsample {
 	public IChartData<indexedColor> colors;
 	public ChartProperty<float> lineAlphaMul = .5f;
-	public ChartProperty<float> lineThickness = new ChartPropertyFunc<float>(r => 1 / r.canvas.transform.zoom.animatedValue.x);
+	public ChartProperty<float> lineThickness = new ChartPropertyFunc<float>(r => 1 / r.canvas.transform.scale.animatedValue.x);
 
 	public Orientation orientation = Orientation.horizontal;
-	public ChartProperty<float> pointThickness = new ChartPropertyFunc<float>(r => 2 / r.canvas.transform.zoom.animatedValue.x);
+	public ChartProperty<float> pointThickness = new ChartPropertyFunc<float>(r => 2 / r.canvas.transform.scale.animatedValue.x);
 	public IChartData<float> values;
 
 	public LineChart(IChartData<float> values, IChartData<indexedColor> colors, ChartsCanvas c) : base(c) {

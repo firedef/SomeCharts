@@ -132,11 +132,12 @@ Aenean suscipit odio vitae tellus placerat semper. Pellentesque interdum et orci
 			Label l = new(txt, canvas.canvas);
 			canvas.AddElement(l);
 			l.color = new("#eb4034");
+			l.textScale = 1024;
 			l.MarkDirty();
 
-			//Shader postFx = GlShaders.postFxBloom;
-			//Material mat = new(postFx);
-			//canvas.canvas.renderer.postProcessor = canvas.canvas.factory.CreatePostProcessor(mat);
+			Shader postFx = GlShaders.bloom;
+			Material mat = new(postFx);
+			canvas.canvas.renderer.postProcessor = canvas.canvas.factory.CreatePostProcessor(mat);
 
 			// l.beforeRender += () => {
 			// 	float time = (float)DateTime.Now.TimeOfDay.TotalMilliseconds;
@@ -165,7 +166,7 @@ Aenean suscipit odio vitae tellus placerat semper. Pellentesque interdum et orci
 				lineLength = 10_000
 			});
 
-			Func<RenderableBase, RenderableTransform> trFunc = _ => {
+			Func<RenderableBase, Transform> trFunc = _ => {
 				float2 screenSize = canvas.screenSize;
 				return new(screenSize - new float2(200, 100), 1, float3.zero, TransformType.screenSpace);
 			};

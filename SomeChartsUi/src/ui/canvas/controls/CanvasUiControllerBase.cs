@@ -18,7 +18,7 @@ public abstract class CanvasUiControllerBase : ChartCanvasControllerBase {
 	protected abstract bool IsCaptured();
 	protected abstract void SetCursor(string name);
 
-	protected virtual float2 ScreenToWorld(float2 pos) => (pos - new float2(owner.transform.screenBounds.midX, -owner.transform.screenBounds.midY)) / owner.transform.zoom.currentValue + owner.transform.position;
+	protected virtual float2 ScreenToWorld(float2 pos) => (pos - new float2(owner.transform.screenBounds.midX, -owner.transform.screenBounds.midY)) / owner.transform.scale.currentValue + owner.transform.position;
 
 	//TODO: add rotation support
 	public override void OnMouseMove(MouseState state) {
@@ -31,7 +31,7 @@ public abstract class CanvasUiControllerBase : ChartCanvasControllerBase {
 		float speed = 1;
 		if ((state.modifiers & keymods.alt) != 0) speed = 4;
 
-		float2 mov = (pointerPos - _start) / owner.transform.zoom.currentValue * -speed;
+		float2 mov = (pointerPos - _start) / owner.transform.scale.currentValue * -speed;
 		Move(mov);
 		_start = pointerPos;
 		_origin += mov;
@@ -68,7 +68,7 @@ public abstract class CanvasUiControllerBase : ChartCanvasControllerBase {
 			disableAnim = true;
 		}
 
-		float2 oldScale = owner.transform.zoom.currentValue;
+		float2 oldScale = owner.transform.scale.currentValue;
 		float2 newScale = float2.Clamp(oldScale * (1 + zoomAdd), minZoom, maxZoom);
 		zoomAdd = 1 - newScale / oldScale;
 

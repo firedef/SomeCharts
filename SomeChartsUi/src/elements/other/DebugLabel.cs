@@ -6,7 +6,7 @@ using SomeChartsUi.ui.elements;
 namespace SomeChartsUi.elements.other;
 
 public class DebugLabel : Label {
-	public DebugLabel(ChartsCanvas c) : base("", c) => txt = new ChartPropertyFunc<string>(GetString);
+	public DebugLabel(ChartsCanvas c) : base("", c) => beforeRender += () => txt = GetString(this);
 
 	private static string GetString(RenderableBase r) {
 		StringBuilder sb = new();

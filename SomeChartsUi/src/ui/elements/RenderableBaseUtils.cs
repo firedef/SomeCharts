@@ -11,7 +11,7 @@ namespace SomeChartsUi.ui.elements;
 
 public abstract partial class RenderableBase {
 	protected float2 canvasPosition => canvas.transform.position;
-	protected float2 canvasZoom => canvas.transform.zoom;
+	protected float2 canvasScale => canvas.transform.scale;
 	protected float3 canvasRotation => canvas.transform.rotation;
 
 	protected ChartCanvasRenderer renderer => canvas.renderer;
@@ -59,8 +59,8 @@ public abstract partial class RenderableBase {
 
 	/// <summary>clamp start and end positions to screen bounds</summary>
 	protected (float start, float end) GetStartEndPos(float startLim, float endLim, Orientation orientation) {
-		float2 s = 1 / canvasZoom;
-		RenderableTransform tr = transform;
+		float2 s = 1 / canvasScale;
+		Transform tr = transform;
 		if ((orientation & Orientation.vertical) != 0)
 			return (orientation & Orientation.reversed) != 0
 				? (math.max(startLim, canvas.transform.worldBounds.top - tr.position.y), math.min(endLim, canvas.transform.worldBounds.bottom - tr.position.y))
@@ -71,9 +71,9 @@ public abstract partial class RenderableBase {
 	}
 
 	/// <summary>get preferred downsample for element</summary>
-	protected int GetDownsampleX(float downsampleMul, int sub = 2) => (int)math.max(math.log2(downsampleMul / canvas.transform.zoom.animatedValue.x), sub) - sub;
+	protected int GetDownsampleX(float downsampleMul, int sub = 2) => (int)math.max(math.log2(downsampleMul / canvas.transform.scale.animatedValue.x), sub) - sub;
 	/// <summary>get preferred downsample for element</summary>
-	protected int GetDownsampleY(float downsampleMul, int sub = 2) => (int)math.max(math.log2(downsampleMul / canvas.transform.zoom.animatedValue.y), sub) - sub;
+	protected int GetDownsampleY(float downsampleMul, int sub = 2) => (int)math.max(math.log2(downsampleMul / canvas.transform.scale.animatedValue.y), sub) - sub;
 	/// <summary>get preferred downsample for element</summary>
 	protected int GetDownsample(Orientation orientation, float downsampleMul, int sub = 2) => (orientation & Orientation.vertical) != 0
 		? GetDownsampleY(downsampleMul, sub)
@@ -89,17 +89,17 @@ public abstract partial class RenderableBase {
 	protected static unsafe void FreeMem<T>(T* arr) where T : unmanaged => NativeMemory.Free(arr);
 
 	public RenderableBase WithPosition(float2 v) {
-		((ChartPropertyValue<RenderableTransform>)transform).value.position = v;
+		((ChartPropertyValue<Transform>)transform).value.position = v;
 		return this;
 	}
 
 	public RenderableBase WithScale(float2 v) {
-		((ChartPropertyValue<RenderableTransform>)transform).value.scale = v;
+		((ChartPropertyValue<Transform>)transform).value.scale = v;
 		return this;
 	}
 
 	public RenderableBase WithRotation(float v) {
-		((ChartPropertyValue<RenderableTransform>)transform).value.rotation = new(0, 0, v);
+		((ChartPropertyValue<Transform>)transform).value.rotation = new(0, 0, v);
 		return this;
 	}
 }

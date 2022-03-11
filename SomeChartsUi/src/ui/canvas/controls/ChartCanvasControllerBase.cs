@@ -20,10 +20,10 @@ public abstract class ChartCanvasControllerBase : ICanvasUpdate, ICanvasControls
 
 	protected void Move(float radians, float amount) => owner.transform.position += float2.SinCos(radians, amount);
 
-	protected void Zoom(float2 dir) => owner.transform.zoom += dir;
-	protected void SetZoom(float2 pos) => owner.transform.zoom.Set(pos);
+	protected void Zoom(float2 dir) => owner.transform.scale += dir;
+	protected void SetZoom(float2 pos) => owner.transform.scale.Set(pos);
 
-	protected void ResetZoomSqueeze() => SetZoom(owner.transform.zoom.currentValue.avg);
+	protected void ResetZoomSqueeze() => SetZoom(owner.transform.scale.currentValue.avg);
 
 	protected void ResetPosition() => SetPosition(0);
 	protected void ResetZoom() => SetZoom(0);
@@ -38,7 +38,7 @@ public abstract class ChartCanvasControllerBase : ICanvasUpdate, ICanvasControls
 
 	protected void UpdateTransformAnim() {
 		owner.transform.position.OnUpdate(1000);
-		owner.transform.zoom.OnUpdate(1000);
+		owner.transform.scale.OnUpdate(1000);
 		owner.transform.rotation.OnUpdate(1000);
 	}
 }

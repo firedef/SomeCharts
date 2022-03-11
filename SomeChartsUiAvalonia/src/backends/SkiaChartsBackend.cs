@@ -21,7 +21,7 @@ public class SkiaChartsBackend : ChartsBackendBase, IDisposable {
 	}
 
 	//TODO: add 3D rotation
-	private void ApplyTransform(RenderableTransform transform, bool flipY = false) {
+	private void ApplyTransform(Transform transform, bool flipY = false) {
 		float2 scale = transform.scale;
 		float2 position = transform.position;
 		float3 rotation = transform.rotation;
@@ -29,7 +29,7 @@ public class SkiaChartsBackend : ChartsBackendBase, IDisposable {
 		// apply canvas transform if world-space 
 		if (transform.type == TransformType.worldSpace) {
 			_canvas!.RotateRadians(owner.transform.rotation.animatedValue.z);
-			float2 s = owner.transform.zoom.animatedValue;
+			float2 s = owner.transform.scale.animatedValue;
 			_canvas.Scale(s.sk());
 			float2 p = owner.transform.position.animatedValue;
 			if (flipY) p.FlipY();
@@ -54,7 +54,7 @@ public class SkiaChartsBackend : ChartsBackendBase, IDisposable {
 	public override void ClearScreen(color col) {
 		throw new NotImplementedException();
 	}
-	public override void DrawMesh(Mesh mesh, Material? material, RenderableTransform transform) {
+	public override void DrawMesh(Mesh mesh, Material? material, Transform transform) {
 		throw new NotImplementedException();
 	}
 

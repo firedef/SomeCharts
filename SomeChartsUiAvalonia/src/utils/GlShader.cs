@@ -1,4 +1,5 @@
 using System;
+using System.IO;
 using System.Linq;
 using System.Numerics;
 using System.Runtime.InteropServices;
@@ -57,9 +58,7 @@ attribute vec3 normal;
 attribute vec2 uv;
 attribute vec4 col;")
 		               .Replace("// ADD MATRICES", @"
-uniform mat4 model;
-uniform mat4 projection;
-uniform mat4 view;");
+uniform mat4 mvp;");
 
 		int version = isOpenGles ? 110 : 330;
 		// int version = !isOpenGles ? isOsX ? 150 : 120 : 100;
@@ -142,4 +141,6 @@ uniform mat4 view;");
 		foreach (MaterialProperty property in mat.properties)
 			TrySetUniform(property.name, property.value);
 	}
+
+	public static GlShader LoadFrom(string name, string vert, string frag) => new(name, File.ReadAllText(vert), File.ReadAllText(frag));
 }

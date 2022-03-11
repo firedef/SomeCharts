@@ -9,7 +9,7 @@ namespace SomeChartsUi.ui.text;
 //TODO: use 2D texture array to reduce draw calls
 public class TextMesh : IDisposable {
 	private static Material? textMaterial;
-	private RenderableTransform _oldTransform;
+	private Transform _oldTransform;
 	private color _textColor;
 	private Font? _textFont;
 	private int _textHash = -1;
@@ -43,7 +43,7 @@ public class TextMesh : IDisposable {
 	}
 
 	/// <summary>regenerate mesh, if text changed <br/><br/>single-text only</summary>
-	public bool UpdateTextMesh(string str, Font font, float size, color col, RenderableTransform transform) {
+	public bool UpdateTextMesh(string str, Font font, float size, color col, Transform transform) {
 		int newHash = str.GetHashCode();
 
 		float sizeDiff = math.abs(_textSize - size);
@@ -99,7 +99,7 @@ public class TextMesh : IDisposable {
 	//TODO: add ligatures
 	//TODO: add directions, line breaks
 	//TODO: fix mesh overlap (hot-fixed by changing zPos)
-	public void GenerateMesh(string str, Font font, float size, color col, RenderableTransform transform) {
+	public void GenerateMesh(string str, Font font, float size, color col, Transform transform) {
 		size /= font.textures.resolution;
 		size *= transform.scale.x;
 

@@ -90,7 +90,7 @@ public class GlMesh : Mesh {
 
 	public override void OnModified() => updateRequired = true;
 
-	public void Render(Material? material, Matrix4x4 model, Matrix4x4 view, Matrix4x4 projection, float3 cameraPos) {
+	public void Render(Material? material, Matrix4x4 mvp, float3 cameraPos) {
 		if (vertices.count == 0 || indexes.count == 0) return;
 		if (vertexArrayObject == 0) GenBuffers();
 		if (vertexArrayObject == 0) return;
@@ -104,10 +104,9 @@ public class GlMesh : Mesh {
 
 		GlInfo.gl!.UseProgram(shader.shaderProgram);
 
+
 		GlInfo.CheckError("before uniforms");
-		shader.TrySetUniform("model", model);
-		shader.TrySetUniform("view", view);
-		shader.TrySetUniform("projection", projection);
+		shader.TrySetUniform("mvp", mvp);
 		shader.TrySetUniform("cameraPos", cameraPos);
 		shader.TrySetUniform("time", (float)DateTime.Now.TimeOfDay.TotalMilliseconds);
 		if (material != null) shader.TryApplyMaterial(material);

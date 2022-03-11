@@ -17,7 +17,7 @@ public abstract partial class RenderableBase {
 	public Material? material;
 
 	/// <summary>transform (position, scale and rotation) of current element</summary>
-	public RenderableTransform transform = new(float2.zero);
+	public Transform transform = new(float2.zero);
 
 	public RenderableBase(ChartsCanvas owner) {
 		canvas = owner;
