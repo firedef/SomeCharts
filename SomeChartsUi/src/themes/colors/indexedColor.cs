@@ -56,4 +56,6 @@ public readonly struct indexedColor {
 
 	public static implicit operator ushort(indexedColor v) => v.colorIndex;
 	public static implicit operator indexedColor(ushort v) => new(v);
+	public static implicit operator indexedColor(color v) => new(v);
+	public static implicit operator indexedColor(string v) => new(v);
 }

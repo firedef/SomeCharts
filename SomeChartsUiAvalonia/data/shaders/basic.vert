@@ -6,7 +6,8 @@ in vec3 normal;
 in vec2 uv;
 in vec4 col;
 
-
+// uniforms
+uniform mat4 mvp;
 
 // output
 out vec3 fragPos;

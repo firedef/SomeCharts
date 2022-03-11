@@ -24,7 +24,7 @@ public class Label : RenderableBase {
 
 	protected override void GenerateMesh() {
 		transform.RecalculateMatrix();
-		_textMesh.UpdateTextMesh(txt, _font, textScale, MathStuff.color.softBlue, transform);
+		_textMesh.UpdateTextMesh(txt, _font, textScale, color.GetColor(), transform);
 	}
 
 	protected override void AfterDraw() {
