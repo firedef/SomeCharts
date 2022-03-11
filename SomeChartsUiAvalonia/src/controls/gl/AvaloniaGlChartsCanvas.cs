@@ -1,9 +1,8 @@
-using System;
 using System.Diagnostics;
+using System.Threading;
 using Avalonia;
 using Avalonia.Input;
 using Avalonia.OpenGL;
-using Avalonia.OpenGL.Controls;
 using Avalonia.Threading;
 using MathStuff.vectors;
 using SomeChartsUi.themes.themes;
@@ -29,8 +28,10 @@ public class AvaloniaGlChartsCanvas : CustomGlControlBase {
 	/// <summary>pause redraw loop</summary>
 	public bool stopRender;
 
+	private Timer _updateTimer;
+
 	public AvaloniaGlChartsCanvas() {
-		//_updateTimer = new(_ => Update(), null, 0, 10);
+		_updateTimer = new(_ => Dispatcher.UIThread.RunJobs(), null, 0, 1000 / 50);
 		canvas.controller = new AvaloniaGlCanvasUiController(canvas, this);
 		Focusable = true;
 
@@ -55,9 +56,6 @@ public class AvaloniaGlChartsCanvas : CustomGlControlBase {
 
 
 	protected override void OnOpenGlInit(GlInterface glInterface, int framebuffer) {
-		//GlInfo.glExt = new(glInterface);
-		//GlInfo.gl = glInterface;
-		//GlInfo.version = GlVersion;
 	}
 
 	protected override void OnOpenGlDeinit(GlInterface gl, int framebuffer) {
@@ -67,8 +65,9 @@ public class AvaloniaGlChartsCanvas : CustomGlControlBase {
 		GlInfo.glExt!.BindVertexArray(0);
 		gl.UseProgram(0);
 	}
-
+	
 	protected override void OnOpenGlRender(GlInterface gl, int framebuffer) {
+		
 		gl.Enable(GL_DEPTH_TEST);
 		gl.Enable(GL_MULTISAMPLE);
 		gl.Enable(GL_BLEND);
@@ -107,9 +106,10 @@ public class AvaloniaGlChartsCanvas : CustomGlControlBase {
 		GlInfo.glExt!.Disable(GL_DEPTH_TEST);
 		//GlInfo.glExt!.Disable(GL_CULL_FACE);
 		canvas.renderer.postProcessor?.Draw();
-		
 		Dispatcher.UIThread.Post(InvalidateVisual);
 	}
+	
+	
 
 
 	protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e) {
