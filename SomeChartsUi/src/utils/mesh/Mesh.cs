@@ -53,6 +53,9 @@ public class Mesh : IDisposable {
 		}
 	}
 
+	public void AddVertex(Vertex v) => vertices.Add(v);
+	public void AddIndex(int v) => indexes.Add((ushort) v);
+
 	public unsafe void RecalculateNormals() {
 		int c = indexes.count;
 

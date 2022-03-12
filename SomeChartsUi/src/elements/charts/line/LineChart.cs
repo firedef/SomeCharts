@@ -1,3 +1,5 @@
+using MathStuff;
+using MathStuff.vectors;
 using SomeChartsUi.data;
 using SomeChartsUi.themes.colors;
 using SomeChartsUi.ui.canvas;
@@ -24,33 +26,33 @@ public class LineChart : RenderableBase, IDownsample {
 	public float downsampleMultiplier { get; set; } = .5f;
 	public float elementScale { get; set; } = 100;
 
-	protected override void GenerateMesh() { }
-	// protected override unsafe void Render() {
-	// 	int length = values.GetLength();
-	// 	if (length < 1) return;
-	// 	
-	// 	int downsample = GetDownsample(orientation, downsampleMultiplier);
-	// 	(float startPos, float endPos) culledPositions = GetStartEndPos(float2.zero, length * elementScale, orientation);
-	// 	(float start, int count) = GetStartCountIndexes(culledPositions, elementScale * (1 << downsample));
-	// 	int startIndex = (int)(start / elementScale);
-	// 	
-	// 	if (count <= 1) return;
-	//
-	// 	float2 vec = GetOrientationVector(orientation);
-	// 	
-	// 	// get line points
-	// 	float2* linePoints = stackalloc float2[count];
-	// 	float* pointHeightsStart = (float*)linePoints + (int) vec.x;
-	// 	float* pointWidthStart = (float*)linePoints + (int) vec.y;
-	// 	values.GetValuesWithStride(startIndex, count, downsample, pointHeightsStart, 2);
-	// 	for (int i = 0; i < count; i++)
-	// 		pointWidthStart[i << 1] = (startIndex + (i << downsample)) * elementScale;
-	//
-	// 	// get line colors
-	// 	color* lineColors = stackalloc color[count];
-	// 	colors.GetColors(startIndex, count, downsample, lineColors);
-	// 	
-	// 	DrawConnectedLines(linePoints, lineColors, lineThickness.Get(this), count - 1, lineAlphaMul.Get(this));
-	// 	DrawPoints(linePoints, lineColors, pointThickness.Get(this), count - 1);
-	// }
+	protected override unsafe void GenerateMesh() {
+		mesh!.Clear();
+		
+		int length = values.GetLength();
+		if (length < 1) return;
+		int downsample = GetDownsample(orientation, downsampleMultiplier);
+		(float startPos, float endPos) culledPositions = GetStartEndPos(float2.zero, length * elementScale, orientation);
+		(float start, int count) = GetStartCountIndexes(culledPositions, elementScale * (1 << downsample));
+		int startIndex = (int)(start / elementScale);
+		if (count <= 1) return;
+		float2 vec = GetOrientationVector(orientation);
+		
+		// get line points
+		float2* linePoints = stackalloc float2[count];
+		float* pointHeightsStart = (float*)linePoints + (int) vec.x;
+		float* pointWidthStart = (float*)linePoints + (int) vec.y;
+		values.GetValuesWithStride(startIndex, count, downsample, pointHeightsStart, 2);
+		for (int i = 0; i < count; i++)
+			pointWidthStart[i << 1] = (startIndex + (i << downsample)) * elementScale;
+		
+		// get line colors
+		color* lineColors = stackalloc color[count];
+		colors.GetColors(startIndex, count, downsample, lineColors);
+
+		AddPoints(mesh, linePoints, lineColors, pointThickness.Get(this), count - 1);
+		AddConnectedLines(mesh!, linePoints, lineColors, lineThickness.Get(this), count - 1, lineAlphaMul.Get(this));
+
+		mesh.OnModified();
+	}
 }

@@ -27,8 +27,8 @@ public class ChartCanvasTransform {
 		scale.OnUpdate(deltaTime);
 		rotation.OnUpdate(deltaTime);
 
-		worldBounds = screenBounds.ToWorld(position, scale);
-		
+		//worldBounds = screenBounds.ToWorld(-position.animatedValue, scale);
+		worldBounds = new(screenBounds.left + position.animatedValue.x - screenBounds.width / 2 / scale.animatedValue.x, screenBounds.bottom + position.animatedValue.y, screenBounds.width / scale.animatedValue.x, screenBounds.height / scale.animatedValue.y);
 		RecalculateMatrix();
 	}
 

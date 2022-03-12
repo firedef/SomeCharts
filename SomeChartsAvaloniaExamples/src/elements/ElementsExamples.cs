@@ -149,28 +149,29 @@ public static class ElementsExamples {
 
 	public static void RunLineChart() {
 		AvaloniaRunUtils.RunAfterStart(() => {
-			AvaloniaChartsCanvas canvas = AvaloniaRunUtils.AddCanvas();
+			AvaloniaGlChartsCanvas canvas = AvaloniaRunUtils.AddGlCanvas();
 			const int rulerOffset = 1_000_000;
 
-			canvas.AddElement(new Ruler(canvas.canvas) {
-				drawLabels = true,
-				orientation = Orientation.horizontal,
-				length = rulerOffset,
-				names = new FuncChartManagedData<string>(i => i.ToString(), 1),
-				stickRange = new(0, 0, 0, rulerOffset)
-			});
+			// canvas.AddElement(new Ruler(canvas.canvas) {
+			// 	drawLabels = true,
+			// 	orientation = Orientation.horizontal,
+			// 	length = rulerOffset,
+			// 	names = new FuncChartManagedData<string>(i => i.ToString(), 1),
+			// 	stickRange = new(0, 0, 0, rulerOffset)
+			// });
+			//
+			// canvas.AddElement(new Ruler(canvas.canvas) {
+			// 	drawLabels = true,
+			// 	orientation = Orientation.vertical,
+			// 	length = rulerOffset,
+			// 	names = new FuncChartManagedData<string>(i => (i * 100).ToString(), 1),
+			// 	stickRange = new(0, 0, rulerOffset, 0)
+			// });
 
-			canvas.AddElement(new Ruler(canvas.canvas) {
-				drawLabels = true,
-				orientation = Orientation.vertical,
-				length = rulerOffset,
-				names = new FuncChartManagedData<string>(i => (i * 100).ToString(), 1),
-				stickRange = new(0, 0, rulerOffset, 0)
-			});
+			IChartData<float> data = new FuncChartData<float>(i => MathF.Sin(i * .1f) * 1000, 20480);
+			IChartData<indexedColor> colors = new ConstChartData<indexedColor>(new(theme.bad_ind));
 
-			IChartData<float> data = new FuncChartData<float>(i => MathF.Sin(i * .1f) * 1000, 2048);
-			IChartData<indexedColor> colors = new ConstChartData<indexedColor>(new(theme.good_ind));
-			canvas.AddElement(new LineChart(data, colors, canvas.canvas));
+			canvas.AddElement(new LineChart(data, colors, canvas.canvas) {isDynamic = true});
 		});
 
 		AvaloniaRunUtils.RunAvalonia();

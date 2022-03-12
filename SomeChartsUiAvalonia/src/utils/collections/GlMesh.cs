@@ -68,7 +68,7 @@ public class GlMesh : Mesh {
 		else {
 			List<Range> changes = vertices.GetChanges();
 			foreach (Range r in changes)
-				GlInfo.glExt!.BufferSubData(GL_ARRAY_BUFFER, r.Start.Value * vSize, (r.End.Value - r.Start.Value) * vSize, vertices.dataPtr);
+				GlInfo.glExt!.BufferSubData(GL_ARRAY_BUFFER, r.Start.Value * vSize, (r.End.Value - r.Start.Value) * vSize, vertices.dataPtr + r.Start.Value);
 		}
 
 		// indexes
@@ -82,7 +82,7 @@ public class GlMesh : Mesh {
 		else {
 			List<Range> changes = indexes.GetChanges();
 			foreach (Range r in changes)
-				GlInfo.glExt!.BufferSubData(GL_ELEMENT_ARRAY_BUFFER, r.Start.Value * iSize, (r.End.Value - r.Start.Value) * iSize, indexes.dataPtr);
+				GlInfo.glExt!.BufferSubData(GL_ELEMENT_ARRAY_BUFFER, r.Start.Value * iSize, (r.End.Value - r.Start.Value) * iSize, indexes.dataPtr + r.Start.Value);
 		}
 
 		updateRequired = false;

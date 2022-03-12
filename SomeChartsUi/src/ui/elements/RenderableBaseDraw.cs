@@ -1,9 +1,76 @@
+using MathStuff;
 using MathStuff.vectors;
 using SomeChartsUi.elements;
+using SomeChartsUi.utils.mesh;
 
 namespace SomeChartsUi.ui.elements;
 
 public abstract partial class RenderableBase {
+	protected unsafe void AddConnectedLines(Mesh m, float2* linePoints, color* lineColors, float thickness, int len, float alphaMul = 1) {
+		int vCount = len * 4;
+		int iCount = len * 6;
+
+		m.vertices.EnsureFreeSpace(vCount);
+		m.indexes.EnsureFreeSpace(iCount);
+
+		int curVIndex = m.vertices.count;
+		for (int i = 0; i < len; i++) {
+			float2 p0 = linePoints[i];
+			float2 p1 = linePoints[i + 1];
+			color c0 = lineColors[i];
+			c0.aF *= alphaMul;
+			
+			float2 offset = Rot90DegFastWithLen(p0 - p1, thickness);
+
+			m.AddVertex(new(new(p1.x - offset.x, p1.y - offset.y), float3.front, float2.zero, c0));
+			m.AddVertex(new(new(p1.x + offset.x, p1.y + offset.y), float3.front, float2.zero, c0));
+			m.AddVertex(new(new(p0.x + offset.x, p0.y + offset.y), float3.front, float2.zero, c0));
+			m.AddVertex(new(new(p0.x - offset.x, p0.y - offset.y), float3.front, float2.zero, c0));
+			
+			m.AddIndex(curVIndex + 0);
+			m.AddIndex(curVIndex + 1);
+			m.AddIndex(curVIndex + 2);
+			m.AddIndex(curVIndex + 0);
+			m.AddIndex(curVIndex + 2);
+			m.AddIndex(curVIndex + 3);
+
+			curVIndex += 4;
+		}
+		
+		//m.vertices.Add();
+//
+		//DrawVertices(points, null, colors, indexes, vCount, iCount);
+	}
+	
+	protected unsafe void AddPoints(Mesh m, float2* elementPoints, color* elementColors, float size, int len) {
+		int vCount = len * 4;
+		int iCount = len * 6;
+		
+		m.vertices.EnsureFreeSpace(vCount);
+		m.indexes.EnsureFreeSpace(iCount);
+
+		int curVIndex = m.vertices.count;
+		for (int i = 0; i < len; i++) {
+			float2 p0 = elementPoints[i];
+			color c0 = elementColors[i];
+
+			m.AddVertex(new(new(p0.x - size, p0.y - size), float3.front, float2.zero, c0));
+			m.AddVertex(new(new(p0.x - size, p0.y + size), float3.front, float2.zero, c0));
+			m.AddVertex(new(new(p0.x + size, p0.y + size), float3.front, float2.zero, c0));
+			m.AddVertex(new(new(p0.x + size, p0.y - size), float3.front, float2.zero, c0));
+			
+			m.AddIndex(curVIndex + 0);
+			m.AddIndex(curVIndex + 1);
+			m.AddIndex(curVIndex + 2);
+			m.AddIndex(curVIndex + 0);
+			m.AddIndex(curVIndex + 2);
+			m.AddIndex(curVIndex + 3);
+
+			curVIndex += 4;
+		}
+	}
+
+	
 /*	/// <summary>draws non-connected lines</summary>
 	/// <param name="linePoints">first and second points of lines <br/>the length is 2 * lineCount</param>
 	/// <param name="lineColors">first and second point colors of lines <br/>the length is 2 * lineCount</param>

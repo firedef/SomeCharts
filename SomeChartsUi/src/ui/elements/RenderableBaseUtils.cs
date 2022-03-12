@@ -61,6 +61,8 @@ public abstract partial class RenderableBase {
 	protected (float start, float end) GetStartEndPos(float startLim, float endLim, Orientation orientation) {
 		float2 s = 1 / canvasScale;
 		Transform tr = transform;
+		//Console.WriteLine(startLim + " " + endLim + " " + math.min(endLim, canvas.transform.worldBounds.right*10 - tr.position.x));
+		//return (math.max(startLim, canvas.transform.worldBounds.left - tr.position.x), math.min(endLim, canvas.transform.worldBounds.right - tr.position.x));
 		if ((orientation & Orientation.vertical) != 0)
 			return (orientation & Orientation.reversed) != 0
 				? (math.max(startLim, canvas.transform.worldBounds.top - tr.position.y), math.min(endLim, canvas.transform.worldBounds.bottom - tr.position.y))
