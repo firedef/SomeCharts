@@ -16,7 +16,7 @@
         <PlatformTarget>x64</PlatformTarget>
     </PropertyGroup>
     <ItemGroup>
-        <None Remove=".gitignore"/>
+        <None Remove=".gitignore" />
         <None Update="data\teapot.obj">
             <CopyToOutputDirectory>Always</CopyToOutputDirectory>
         </None>
@@ -32,15 +32,27 @@
         <None Update="data\Comfortaa-VariableFont_wght.ttf">
             <CopyToOutputDirectory>Always</CopyToOutputDirectory>
         </None>
+        <None Update="data\OpenSans-VariableFont_wdth,wght.ttf">
+          <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </None>
+        <None Update="data\NotoSansJP-Regular.otf">
+          <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </None>
+        <None Update="data\FiraCode-VariableFont_wght.ttf">
+          <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </None>
+        <None Update="data\alotoftext.txt">
+          <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </None>
     </ItemGroup>
     <ItemGroup>
-        <PackageReference Include="Avalonia" Version="0.10.12"/>
-        <PackageReference Include="Avalonia.Desktop" Version="0.10.12"/>
+        <PackageReference Include="Avalonia" Version="0.10.12" />
+        <PackageReference Include="Avalonia.Desktop" Version="0.10.12" />
         <!--Condition below is needed to remove Avalonia.Diagnostics package from build output in Release configuration.-->
-        <PackageReference Condition="'$(Configuration)' == 'Debug'" Include="Avalonia.Diagnostics" Version="0.10.12"/>
-        <PackageReference Include="MathStuff" Version="1.0.0"/>
+        <PackageReference Condition="'$(Configuration)' == 'Debug'" Include="Avalonia.Diagnostics" Version="0.10.12" />
+        <PackageReference Include="MathStuff" Version="1.0.0" />
     </ItemGroup>
     <ItemGroup>
-        <ProjectReference Include="..\SomeChartsUiAvalonia\SomeChartsUiAvalonia.csproj"/>
+        <ProjectReference Include="..\SomeChartsUiAvalonia\SomeChartsUiAvalonia.csproj" />
     </ItemGroup>
 </Project>

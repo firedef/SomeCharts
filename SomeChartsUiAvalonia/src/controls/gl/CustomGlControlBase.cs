@@ -21,6 +21,8 @@ public abstract class CustomGlControlBase : Control {
 	protected int frameBuffer;
 	protected IGlContext? glContext;
 
+	protected float canvasRenderQuality = 1;
+	
 	protected int screenfFrameBuffer;
 	protected int screenTextureId;
 	
@@ -230,7 +232,7 @@ public abstract class CustomGlControlBase : Control {
 	}
 
 	private PixelSize GetPixelSize() {
-		double scaling = VisualRoot!.RenderScaling;
+		double scaling = VisualRoot!.RenderScaling * canvasRenderQuality;
 		return new(math.max(1, (int)(Bounds.Width * scaling)),
 		           math.max(1, (int)(Bounds.Height * scaling)));
 	}

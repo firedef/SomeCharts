@@ -10,6 +10,7 @@ public class Font {
 	public bool isExpanded;
 	public bool isItalic;
 	public FontTextures textures;
+	public List<Font> fallbacks = new();
 
 	public Font(string family, bool isBold, bool isItalic, bool isExpanded, FontTextures textures) {
 		this.family = family;

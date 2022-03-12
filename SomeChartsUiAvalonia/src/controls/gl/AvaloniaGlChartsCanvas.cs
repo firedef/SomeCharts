@@ -1,3 +1,4 @@
+using System;
 using System.Diagnostics;
 using System.Threading;
 using Avalonia;
@@ -31,7 +32,11 @@ public class AvaloniaGlChartsCanvas : CustomGlControlBase {
 	private Timer _updateTimer;
 
 	public AvaloniaGlChartsCanvas() {
-		_updateTimer = new(_ => Dispatcher.UIThread.RunJobs(), null, 0, 1000 / 50);
+		_updateTimer = new(_ => {
+			try { Dispatcher.UIThread?.RunJobs(); }
+			catch (Exception e) {// ignored
+			}
+		}, null, 0, 1000 / 50);
 		canvas.controller = new AvaloniaGlCanvasUiController(canvas, this);
 		Focusable = true;
 

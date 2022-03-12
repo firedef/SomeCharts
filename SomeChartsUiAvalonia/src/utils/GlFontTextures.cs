@@ -8,17 +8,26 @@ namespace SomeChartsUiAvalonia.utils;
 public class GlFontTextures : FontTextures {
 	public FreeTypeFaceFacade face;
 
-	public GlFontTextures(FreeTypeFaceFacade face, uint resolution) {
+	public unsafe GlFontTextures(FreeTypeFaceFacade face, uint resolution) {
 		this.face = face;
 		this.resolution = resolution;
+		
+		charMap.Clear();
+		uint gindex = 0;
+		uint charcode = FT.FT_Get_First_Char(face.Face, out gindex);
+		while (gindex != 0) {
+			charMap.Add(charcode);
+			charcode = FT.FT_Get_Next_Char(face.Face, charcode, out gindex);
+		}
 	}
 
 
-	protected override unsafe (FontCharData ch, int atlas) Add(string character) {
+	protected override unsafe (FontCharData ch, int atlas) Add(uint character) {
 		FT.FT_Set_Pixel_Sizes(face.Face, 0, resolution);
-		FT.FT_Load_Char(face.Face, character[0], FT.FT_LOAD_RENDER).CheckError();
+		FT.FT_Load_Char(face.Face, character, FT.FT_LOAD_RENDER).CheckError();
+		lineHeight = face.LineSpacing;
 
-		uint charIndex = face.GetCharIndex(character[0]);
+		uint charIndex = face.GetCharIndex(character);
 		if (charIndex == 0) return (default, -1);
 
 		FT.FT_Render_Glyph((IntPtr)face.GlyphSlot, FT_Render_Mode.FT_RENDER_MODE_SDF).CheckError();
@@ -47,6 +56,8 @@ public class GlFontTextures : FontTextures {
 
 			void* bitmap = (void*)face.FaceRec->glyph->bitmap.buffer;
 			atlas.WriteToTexture(bitmap, x, y, (int)width, (int)height, 0);
+			
+			//FT.FT_Done_Glyph(face.GlyphSlot->@internal);
 
 			// for (int j = 0; j < 4; j++) {
 			// 	if (j > 0) {

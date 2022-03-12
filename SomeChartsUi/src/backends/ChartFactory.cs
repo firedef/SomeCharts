@@ -2,6 +2,7 @@ using FreeTypeSharp;
 using MathStuff.vectors;
 using SomeChartsUi.ui;
 using SomeChartsUi.ui.canvas;
+using SomeChartsUi.ui.elements;
 using SomeChartsUi.ui.layers;
 using SomeChartsUi.ui.text;
 using SomeChartsUi.utils.mesh;
@@ -22,4 +23,6 @@ public abstract class ChartFactory {
 
 	public abstract Material CreateTextMaterial();
 	public abstract PostProcessor CreatePostProcessor(Material mat);
+
+	public abstract TextMesh CreateTextMesh(RenderableBase renderable);
 }

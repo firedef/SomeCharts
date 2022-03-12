@@ -17,9 +17,11 @@ public class Label : RenderableBase {
 
 	public Label(string txt, ChartsCanvas c) : base(c) {
 		this.txt = txt;
-		_textMesh = new(this);
+		_textMesh = canvas.factory.CreateTextMesh(this);
 		uint resolution = 32;
-		_font = Font.LoadFromPath("data/Comfortaa-VariableFont_wght.ttf", renderer.owner, resolution);
+		 _font = Font.LoadFromPath("data/FiraCode-VariableFont_wght.ttf", renderer.owner, resolution);
+		 Font fallbackFont = Font.LoadFromPath("data/NotoSansJP-Regular.otf", renderer.owner, resolution);
+		 _font.fallbacks.Add(fallbackFont);
 	}
 
 	protected override void GenerateMesh() {
@@ -30,10 +32,5 @@ public class Label : RenderableBase {
 	protected override void AfterDraw() {
 		base.AfterDraw();
 		_textMesh.Draw();
-		//DrawText(txt.Get(this), float2.zero, color.GetColor(), new());
 	}
-	// protected override void Render() {
-	// 	string text = txt.Get(this);
-	// 	DrawText(text, float2.zero, color.GetColor(), font, textScale.Get(this));
-	// }
 }

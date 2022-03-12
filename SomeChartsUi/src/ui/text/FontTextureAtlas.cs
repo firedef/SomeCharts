@@ -9,9 +9,9 @@ public abstract class FontTextureAtlas {
 	protected RectPack packer;
 	public Texture texture;
 
-	protected FontTextureAtlas(int size = 1024) => packer = new(size, 1);
+	protected FontTextureAtlas(int size = 1024) => packer = new(size, 5);
 
-	public (int i, int x, int y) Pack(int width, int height, string character) {
+	public (int i, int x, int y) Pack(int width, int height, uint character) {
 		float2 size = texture.size;
 		float2 pos = packer.Pack(new(width, height));
 		if (pos == new float2(-1, -1)) return (-1, 0, 0);
@@ -22,7 +22,7 @@ public abstract class FontTextureAtlas {
 
 	public abstract Texture CreateTexture(int width, int height);
 
-	protected abstract void AddChar(int x, int y, int w, int h, string ch);
+	protected abstract void AddChar(int x, int y, int w, int h, uint ch);
 
 	public abstract unsafe void WriteToTexture(void* img, int x, int y, int width, int height, int level);
 }

@@ -20,9 +20,9 @@ public class GlFontTextureAtlas : FontTextureAtlas {
 
 		return tex;
 	}
-	protected override unsafe void AddChar(int x, int y, int w, int h, string ch) {
+	protected override unsafe void AddChar(int x, int y, int w, int h, uint ch) {
 		float advance = *(int*)&_owner.face.FaceRec->glyph->linearHoriAdvance / 65536f;
-
+		
 		float baseline = _owner.face.FaceRec->glyph->bitmap.rows - _owner.face.FaceRec->glyph->bitmap_top;
 		float2 size = new(w, h);
 		FontCharData data = new(advance, baseline, new(x, y), size, ch);

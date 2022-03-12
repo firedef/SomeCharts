@@ -7,7 +7,7 @@ using SomeChartsUi.utils.shaders;
 namespace SomeChartsUi.ui.text;
 
 //TODO: use 2D texture array to reduce draw calls
-public class TextMesh : IDisposable {
+public abstract class TextMesh : IDisposable {
 	private static Material? textMaterial;
 	private Transform _oldTransform;
 	private color _textColor;
@@ -32,18 +32,19 @@ public class TextMesh : IDisposable {
 	public void Draw() {
 		if (textMaterial == null) return;
 
+		textMaterial.depthTest = false;
 		textMaterial.SetProperty("u_gamma", ChartsRenderSettings.textThickness);
 		textMaterial.SetProperty("textQuality", (float) ChartsRenderSettings.textQuality);
 
 		foreach (TextMeshBatch batch in batches) {
-			textMaterial.SetProperty("testure0", batch.texture);
+			textMaterial.SetProperty("texture0", batch.texture);
 
 			owner.canvas.renderer.backend.DrawMesh(batch.mesh, textMaterial, owner.transform);
 		}
 	}
 
 	/// <summary>regenerate mesh, if text changed <br/><br/>single-text only</summary>
-	public bool UpdateTextMesh(string str, Font font, float size, color col, Transform transform) {
+	public virtual bool UpdateTextMesh(string str, Font font, float size, color col, Transform transform) {
 		int newHash = str.GetHashCode();
 
 		float sizeDiff = math.abs(_textSize - size);
@@ -99,56 +100,22 @@ public class TextMesh : IDisposable {
 	//TODO: add ligatures
 	//TODO: add directions, line breaks
 	//TODO: fix mesh overlap (hot-fixed by changing zPos)
-	public void GenerateMesh(string str, Font font, float size, color col, Transform transform) {
-		size /= font.textures.resolution;
-		size *= transform.scale.x;
+	public abstract void GenerateMesh(string str, Font font, float size, color col, Transform transform);
 
-		float3 normal = float3.front;
-		float xPos = 0;
-		float zPos = 0;
-		foreach (char c in str) {
-			(FontCharData charData, int atlas) = font.textures.GetGlyph(c.ToString());
-			if (atlas == -1) continue;// glyph is invincible
-
-			float yPos = -charData.baseline * size;
-
-			TextMeshBatch batch = AddOrSetBatch(font.textures.atlases[atlas].texture, font, atlas);
-			float invCanvasSize = 1 / batch.texture.size.x;
-
-			float2 posMin = new float2(xPos, yPos) + transform.position.xy;
-			float2 posMax = posMin + charData.size * size;
-			float2 uvMin = charData.position * invCanvasSize;
-			float2 uvMax = uvMin + charData.size * invCanvasSize;
-
-			int vCount = batch.mesh.vertices.count;
-			batch.mesh.vertices.Add(new(new(posMin.x, posMin.y, zPos), normal, new(uvMin.x, uvMax.y), col));// pos, normal, uv, col
-			batch.mesh.vertices.Add(new(new(posMin.x, posMax.y, zPos), normal, new(uvMin.x, uvMin.y), col));// pos, normal, uv, col
-			batch.mesh.vertices.Add(new(new(posMax.x, posMax.y, zPos), normal, new(uvMax.x, uvMin.y), col));// pos, normal, uv, col
-			batch.mesh.vertices.Add(new(new(posMax.x, posMin.y, zPos), normal, new(uvMax.x, uvMax.y), col));// pos, normal, uv, col
-
-			batch.mesh.indexes.Add((ushort)(vCount + 0));
-			batch.mesh.indexes.Add((ushort)(vCount + 1));
-			batch.mesh.indexes.Add((ushort)(vCount + 2));
-			batch.mesh.indexes.Add((ushort)(vCount + 0));
-			batch.mesh.indexes.Add((ushort)(vCount + 2));
-			batch.mesh.indexes.Add((ushort)(vCount + 3));
-
-			xPos += charData.advance * size;
-			zPos += .01f;
-		}
-	}
-
-	private TextMeshBatch AddOrSetBatch(Texture texture, Font font, int atlas) {
+	protected TextMeshBatch AddOrSetBatch(Texture texture, Font font, int atlas, bool checkForOverflow = true) {
 		int c = batches.Count;
 		for (int i = 0; i < c; i++)
-			if (batches[i].font == font && batches[i].atlasId == atlas)
+			if (batches[i].font == font && batches[i].atlasId == atlas) {
+				if (checkForOverflow && batches[i].mesh.vertices.count > 60_000) continue;
 				return batches[i];
+			}
 
 		TextMeshBatch batch = new(owner.canvas.factory.CreateMesh(), texture, font, atlas);
 		batches.Add(batch);
 		return batch;
 	}
-
+	
+	
 	private void ReleaseUnmanagedResources() {
 		foreach (TextMeshBatch batch in batches) batch.Dispose();
 	}

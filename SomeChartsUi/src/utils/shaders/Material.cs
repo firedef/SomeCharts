@@ -1,9 +1,10 @@
 namespace SomeChartsUi.utils.shaders;
 
 public class Material {
-
 	public List<MaterialProperty> properties = new();
 	public Shader shader;
+
+	public bool depthTest = true;
 
 	public Material(Shader shader) => this.shader = shader;
 	public Material(Shader shader, params MaterialProperty[] properties) : this(shader) => this.properties = properties.ToList();

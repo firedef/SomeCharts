@@ -84,6 +84,8 @@ public class GlTexture : Texture, IDisposable {
 		int i = id;
 		GlInfo.glExt!.DeleteTextures(1, &i);
 	}
+
+	public override string ToString() => $"gl texture: #{id}";
 }
 
 public enum TextureWrap {

@@ -103,17 +103,23 @@ public class GlMesh : Mesh {
 		if (shader.shaderProgram == 0) return;
 
 		GlInfo.gl!.UseProgram(shader.shaderProgram);
-
-
+		
 		GlInfo.CheckError("before uniforms");
 		shader.TrySetUniform("mvp", mvp);
 		shader.TrySetUniform("cameraPos", cameraPos);
 		shader.TrySetUniform("time", (float)DateTime.Now.TimeOfDay.TotalMilliseconds);
-		if (material != null) shader.TryApplyMaterial(material);
+		if (material != null) {
+			shader.TryApplyMaterial(material);
+			if (!material.depthTest) GlInfo.glExt!.Disable(GL_DEPTH_TEST);
+		}
 
 		GlInfo.CheckError("after uniforms");
 		GlInfo.gl.DrawElements(GL_TRIANGLES, indexes.count, GL_UNSIGNED_SHORT, IntPtr.Zero);
 		GlInfo.CheckError("after rendering object");
+		
+		if (material != null) {
+			if (!material.depthTest) GlInfo.gl.Enable(GL_DEPTH_TEST);
+		}
 	}
 
 	public override void Dispose() {

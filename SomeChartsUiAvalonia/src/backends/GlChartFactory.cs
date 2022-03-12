@@ -3,6 +3,7 @@ using FreeTypeSharp;
 using MathStuff.vectors;
 using SomeChartsUi.backends;
 using SomeChartsUi.ui;
+using SomeChartsUi.ui.elements;
 using SomeChartsUi.ui.text;
 using SomeChartsUi.utils.mesh;
 using SomeChartsUi.utils.shaders;
@@ -19,4 +20,5 @@ public class GlChartFactory : ChartFactory {
 	public override FontTextures CreateFontTextureAtlas(FreeTypeFaceFacade face, uint resolution) => new GlFontTextures(face, resolution);
 	public override Material CreateTextMaterial() => new(GlShaders.basicText);
 	public override PostProcessor CreatePostProcessor(Material? mat) => new GlPostProcessor(owner) {material = mat};
+	public override TextMesh CreateTextMesh(RenderableBase renderable) => new FreeTypeTextMesh(renderable);
 }
