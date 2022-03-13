@@ -8,33 +8,39 @@ in vec4 fragCol;
 in vec2 texCoord;
 
 // uniforms
-uniform float u_gamma = 0.52;
+uniform float u_gamma = 0.3;
 uniform sampler2D texture0;
-uniform vec3 cameraPos;
 uniform float textQuality;
 
 // outputs
 out vec4 outFragColor;
 
-float sample(vec2 coord) {
-	float dist = texture2D(texture0, coord).r - .5;
-	float alpha = clamp(dist / fwidth(dist) + .5, 0.0, 1.0);
+float sample(vec2 coord, float gammaAdd) {
+	float dist = texture2D(texture0, coord).r - u_gamma - gammaAdd;
+	float alpha = clamp(dist / fwidth(dist) + u_gamma + gammaAdd, 0.0, 1.0);
 	return alpha;
 }
 
-//TODO: better LCD-rendering for light theme
 void main() {
+	const float rA = 1;
+	const float bA = 1;
+
+	float fragGamma = (fragCol.x + fragCol.y + fragCol.z) * .1;
 	float s = -dFdx(texCoord.x) / 3.0;
 
 	if (textQuality == 1) { 
-		float r = sample(texCoord - vec2(s,0));
-		float g = sample(texCoord);
-		float b = sample(texCoord + vec2(s,0));
+		float g = sample(texCoord, fragGamma);
+		float r = sample(texCoord - vec2(s,0), fragGamma);
+		float b = sample(texCoord + vec2(s,0), fragGamma);
 		float a = max(r,max(g,b));
-		gl_FragColor = (vec4(r,g,b,a) + vec4(1,1,1,0)) * vec4(.5,.5,.5,1) * fragCol;
+		float rContrast = max(r-g, 0);
+		float bContrast = max(b-g, 0);
+		
+		gl_FragColor = vec4(1,1,1,a) * fragCol;
+		gl_FragColor.r = mix(gl_FragColor.r, r, r * rContrast);
 	}
 	else {
-		float a = sample(texCoord);
+		float a = sample(texCoord, fragGamma);
 		gl_FragColor = vec4(1,1,1,a) * fragCol;
 	}
 }
