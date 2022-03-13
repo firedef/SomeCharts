@@ -40,45 +40,15 @@ public class Ruler : RenderableBase {
 
 	private readonly TextMesh _textMesh;
 	private Font _font;
-
-	// protected override void Render() {
-	// 	float2 pos = float2.zero;
-	// 	
-	// 	float2 vec = (orientation & Orientation.vertical) != 0 ? new(0, 1) : new(1, 0);// vertical : horizontal
-	//
-	// 	RenderableTransform tr = transform.Get(this);
-	// 	if (stickToScreen && tr.type == TransformType.worldSpace) {
-	// 		pos.x = math.clamp(canvas.transform.worldBounds.left, stickRange.left, stickRange.right) + stickOffset.x;
-	// 		pos.y = math.clamp(canvas.transform.worldBounds.bottom, stickRange.bottom, stickRange.top) + stickOffset.y;
-	//
-	// 		//if ((orientation & Orientation.vertical) == 0)
-	// 		//	pos.y = MathF.Ceiling(pos.y / scale) * scale;
-	// 		//else pos.x = MathF.Ceiling(pos.x / scale) * scale;
-	// 	}
-	//
-	// 	{
-	// 		int downsample = GetDownsampleY(downsampleMul);
-	// 		float space = scale * (1 << downsample);
-	// 		int count = length >> downsample;
-	// 		
-	// 		float2[] positions =  GetPositions(pos, space, count, orientation);
-	// 		float scaleVal = 1 / (canvas.transform.zoom.animatedValue * vec).sum;
-	// 		
-	// 		if (drawLines) DrawStraightLines(positions, lineLength - (pos * vec.yx).sum, lineColor.GetColor(), screenSpaceThickness ? thickness * scaleVal : thickness, orientation);
-	// 		if (drawLabels && names != null) {
-	// 			(float s, int c) = GetStartCountIndexes(GetStartEndPos(pos, pos + count * space, orientation), space);
-	// 			if (c < 1) return;
-	// 			string[] txt = names!.GetValues((int)((s + (pos * vec).sum) / scale), c, downsample);
-	// 			DrawText(txt, positions, font, labelColor.GetColor(), screenSpaceLabels ? fontSize * scaleVal : fontSize, skipLabels..);
-	// 		}
-	// 	}
-	// }
+	
 	public Ruler(ChartsCanvas owner) : base(owner) {
 		_textMesh = owner.factory.CreateTextMesh(this);
 		uint resolution = 32;
 		_font = Font.LoadFromPath("data/FiraCode-VariableFont_wght.ttf", renderer.owner, resolution);
 		Font fallbackFont = Font.LoadFromPath("data/NotoSansJP-Regular.otf", renderer.owner, resolution);
 		_font.fallbacks.Add(fallbackFont);
+
+		updateFrameSkip = 1;
 	}
 
 	protected override void GenerateMesh() {
@@ -100,7 +70,7 @@ public class Ruler : RenderableBase {
 			float2[] positions = GetPositions(pos, space, count, orientation);
 			float scaleVal = 1 / (canvas.transform.scale.animatedValue * vec).sum;
 
-			if (drawLines) AddStraightLines(mesh!, positions, lineLength - (pos * vec.yx).sum, lineColor.GetColor(), screenSpaceThickness ? thickness * scaleVal : thickness, orientation);
+			if (drawLines) AddStraightLines(mesh!, positions, lineLength - (pos * vec.yx).sum, lineColor.GetColor(), screenSpaceThickness ? thickness * scaleVal : thickness, orientation, -.01f);
 			if (drawLabels && names != null) {
 				(float s, int c) = GetStartCountIndexes(GetStartEndPos(pos, pos + count * space, orientation), space);
 				if (c < 1) return;

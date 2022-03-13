@@ -172,10 +172,24 @@ public static class ElementsExamples {
 				isDynamic = true,
 			});
 
-			IChartData<float> data = new FuncChartData<float>(i => MathF.Sin(i * .1f) * 1000, 20480);
-			IChartData<indexedColor> colors = new ConstChartData<indexedColor>(new(theme.bad_ind));
+			indexedColor[] lineColors = {theme.good_ind, theme.normal_ind, theme.bad_ind};
 
-			canvas.AddElement(new LineChart(data, colors, canvas.canvas) {isDynamic = true});
+			for (int i = 0; i < lineColors.Length; i++) {
+				int i1 = i;
+				IChartData<float> data = new FuncChartData<float>(j => MathF.Sin((j + i1 * 100) * .1f) * 1000, 20480);
+				IChartData<indexedColor> colors = new ConstChartData<indexedColor>(lineColors[i]);
+
+				LineChart chart = new(data, colors, canvas.canvas) {
+					isDynamic = true, 
+					lineThickness = new ChartPropertyFunc<float>(r => 1 / r.canvas.transform.scale.animatedValue.x), 
+					lineAlphaMul = 0.2f
+				};
+				canvas.AddElement(chart);
+			}
+
+			Material mat = new(GlShaders.bloom);
+			mat.SetProperty("brightness", 4);
+			canvas.canvas.renderer.postProcessor = canvas.canvas.factory.CreatePostProcessor(mat);
 		});
 
 		AvaloniaRunUtils.RunAvalonia();

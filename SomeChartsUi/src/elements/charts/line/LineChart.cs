@@ -9,12 +9,16 @@ namespace SomeChartsUi.elements.charts.line;
 
 /// <summary>simple line chart with uniform values</summary>
 public class LineChart : RenderableBase, IDownsample {
-	public IChartData<indexedColor> colors;
-	public ChartProperty<float> lineAlphaMul = .5f;
-	public ChartProperty<float> lineThickness = new ChartPropertyFunc<float>(r => 1 / r.canvas.transform.scale.animatedValue.x);
-
 	public Orientation orientation = Orientation.horizontal;
+	public float lineAlphaMul = .5f;
+
+	public bool drawPoints = true;
+	public bool drawLines = true;
+	
+	public ChartProperty<float> lineThickness = new ChartPropertyFunc<float>(r => 1 / r.canvas.transform.scale.animatedValue.x);
 	public ChartProperty<float> pointThickness = new ChartPropertyFunc<float>(r => 2 / r.canvas.transform.scale.animatedValue.x);
+	
+	public IChartData<indexedColor> colors;
 	public IChartData<float> values;
 
 	public LineChart(IChartData<float> values, IChartData<indexedColor> colors, ChartsCanvas c) : base(c) {
@@ -50,8 +54,8 @@ public class LineChart : RenderableBase, IDownsample {
 		color* lineColors = stackalloc color[count];
 		colors.GetColors(startIndex, count, downsample, lineColors);
 
-		AddPoints(mesh, linePoints, lineColors, pointThickness.Get(this), count);
-		AddConnectedLines(mesh!, linePoints, lineColors, lineThickness.Get(this), count - 1, lineAlphaMul.Get(this));
+		if (drawPoints) AddPoints(mesh, linePoints, lineColors, pointThickness.Get(this), count);
+		if (drawLines) AddConnectedLines(mesh!, linePoints, lineColors, lineThickness.Get(this), count - 1, lineAlphaMul);
 
 		mesh.OnModified();
 	}

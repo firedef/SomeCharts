@@ -6,6 +6,6 @@ namespace SomeChartsAvaloniaExamples;
 internal class Program {
 	[STAThread]
 	public static void Main(string[] args) {
-		ElementsExamples.RunLineChart();
+		LineChartExample.Run();
 	}
 }
