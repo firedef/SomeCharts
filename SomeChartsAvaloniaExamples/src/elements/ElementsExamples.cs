@@ -127,14 +127,16 @@ public static class ElementsExamples {
 				names = new FuncChartManagedData<string>(i => i.ToString(), -1),
 				stickRange = new(0, 0, 10_000, 0),
 				length = 1_000,
-				lineLength = 10_000
+				lineLength = 10_000,
+				isDynamic = true,
 			});
 			canvas.AddElement(new Ruler(canvas.canvas) {
 				orientation = Orientation.horizontal,
 				names = new FuncChartManagedData<string>(i => i.ToString(), -1),
 				stickRange = new(0, 0, 0, 10_000),
 				length = 1_000,
-				lineLength = 10_000
+				lineLength = 10_000,
+				isDynamic = true,
 			});
 
 			Func<RenderableBase, Transform> trFunc = _ => {
@@ -152,21 +154,23 @@ public static class ElementsExamples {
 			AvaloniaGlChartsCanvas canvas = AvaloniaRunUtils.AddGlCanvas();
 			const int rulerOffset = 1_000_000;
 
-			// canvas.AddElement(new Ruler(canvas.canvas) {
-			// 	drawLabels = true,
-			// 	orientation = Orientation.horizontal,
-			// 	length = rulerOffset,
-			// 	names = new FuncChartManagedData<string>(i => i.ToString(), 1),
-			// 	stickRange = new(0, 0, 0, rulerOffset)
-			// });
-			//
-			// canvas.AddElement(new Ruler(canvas.canvas) {
-			// 	drawLabels = true,
-			// 	orientation = Orientation.vertical,
-			// 	length = rulerOffset,
-			// 	names = new FuncChartManagedData<string>(i => (i * 100).ToString(), 1),
-			// 	stickRange = new(0, 0, rulerOffset, 0)
-			// });
+			canvas.AddElement(new Ruler(canvas.canvas) {
+				drawLabels = true,
+				orientation = Orientation.horizontal,
+				length = rulerOffset,
+				names = new FuncChartManagedData<string>(i => i.ToString(), 1),
+				stickRange = new(0, 0, 0, rulerOffset),
+				isDynamic = true,
+			});
+			
+			canvas.AddElement(new Ruler(canvas.canvas) {
+				drawLabels = true,
+				orientation = Orientation.vertical,
+				length = rulerOffset,
+				names = new FuncChartManagedData<string>(i => (i * 100).ToString(), 1),
+				stickRange = new(0, 0, rulerOffset, 0),
+				isDynamic = true,
+			});
 
 			IChartData<float> data = new FuncChartData<float>(i => MathF.Sin(i * .1f) * 1000, 20480);
 			IChartData<indexedColor> colors = new ConstChartData<indexedColor>(new(theme.bad_ind));

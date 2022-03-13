@@ -50,7 +50,7 @@ public class LineChart : RenderableBase, IDownsample {
 		color* lineColors = stackalloc color[count];
 		colors.GetColors(startIndex, count, downsample, lineColors);
 
-		AddPoints(mesh, linePoints, lineColors, pointThickness.Get(this), count - 1);
+		AddPoints(mesh, linePoints, lineColors, pointThickness.Get(this), count);
 		AddConnectedLines(mesh!, linePoints, lineColors, lineThickness.Get(this), count - 1, lineAlphaMul.Get(this));
 
 		mesh.OnModified();

@@ -13,7 +13,6 @@ public abstract partial class RenderableBase {
 		m.vertices.EnsureFreeSpace(vCount);
 		m.indexes.EnsureFreeSpace(iCount);
 
-		int curVIndex = m.vertices.count;
 		for (int i = 0; i < len; i++) {
 			float2 p0 = linePoints[i];
 			float2 p1 = linePoints[i + 1];
@@ -22,24 +21,13 @@ public abstract partial class RenderableBase {
 			
 			float2 offset = Rot90DegFastWithLen(p0 - p1, thickness);
 
-			m.AddVertex(new(new(p1.x - offset.x, p1.y - offset.y), float3.front, float2.zero, c0));
-			m.AddVertex(new(new(p1.x + offset.x, p1.y + offset.y), float3.front, float2.zero, c0));
-			m.AddVertex(new(new(p0.x + offset.x, p0.y + offset.y), float3.front, float2.zero, c0));
-			m.AddVertex(new(new(p0.x - offset.x, p0.y - offset.y), float3.front, float2.zero, c0));
-			
-			m.AddIndex(curVIndex + 0);
-			m.AddIndex(curVIndex + 1);
-			m.AddIndex(curVIndex + 2);
-			m.AddIndex(curVIndex + 0);
-			m.AddIndex(curVIndex + 2);
-			m.AddIndex(curVIndex + 3);
-
-			curVIndex += 4;
+			m.AddRect(
+				new(p1.x - offset.x, p1.y - offset.y), 
+				new(p1.x + offset.x, p1.y + offset.y),
+				new(p0.x + offset.x, p0.y + offset.y),
+				new(p0.x - offset.x, p0.y - offset.y),
+				c0);
 		}
-		
-		//m.vertices.Add();
-//
-		//DrawVertices(points, null, colors, indexes, vCount, iCount);
 	}
 	
 	protected unsafe void AddPoints(Mesh m, float2* elementPoints, color* elementColors, float size, int len) {
@@ -67,6 +55,31 @@ public abstract partial class RenderableBase {
 			m.AddIndex(curVIndex + 3);
 
 			curVIndex += 4;
+		}
+	}
+
+	protected void AddStraightLines(Mesh m, float2[] positions, float length, color lineColor, float thickness, Orientation orientation) {
+		int count = positions.Length;
+		if (count == 0) return;
+		int vCount = count * 4;
+		int iCount = count * 6;
+		
+		m.vertices.EnsureCapacity(vCount);
+		m.indexes.EnsureCapacity(iCount);
+		
+		float2 vec = (orientation & Orientation.vertical) != 0 ? new(0, 1) : new(1, 0);// vertical : horizontal
+		float2 offset = vec.yx * length;
+		
+		for (int i = 0; i < count; i++) {
+			float2 p0 = positions[i];
+			float2 p1 = p0 + offset;
+			
+			m.AddRect(
+				new(p0.x - thickness, p0.y - thickness),
+				new(p0.x - thickness, p1.y + thickness),
+				new(p1.x + thickness, p1.y + thickness),
+				new(p1.x + thickness, p0.y - thickness),
+				lineColor);
 		}
 	}
 

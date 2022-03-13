@@ -51,6 +51,33 @@ public class Mesh : IDisposable {
 
 	public void AddVertex(Vertex v) => vertices.Add(v);
 	public void AddIndex(int v) => indexes.Add((ushort) v);
+
+	public void AddRect(float2 p0, float2 p1, float2 p2, float2 p3, color c0) => AddRect(
+		new(p0, float3.front, float2.zero, c0),
+		new(p1, float3.front, float2.zero, c0),
+		new(p2, float3.front, float2.zero, c0),
+		new(p3, float3.front, float2.zero, c0)
+	);
+	
+	public void AddRect(Vertex p0, Vertex p1, Vertex p2, Vertex p3) {
+		vertices.EnsureCapacity(4);
+		AddVertex(p0);
+		AddVertex(p1);
+		AddVertex(p2);
+		AddVertex(p3);
+		AddQuadIndices();
+	}
+
+	public void AddQuadIndices() {
+		indexes.EnsureCapacity(6);
+		int vCount = vertices.count - 4;
+		AddIndex(vCount + 0);
+		AddIndex(vCount + 1);
+		AddIndex(vCount + 2);
+		AddIndex(vCount + 0);
+		AddIndex(vCount + 2);
+		AddIndex(vCount + 3);
+	}
 	
 #endregion meshFunctions
 
