@@ -35,7 +35,7 @@ public class AvaloniaGlChartsCanvas : CustomGlControlBase {
 		_updateTimer = new(_ => {
 			try {
 				if (Dispatcher.UIThread.CheckAccess())
-					Dispatcher.UIThread?.RunJobs();
+					Dispatcher.UIThread?.RunJobs(DispatcherPriority.Input + 2);
 			}
 			catch (Exception e) {// ignored
 			}

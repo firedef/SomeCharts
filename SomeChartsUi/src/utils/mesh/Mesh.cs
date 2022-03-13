@@ -1,11 +1,21 @@
+using MathStuff;
 using MathStuff.vectors;
+using SomeChartsUi.ui.elements;
 using SomeChartsUi.utils.collections;
 
 namespace SomeChartsUi.utils.mesh;
 
 public class Mesh : IDisposable {
+#region fields
+
 	public readonly HashedList<ushort> indexes;
 	public readonly HashedList<Vertex> vertices;
+	public rect bounds;
+	public bool enabled = true;
+
+#endregion fields
+
+#region ctors
 
 	public Mesh() : this(new HashedList<Vertex>(16), new(16)) { }
 
@@ -28,34 +38,24 @@ public class Mesh : IDisposable {
 			this.indexes = new(iPtr, indexes.Length);
 		}
 	}
-	public virtual void Dispose() {
-		Dispose(true);
-		GC.SuppressFinalize(this);
-	}
 
-	public unsafe void SetVertices(Vertex* v, int s) {
-		vertices.CopyFrom(v, s);
-		OnModified();
-	}
-	public unsafe void SetVertices(Vertex[] v) {
-		fixed(Vertex* vPtr = v) {
-			SetVertices(vPtr, v.Length);
-		}
-	}
+#endregion ctors
 
-	public unsafe void SetIndexes(ushort* v, int s) {
-		indexes.CopyFrom(v, s);
-		OnModified();
-	}
-	public unsafe void SetIndexes(ushort[] v) {
-		fixed(ushort* vPtr = v) {
-			SetIndexes(vPtr, v.Length);
-		}
-	}
+#region meshFunctions
+
+	public unsafe void SetVertices(Vertex* v, int s) => vertices.CopyFrom(v, s);
+	public unsafe void SetVertices(Vertex[] v) { fixed(Vertex* vPtr = v) SetVertices(vPtr, v.Length); }
+
+	public unsafe void SetIndexes(ushort* v, int s) => indexes.CopyFrom(v, s);
+	public unsafe void SetIndexes(ushort[] v) { fixed(ushort* vPtr = v) SetIndexes(vPtr, v.Length); }
 
 	public void AddVertex(Vertex v) => vertices.Add(v);
 	public void AddIndex(int v) => indexes.Add((ushort) v);
+	
+#endregion meshFunctions
 
+#region calculations
+	
 	public unsafe void RecalculateNormals() {
 		int c = indexes.count;
 
@@ -74,6 +74,31 @@ public class Mesh : IDisposable {
 		}
 	}
 
+	public void RecalculateBounds() {
+		int c = vertices.count;
+		float2 min =  float2.maxValue;
+		float2 max = -float2.maxValue;
+
+		for (int i = 0; i < c; i++) {
+			float2 p = vertices[i].position;
+			if (p.x < min.x) min.x = p.x;
+			if (p.y < min.y) min.y = p.y;
+			if (p.x > max.x) max.x = p.x;
+			if (p.y > max.y) max.y = p.y;
+		}
+
+		bounds = new(min.x, min.y, max.x - min.x, max.y - min.y);
+	}
+
+#endregion calculations
+
+#region cleanup
+	
+	public virtual void Dispose() {
+		Dispose(true);
+		GC.SuppressFinalize(this);
+	}
+	
 	public void Clear() {
 		vertices.Clear();
 		indexes.Clear();
@@ -86,5 +111,14 @@ public class Mesh : IDisposable {
 	}
 	~Mesh() => Dispose(false);
 
-	public virtual void OnModified() { }
+#endregion cleanup
+	
+#region other
+	
+	public bool IsVisible(rect camera) => enabled && Geometry.Intersects(bounds, camera, float2.zero);
+	public bool IsVisible(rect camera, Transform objTransform) => enabled && Geometry.Intersects(new(bounds.left, bounds.bottom, bounds.width * objTransform.scale.x, bounds.height * objTransform.scale.y), camera, objTransform.position);
+	public virtual void OnModified() => RecalculateBounds();
+
+#endregion other
+
 }

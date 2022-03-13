@@ -1,6 +1,7 @@
 using MathStuff;
 using MathStuff.vectors;
 using SomeChartsUi.ui.elements;
+using SomeChartsUi.utils.mesh;
 
 namespace SomeChartsUi.ui.text; 
 
@@ -15,6 +16,8 @@ public class FreeTypeTextMesh : TextMesh {
 		float xPos = 0;
 		float yPos = 0;
 		float zPos = 0;
+
+		Mesh? prevMesh = null;
 
 		int strLen = str.Length;
 		for (int i = 0; i < strLen; i++) {
@@ -42,6 +45,8 @@ public class FreeTypeTextMesh : TextMesh {
 				break;
 			}
 		}
+		
+		prevMesh?.OnModified();
 
 		void AddGlyph(uint code, Font f) {
 			(FontCharData charData, int atlas) = f.textures.GetGlyph(code);
@@ -74,6 +79,11 @@ public class FreeTypeTextMesh : TextMesh {
 			batch.mesh.indexes.Add((ushort)(vCount + 3));
 
 			xPos += charData.advance * size;
+
+			if (prevMesh != null && prevMesh != batch.mesh) {
+				prevMesh.OnModified(); 
+			}
+			prevMesh = batch.mesh;
 		}
 	}
 }

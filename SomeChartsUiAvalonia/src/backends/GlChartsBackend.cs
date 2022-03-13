@@ -1,5 +1,6 @@
 using System;
 using System.Numerics;
+using Avalonia;
 using Avalonia.OpenGL;
 using MathStuff;
 using MathStuff.vectors;
@@ -9,6 +10,7 @@ using SomeChartsUi.ui.text;
 using SomeChartsUi.utils.mesh;
 using SomeChartsUi.utils.shaders;
 using SomeChartsUiAvalonia.controls.gl;
+using SomeChartsUiAvalonia.utils;
 using SomeChartsUiAvalonia.utils.collections;
 
 namespace SomeChartsUiAvalonia.backends;
@@ -26,6 +28,10 @@ public class GlChartsBackend : ChartsBackendBase {
 	public override void DrawMesh(Mesh mesh, Material? material, Transform transform) {
 		if (mesh is not GlMesh obj) throw new NotImplementedException("opengl backend support only GlMesh mesh type; use CreateMesh() in ChartsBackendBase");
 
+		if (!mesh.IsVisible(owner.transform.worldBounds, transform)) {
+			return;
+		}
+
 		// //TODO: fix perspective
 		// if (perspectiveMode) {
 		// 	projection = Matrix4x4.CreatePerspectiveFieldOfView(90 / 180f * MathF.PI, owner.transform.screenBounds.width / owner.transform.screenBounds.height, .001f, 10000f);
@@ -38,7 +44,6 @@ public class GlChartsBackend : ChartsBackendBase {
 		if (transform.modelMatrix.IsIdentity) transform.RecalculateMatrix();
 		
 		Matrix4x4 mvp = transform.modelMatrix * owner.transform.viewMatrix * owner.transform.projectionMatrix;
-		//Matrix4x4 mvp = owner.transform.projectionMatrix * owner.transform.viewMatrix * transform.modelMatrix;
 		
 		obj.Render(material, mvp, camPos);
 	}

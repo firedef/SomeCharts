@@ -11,12 +11,18 @@ using static Avalonia.OpenGL.GlConsts;
 namespace SomeChartsUiAvalonia.utils.collections;
 
 public class GlMesh : Mesh {
+#region fields
+
 	public int indexBufferObject;
 
 	public bool isDynamic;
 	public bool updateRequired = true;
 	public int vertexArrayObject;
 	public int vertexBufferObject;
+
+#endregion fields
+
+#region buffers
 
 	protected unsafe void GenBuffers() {
 		if (GlInfo.gl == null || GlInfo.glExt == null) return;
@@ -88,33 +94,17 @@ public class GlMesh : Mesh {
 		updateRequired = false;
 	}
 
-	public override void OnModified() => updateRequired = true;
+#endregion buffers
+	
+#region rendering
 
 	public void Render(Material? material, Matrix4x4 mvp, float3 cameraPos) {
-		if (vertices.count == 0 || indexes.count == 0) return;
-		if (vertexArrayObject == 0) GenBuffers();
-		if (vertexArrayObject == 0) return;
 		if (material is {shader: not GlShader}) return;
-
-		BindBuffers();
-		if (updateRequired | isDynamic) UpdateBuffers();
-		GlShader shader = material == null || ChartsRenderSettings.useDefaultMat ? GlShaders.basic : (GlShader)material.shader;
-		if (shader.shaderProgram == 0) shader.TryCompile();
-		if (shader.shaderProgram == 0) return;
-
-		GlInfo.gl!.UseProgram(shader.shaderProgram);
-		
-		GlInfo.CheckError("before uniforms");
-		shader.TrySetUniform("mvp", mvp);
-		shader.TrySetUniform("cameraPos", cameraPos);
-		shader.TrySetUniform("time", (float)DateTime.Now.TimeOfDay.TotalMilliseconds);
-		if (material != null) {
-			shader.TryApplyMaterial(material);
-			if (!material.depthTest) GlInfo.glExt!.Disable(GL_DEPTH_TEST);
-		}
+		if (!PrepareBuffers()) return;
+		PrepareShader(material, mvp, cameraPos);
 
 		GlInfo.CheckError("after uniforms");
-		GlInfo.gl.DrawElements(GL_TRIANGLES, indexes.count, GL_UNSIGNED_SHORT, IntPtr.Zero);
+		GlInfo.gl!.DrawElements(GL_TRIANGLES, indexes.count, GL_UNSIGNED_SHORT, IntPtr.Zero);
 		GlInfo.CheckError("after rendering object");
 		
 		if (material != null) {
@@ -122,6 +112,41 @@ public class GlMesh : Mesh {
 		}
 	}
 
+	private bool PrepareBuffers() {
+		if (vertices.count == 0 || indexes.count == 0) return false;
+		if (vertexArrayObject == 0) GenBuffers();
+		if (vertexArrayObject == 0) return false;
+		BindBuffers();
+		if (updateRequired | isDynamic) UpdateBuffers();
+		return true;
+	}
+
+	private static void PrepareShader(Material? material, Matrix4x4 mvp, float3 cameraPos) {
+		GlShader shader = material == null || ChartsRenderSettings.useDefaultMat ? GlShaders.basic : (GlShader)material.shader;
+		if (shader.shaderProgram == 0) shader.TryCompile();
+		if (shader.shaderProgram == 0) return;
+		
+		GlInfo.gl!.UseProgram(shader.shaderProgram);
+		
+		GlInfo.CheckError("before uniforms");
+		shader.TrySetUniform("mvp", mvp);
+		shader.TrySetUniform("cameraPos", cameraPos);
+		shader.TrySetUniform("time", (float)DateTime.Now.TimeOfDay.TotalMilliseconds);
+		if (material == null) return;
+		
+		shader.TryApplyMaterial(material);
+		if (!material.depthTest) GlInfo.glExt!.Disable(GL_DEPTH_TEST);
+	}
+
+#endregion rendering
+
+#region other
+	
+	public override void OnModified() {
+		base.OnModified();
+		updateRequired = true;
+	}
+	
 	public override void Dispose() {
 		if (vertexBufferObject != 0) {
 			GlInfo.gl!.DeleteBuffers(2, new[] {vertexBufferObject, indexBufferObject});
@@ -134,4 +159,6 @@ public class GlMesh : Mesh {
 
 		base.Dispose();
 	}
+
+#endregion other
 }
