@@ -188,4 +188,15 @@ public abstract partial class RenderableBase {
 
 		return arr;
 	}
+
+	public void AddLine(Mesh m, float2 p0, float2 p1, float thickness, color col) {
+		float2 offset = Rot90DegFastWithLen(p0 - p1, thickness);
+		
+		m.AddRect(
+			new(p1.x - offset.x, p1.y - offset.y), 
+			new(p1.x + offset.x, p1.y + offset.y),
+			new(p0.x + offset.x, p0.y + offset.y),
+			new(p0.x - offset.x, p0.y - offset.y),
+			col);
+	}
 }

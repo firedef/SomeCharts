@@ -9,7 +9,7 @@ public enum PolygonMode {
 public static class ChartsRenderSettings {
 	public static bool useDefaultMat = false;
 	public static bool debugTextMat = false;
-	public static float textThickness = 0.3f;
+	public static float textThickness = 0.4f;
 	public static PolygonMode polygonMode = PolygonMode.fill;
 	public static int textQuality = 1;
 }

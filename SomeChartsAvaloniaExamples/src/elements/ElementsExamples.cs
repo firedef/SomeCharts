@@ -5,6 +5,7 @@ using MathStuff.vectors;
 using SomeChartsUi.data;
 using SomeChartsUi.elements;
 using SomeChartsUi.elements.charts.line;
+using SomeChartsUi.elements.charts.pie;
 using SomeChartsUi.elements.other;
 using SomeChartsUi.themes.colors;
 using SomeChartsUi.themes.themes;
@@ -190,6 +191,32 @@ public static class ElementsExamples {
 			Material mat = new(GlShaders.bloom);
 			mat.SetProperty("brightness", 4);
 			canvas.canvas.renderer.postProcessor = canvas.canvas.factory.CreatePostProcessor(mat);
+		});
+
+		AvaloniaRunUtils.RunAvalonia();
+	}
+	
+	public static void RunPieChart() {
+		AvaloniaRunUtils.RunAfterStart(() => {
+			AvaloniaGlChartsCanvas canvas = AvaloniaRunUtils.AddGlCanvas();
+			const int rulerOffset = 1_000_000;
+
+			indexedColor[] lineColors = {theme.accent0_ind, theme.default3_ind, theme.default4_ind, theme.default5_ind};
+
+			IChartData<float> data = new FuncChartData<float>(j => MathF.Abs(MathF.Sin((j * 100) * .1f) * 100) + 10, 8);
+			IChartData<indexedColor> colors = new FuncChartData<indexedColor>(j => lineColors[j % lineColors.Length], 1);
+			IChartManagedData<string> names = new FuncChartManagedData<string>(j => $"#{j}", 1);
+
+			PieChart pie = new(canvas.canvas);
+			pie.values = data;
+			pie.colors = colors;
+			pie.names = names;
+			pie.isDynamic = true;
+			canvas.AddElement(pie);
+			
+			//Material mat = new(GlShaders.bloom);
+			//mat.SetProperty("brightness", 1);
+			//canvas.canvas.renderer.postProcessor = canvas.canvas.factory.CreatePostProcessor(mat);
 		});
 
 		AvaloniaRunUtils.RunAvalonia();
