@@ -10,6 +10,7 @@ using SomeChartsUi.elements.other;
 using SomeChartsUi.themes.colors;
 using SomeChartsUi.themes.themes;
 using SomeChartsUi.ui.elements;
+using SomeChartsUi.ui.text;
 using SomeChartsUi.utils.shaders;
 using SomeChartsUiAvalonia.controls.gl;
 using SomeChartsUiAvalonia.controls.skia;
@@ -198,6 +199,8 @@ public static class ElementsExamples {
 	
 	public static void RunPieChart() {
 		AvaloniaRunUtils.RunAfterStart(() => {
+			Fonts.FetchAvailableFontsFromPath("data/");
+			
 			AvaloniaGlChartsCanvas canvas = AvaloniaRunUtils.AddGlCanvas();
 			const int rulerOffset = 1_000_000;
 

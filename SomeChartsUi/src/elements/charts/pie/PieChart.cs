@@ -24,10 +24,8 @@ public class PieChart : RenderableBase, IDownsample {
 
 	public PieChart(ChartsCanvas owner) : base(owner) {
 		_textMesh = canvas.factory.CreateTextMesh(this);
-		uint resolution = 32;
-		font = Font.LoadFromPath("data/FiraCode-VariableFont_wght.ttf", renderer.owner, resolution);
-		Font fallbackFont = Font.LoadFromPath("data/NotoSansJP-Regular.otf", renderer.owner, resolution);
-		font.fallbacks.Add(fallbackFont);
+
+		font = canvas.GetDefaultFont();
 	}
 
 	public float downsampleMultiplier { get; set; } = .5f;
