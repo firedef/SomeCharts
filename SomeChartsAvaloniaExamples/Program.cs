@@ -9,6 +9,6 @@ namespace SomeChartsAvaloniaExamples;
 internal class Program {
 	[STAThread]
 	public static void Main(string[] args) {
-		PieChartExample.Run();
+		ElementsExamples.RunPieChart();
 	}
 }

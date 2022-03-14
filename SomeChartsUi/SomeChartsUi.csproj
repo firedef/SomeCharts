@@ -22,7 +22,6 @@
         <Folder Include="src\elements\charts\graph" />
         <Folder Include="src\elements\charts\heatmap" />
         <Folder Include="src\elements\charts\radar" />
-        <Folder Include="src\elements\charts\scatter" />
         <Folder Include="src\elements\ui" />
         <Folder Include="src\utils\rects" />
         <Folder Include="src\utils\vectors" />
