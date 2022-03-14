@@ -89,6 +89,9 @@ public abstract partial class RenderableBase {
 
 	protected static void Free<T>(T[] arr) => ArrayPool<T>.Shared.Return(arr);
 	protected static unsafe void FreeMem<T>(T* arr) where T : unmanaged => NativeMemory.Free(arr);
+	
+	protected bool IsVisible(float2 a, float2 s) => canvas.transform.worldBounds.Contains(a.x, a.y, s.x, s.y);
+	protected bool IsVisibleWithTransform(float2 a, float2 s) => canvas.transform.worldBounds.Contains(a.x + transform.position.x, a.y + transform.position.y, s.x * transform.scale.x, s.y * transform.scale.y);
 
 	public RenderableBase WithPosition(float2 v) {
 		((ChartPropertyValue<Transform>)transform).value.position = v;
