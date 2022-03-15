@@ -53,10 +53,10 @@ public static class LineChartExample {
 		for (int i = 0; i < lineChartCount; i++)
 			AddLineChart(i, lineColors[i % lineColors.Length], canvas);
 		
-		// add post processing bloom
-		Material mat = new(GlShaders.bloom);
-		mat.SetProperty("brightness", 4);
-		canvas.canvas.renderer.postProcessor = canvas.canvas.factory.CreatePostProcessor(mat);
+		// add post processing über shader
+		UberShaderSettings.current.bloom = true;
+		UberShaderSettings.current.bloom_brightness = 4;
+		canvas.UpdateUberPostProcessor();
 	}
 
 	private static string GetHorizontalRulerLabels(int i) => i.ToString();

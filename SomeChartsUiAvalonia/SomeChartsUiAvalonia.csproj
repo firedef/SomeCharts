@@ -66,6 +66,12 @@
           <Generator>TextTemplatingFileGenerator</Generator>
           <LastGenOutput>GlInterfaceGen.cs</LastGenOutput>
         </None>
+        <None Update="data\shaders\uberPostFx.frag">
+          <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </None>
+        <None Update="data\shaders\uberPostFx.vert">
+          <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </None>
     </ItemGroup>
     <ItemGroup>
         <PackageReference Include="Avalonia" Version="0.10.12" />

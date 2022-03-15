@@ -12,9 +12,11 @@ using SomeChartsUi.ui.canvas;
 using SomeChartsUi.ui.elements;
 using SomeChartsUi.ui.layers;
 using SomeChartsUi.ui.layers.render;
+using SomeChartsUi.utils.shaders;
 using SomeChartsUiAvalonia.impl.opengl;
 using SomeChartsUiAvalonia.impl.opengl.backend;
 using SomeChartsUiAvalonia.impl.opengl.ctrl;
+using SomeChartsUiAvalonia.impl.opengl.shaders;
 using SomeChartsUiAvalonia.impl.skia;
 using static Avalonia.OpenGL.GlConsts;
 
@@ -35,18 +37,21 @@ public class AvaloniaGlChartsCanvas : CustomGlControlBase {
 	private Timer _updateTimer;
 
 	public AvaloniaGlChartsCanvas() {
-		_updateTimer = new(_ => {
+		canvas.controller = new AvaloniaGlCanvasUiController(canvas, this);
+		Focusable = true;
+
+		GlInfo.version = new();
+		
+		Dispatcher.UIThread.Post(() => _updateTimer = new(_ => {
 			try {
 				if (Dispatcher.UIThread.CheckAccess())
 					Dispatcher.UIThread?.RunJobs(DispatcherPriority.Input + 2);
 			}
 			catch (Exception e) {// ignored
 			}
-		}, null, 0, 1000 / 50);
-		canvas.controller = new AvaloniaGlCanvasUiController(canvas, this);
-		Focusable = true;
+		}, null, 0, 1000 / 50));
 
-		GlInfo.version = new();
+		UpdateUberPostProcessor();
 	}
 
 
@@ -132,8 +137,14 @@ public class AvaloniaGlChartsCanvas : CustomGlControlBase {
 	private void RenderPass(RenderLayerId pass) {
 		foreach (CanvasLayer layer in canvas.renderer!.layers) layer.Render(pass);
 	}
-	
-	
+
+	public void SetPostProcessor(Material mat) {
+		if (canvas.renderer.postProcessor != null) canvas.renderer.postProcessor.material = mat;
+		else canvas.renderer.postProcessor = canvas.factory.CreatePostProcessor(mat);
+	}
+
+	public void SetPostProcessor(UberShaderSettings settings) => SetPostProcessor(settings.GenerateMaterial());
+	public void UpdateUberPostProcessor() => SetPostProcessor(UberShaderSettings.current);
 
 	protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e) {
 		stopRender = true;

@@ -106,11 +106,14 @@ uniform mat4 mvp;");
 		GlInfo.gl!.UseProgram(shaderProgram);
 
 		switch (v) {
+			case bool v0:
+				SetScalar(uniform, v0 ? 1 : 0);
+				return;
 			case int v0:
-				GlInfo.gl.Uniform1f(loc, v0);
+				SetScalar(uniform, v0);
 				return;
 			case float v0:
-				GlInfo.gl.Uniform1f(loc, v0);
+				SetScalar(uniform, v0);
 				return;
 			case float2 v0:
 				GlInfo.glExt!.Uniform2f(loc, v0.x, v0.y);
@@ -133,6 +136,13 @@ uniform mat4 mvp;");
 					return;
 				}
 				throw new NotImplementedException();
+		}
+	}
+
+	private void SetScalar(ShaderUniform u, double v) {
+		switch (u.type) {
+			case GlConsts.GL_FLOAT: GlInfo.gl!.Uniform1f(u.location, (float) v); return;
+			case GlConsts.GL_INT: GlInfo.glExt!.Uniform1i(u.location, (int) v); return;
 		}
 	}
 
