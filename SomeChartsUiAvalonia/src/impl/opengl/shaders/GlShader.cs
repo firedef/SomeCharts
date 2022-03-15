@@ -6,9 +6,8 @@ using System.Runtime.InteropServices;
 using Avalonia.OpenGL;
 using MathStuff.vectors;
 using SomeChartsUi.utils.shaders;
-using SomeChartsUiAvalonia.controls.gl;
 
-namespace SomeChartsUiAvalonia.utils;
+namespace SomeChartsUiAvalonia.impl.opengl.shaders;
 
 public class GlShader : Shader {
 	public int fragmentShader;

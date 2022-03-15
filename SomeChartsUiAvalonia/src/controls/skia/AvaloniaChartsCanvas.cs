@@ -6,7 +6,8 @@ using MathStuff.vectors;
 using SkiaSharp;
 using SomeChartsUi.ui.canvas;
 using SomeChartsUi.ui.elements;
-using SomeChartsUiAvalonia.backends;
+using SomeChartsUiAvalonia.impl.opengl.backend;
+using SomeChartsUiAvalonia.impl.skia.backend;
 
 namespace SomeChartsUiAvalonia.controls.skia;
 

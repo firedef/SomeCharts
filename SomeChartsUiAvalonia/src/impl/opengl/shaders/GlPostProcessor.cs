@@ -1,13 +1,9 @@
-using System;
 using System.Numerics;
-using Avalonia.OpenGL;
 using MathStuff.vectors;
 using SomeChartsUi.ui;
 using SomeChartsUi.ui.canvas;
-using SomeChartsUiAvalonia.controls.gl;
-using SomeChartsUiAvalonia.utils.collections;
 
-namespace SomeChartsUiAvalonia.utils; 
+namespace SomeChartsUiAvalonia.impl.opengl.shaders; 
 
 public class GlPostProcessor : PostProcessor {
 	public GlPostProcessor(ChartsCanvas canvas) : base(canvas) { }

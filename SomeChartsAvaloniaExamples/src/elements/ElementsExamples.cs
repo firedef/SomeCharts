@@ -13,9 +13,9 @@ using SomeChartsUi.themes.themes;
 using SomeChartsUi.ui.elements;
 using SomeChartsUi.ui.text;
 using SomeChartsUi.utils.shaders;
-using SomeChartsUiAvalonia.controls.gl;
+using SomeChartsUiAvalonia.controls.opengl;
 using SomeChartsUiAvalonia.controls.skia;
-using SomeChartsUiAvalonia.utils;
+using SomeChartsUiAvalonia.impl.opengl.shaders;
 
 namespace SomeChartsAvaloniaExamples.elements;
 

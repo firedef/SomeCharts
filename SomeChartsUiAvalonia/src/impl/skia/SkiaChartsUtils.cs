@@ -5,7 +5,7 @@ using MathStuff.vectors;
 using SkiaSharp;
 using SomeChartsUi.ui;
 
-namespace SomeChartsUiAvalonia.utils;
+namespace SomeChartsUiAvalonia.impl.skia;
 
 public static class SkiaChartsUtils {
 	public static SKRect sk(this rect v) => new(v.left, v.bottom, v.right, v.top);                          // skia using inverted y axis, so swap bottom and top

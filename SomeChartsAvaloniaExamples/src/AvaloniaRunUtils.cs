@@ -5,7 +5,7 @@ using Avalonia;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.OpenGL;
 using Avalonia.Threading;
-using SomeChartsUiAvalonia.controls.gl;
+using SomeChartsUiAvalonia.controls.opengl;
 using SomeChartsUiAvalonia.controls.skia;
 
 namespace SomeChartsAvaloniaExamples;

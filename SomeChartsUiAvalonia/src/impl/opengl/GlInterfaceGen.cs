@@ -1,6 +1,6 @@
 ﻿using Avalonia.OpenGL;
 
-namespace SomeChartsUiAvalonia.controls.gl;
+namespace SomeChartsUiAvalonia.impl.opengl;
 
 public class GlExtrasInterface : GlInterfaceBase<GlInterface.GlContextInfo>
 {

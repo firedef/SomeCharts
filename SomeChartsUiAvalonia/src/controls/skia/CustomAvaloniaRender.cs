@@ -4,7 +4,6 @@ using Avalonia.Platform;
 using Avalonia.Rendering.SceneGraph;
 using SomeChartsUi.ui.canvas;
 using SomeChartsUi.ui.layers;
-using SomeChartsUiAvalonia.backends;
 
 namespace SomeChartsUiAvalonia.controls.skia;
 

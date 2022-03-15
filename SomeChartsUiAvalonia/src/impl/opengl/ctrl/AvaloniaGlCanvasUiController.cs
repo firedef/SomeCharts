@@ -3,9 +3,10 @@ using Avalonia.Input;
 using SomeChartsUi.ui;
 using SomeChartsUi.ui.canvas;
 using SomeChartsUi.ui.canvas.controls;
-using SomeChartsUiAvalonia.backends;
+using SomeChartsUiAvalonia.controls.opengl;
+using SomeChartsUiAvalonia.impl.opengl.backend;
 
-namespace SomeChartsUiAvalonia.controls.gl;
+namespace SomeChartsUiAvalonia.impl.opengl.ctrl;
 
 public class AvaloniaGlCanvasUiController : CanvasUiControllerBase {
 	public AvaloniaGlChartsCanvas avaloniaOwner;

@@ -1,6 +1,5 @@
 using System;
 using System.Numerics;
-using Avalonia;
 using Avalonia.OpenGL;
 using MathStuff;
 using MathStuff.vectors;
@@ -9,11 +8,8 @@ using SomeChartsUi.ui.elements;
 using SomeChartsUi.ui.text;
 using SomeChartsUi.utils.mesh;
 using SomeChartsUi.utils.shaders;
-using SomeChartsUiAvalonia.controls.gl;
-using SomeChartsUiAvalonia.utils;
-using SomeChartsUiAvalonia.utils.collections;
 
-namespace SomeChartsUiAvalonia.backends;
+namespace SomeChartsUiAvalonia.impl.opengl.backend;
 
 public class GlChartsBackend : ChartsBackendBase {
 	public static bool perspectiveMode = false;

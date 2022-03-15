@@ -6,8 +6,8 @@ using SomeChartsUi.elements.other;
 using SomeChartsUi.themes.colors;
 using SomeChartsUi.themes.themes;
 using SomeChartsUi.utils.shaders;
-using SomeChartsUiAvalonia.controls.gl;
-using SomeChartsUiAvalonia.utils;
+using SomeChartsUiAvalonia.controls.opengl;
+using SomeChartsUiAvalonia.impl.opengl.shaders;
 
 namespace SomeChartsAvaloniaExamples.elements; 
 

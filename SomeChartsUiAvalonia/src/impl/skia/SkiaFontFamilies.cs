@@ -5,7 +5,7 @@ using SkiaSharp;
 using SkiaSharp.HarfBuzz;
 using SomeChartsUi.ui.text;
 
-namespace SomeChartsUiAvalonia.utils;
+namespace SomeChartsUiAvalonia.impl.skia;
 
 public static class SkiaFontFamilies {
 	public static SKShaper defaultShaper = new(SKTypeface.Default);

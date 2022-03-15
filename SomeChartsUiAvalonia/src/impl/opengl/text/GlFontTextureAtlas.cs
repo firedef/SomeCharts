@@ -2,9 +2,8 @@ using Avalonia.OpenGL;
 using MathStuff.vectors;
 using SomeChartsUi.ui.text;
 using SomeChartsUi.utils.shaders;
-using SomeChartsUiAvalonia.controls.gl;
 
-namespace SomeChartsUiAvalonia.utils;
+namespace SomeChartsUiAvalonia.impl.opengl.text;
 
 public class GlFontTextureAtlas : FontTextureAtlas {
 	private readonly GlFontTextures _owner;

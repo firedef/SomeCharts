@@ -6,7 +6,7 @@ using MathStuff.vectors;
 using SomeChartsUi.themes.themes;
 using SomeChartsUi.ui;
 using SomeChartsUi.ui.canvas;
-using SomeChartsUiAvalonia.utils;
+using SomeChartsUiAvalonia.impl.skia;
 
 namespace SomeChartsUiAvalonia.controls.skia;
 

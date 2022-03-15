@@ -8,9 +8,8 @@ using SomeChartsUi.backends;
 using SomeChartsUi.ui.elements;
 using SomeChartsUi.utils.mesh;
 using SomeChartsUi.utils.shaders;
-using SomeChartsUiAvalonia.utils;
 
-namespace SomeChartsUiAvalonia.backends;
+namespace SomeChartsUiAvalonia.impl.skia.backend;
 
 public class SkiaChartsBackend : ChartsBackendBase, IDisposable {
 	private SKCanvas? _canvas;

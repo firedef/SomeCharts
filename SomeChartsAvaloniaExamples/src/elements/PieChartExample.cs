@@ -2,7 +2,7 @@ using SomeChartsUi.data;
 using SomeChartsUi.elements.charts.pie;
 using SomeChartsUi.themes.colors;
 using SomeChartsUi.themes.themes;
-using SomeChartsUiAvalonia.controls.gl;
+using SomeChartsUiAvalonia.controls.opengl;
 
 namespace SomeChartsAvaloniaExamples.elements; 
 

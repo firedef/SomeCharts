@@ -3,7 +3,7 @@ using FreeTypeSharp;
 using FreeTypeSharp.Native;
 using SomeChartsUi.ui.text;
 
-namespace SomeChartsUiAvalonia.utils;
+namespace SomeChartsUiAvalonia.impl.opengl.text;
 
 public class GlFontTextures : FontTextures {
 	public FreeTypeFaceFacade face;

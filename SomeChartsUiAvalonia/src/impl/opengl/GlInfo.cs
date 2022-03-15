@@ -1,7 +1,7 @@
 using System;
 using Avalonia.OpenGL;
 
-namespace SomeChartsUiAvalonia.controls.gl;
+namespace SomeChartsUiAvalonia.impl.opengl;
 
 public static class GlInfo {
 	public static GlExtrasInterface? glExt;

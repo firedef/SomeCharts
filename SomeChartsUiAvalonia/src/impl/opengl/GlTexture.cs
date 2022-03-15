@@ -5,9 +5,8 @@ using Avalonia.OpenGL;
 using Avalonia.Platform;
 using MathStuff.vectors;
 using SomeChartsUi.utils.shaders;
-using SomeChartsUiAvalonia.controls.gl;
 
-namespace SomeChartsUiAvalonia.utils;
+namespace SomeChartsUiAvalonia.impl.opengl;
 
 public class GlTexture : Texture, IDisposable {
 	public readonly WriteableBitmap? bitmap;

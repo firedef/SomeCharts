@@ -7,10 +7,10 @@ using SomeChartsUi.ui.elements;
 using SomeChartsUi.ui.text;
 using SomeChartsUi.utils.mesh;
 using SomeChartsUi.utils.shaders;
-using SomeChartsUiAvalonia.utils;
-using SomeChartsUiAvalonia.utils.collections;
+using SomeChartsUiAvalonia.impl.opengl.shaders;
+using SomeChartsUiAvalonia.impl.opengl.text;
 
-namespace SomeChartsUiAvalonia.backends;
+namespace SomeChartsUiAvalonia.impl.opengl.backend;
 
 public class GlChartFactory : ChartFactory {
 	public override Mesh CreateMesh() => new GlMesh();

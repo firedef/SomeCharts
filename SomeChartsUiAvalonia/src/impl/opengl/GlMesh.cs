@@ -5,10 +5,10 @@ using MathStuff.vectors;
 using SomeChartsUi.ui;
 using SomeChartsUi.utils.mesh;
 using SomeChartsUi.utils.shaders;
-using SomeChartsUiAvalonia.controls.gl;
+using SomeChartsUiAvalonia.impl.opengl.shaders;
 using static Avalonia.OpenGL.GlConsts;
 
-namespace SomeChartsUiAvalonia.utils.collections;
+namespace SomeChartsUiAvalonia.impl.opengl;
 
 public class GlMesh : Mesh {
 #region fields

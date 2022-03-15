@@ -1,4 +1,4 @@
-namespace SomeChartsUiAvalonia.utils;
+namespace SomeChartsUiAvalonia.impl.opengl.shaders;
 
 public static class GlShaders {
 	public static readonly GlShader basic = GlShader.LoadFrom("basic", "data/shaders/basic.vert", "data/shaders/basic.frag");

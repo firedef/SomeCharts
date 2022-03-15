@@ -3,7 +3,7 @@ using System.Runtime.InteropServices;
 using MathStuff.vectors;
 using SkiaSharp;
 
-namespace SomeChartsUiAvalonia.backends;
+namespace SomeChartsUiAvalonia.impl.skia.backend;
 
 public static unsafe class SkiaSharpApiUtils {
 	[DllImport("libSkiaSharp", CallingConvention = CallingConvention.Cdecl)]

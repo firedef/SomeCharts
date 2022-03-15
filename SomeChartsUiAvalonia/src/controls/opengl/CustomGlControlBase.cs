@@ -1,5 +1,4 @@
 using System;
-using System.Reflection;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Media;
@@ -8,9 +7,10 @@ using Avalonia.OpenGL.Controls;
 using Avalonia.OpenGL.Imaging;
 using Avalonia.Threading;
 using MathStuff;
+using SomeChartsUiAvalonia.impl.opengl;
 using static Avalonia.OpenGL.GlConsts;
 
-namespace SomeChartsUiAvalonia.controls.gl;
+namespace SomeChartsUiAvalonia.controls.opengl;
 
 /// <summary>based on <see cref="OpenGlControlBase"/></summary>
 public abstract class CustomGlControlBase : Control {

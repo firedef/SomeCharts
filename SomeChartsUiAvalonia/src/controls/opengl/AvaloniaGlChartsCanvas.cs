@@ -12,11 +12,13 @@ using SomeChartsUi.ui.canvas;
 using SomeChartsUi.ui.elements;
 using SomeChartsUi.ui.layers;
 using SomeChartsUi.ui.layers.render;
-using SomeChartsUiAvalonia.backends;
-using SomeChartsUiAvalonia.utils;
+using SomeChartsUiAvalonia.impl.opengl;
+using SomeChartsUiAvalonia.impl.opengl.backend;
+using SomeChartsUiAvalonia.impl.opengl.ctrl;
+using SomeChartsUiAvalonia.impl.skia;
 using static Avalonia.OpenGL.GlConsts;
 
-namespace SomeChartsUiAvalonia.controls.gl;
+namespace SomeChartsUiAvalonia.controls.opengl;
 
 public class AvaloniaGlChartsCanvas : CustomGlControlBase {
 	public readonly ChartsCanvas canvas = CreateCanvas();

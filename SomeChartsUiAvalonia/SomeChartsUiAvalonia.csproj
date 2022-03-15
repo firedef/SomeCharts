@@ -14,10 +14,6 @@
     </PropertyGroup>
     <ItemGroup>
         <None Remove=".gitignore" />
-        <None Update="src\controls\gl\GlInterfaceGen.tt">
-            <Generator>TextTemplatingFileGenerator</Generator>
-            <LastGenOutput>GlInterfaceGen.cs</LastGenOutput>
-        </None>
         <None Update="data\shaders\basic.frag">
           <CopyToOutputDirectory>Always</CopyToOutputDirectory>
         </None>
@@ -66,6 +62,10 @@
         <None Update="data\shaders\smooth.vert">
           <CopyToOutputDirectory>Always</CopyToOutputDirectory>
         </None>
+        <None Update="src\impl\opengl\GlInterfaceGen.tt">
+          <Generator>TextTemplatingFileGenerator</Generator>
+          <LastGenOutput>GlInterfaceGen.cs</LastGenOutput>
+        </None>
     </ItemGroup>
     <ItemGroup>
         <PackageReference Include="Avalonia" Version="0.10.12" />
@@ -83,10 +83,10 @@
         <ProjectReference Include="..\SomeChartsUi\SomeChartsUi.csproj" />
     </ItemGroup>
     <ItemGroup>
-        <Compile Update="src\controls\gl\GlInterfaceGen.cs">
-            <AutoGen>True</AutoGen>
-            <DesignTime>True</DesignTime>
-            <DependentUpon>GlInterfaceGen.tt</DependentUpon>
-        </Compile>
+      <Compile Update="src\impl\opengl\GlInterfaceGen.cs">
+        <AutoGen>True</AutoGen>
+        <DesignTime>True</DesignTime>
+        <DependentUpon>GlInterfaceGen.tt</DependentUpon>
+      </Compile>
     </ItemGroup>
 </Project>
