@@ -37,12 +37,12 @@ public class GlChartsBackend : ChartsBackendBase {
 		// 	projection = Matrix4x4.CreatePerspectiveFieldOfView(90 / 180f * MathF.PI, owner.transform.screenBounds.width / owner.transform.screenBounds.height, .001f, 10000f);
 		// 	z *= 100;
 		// }
-		
+
 		float z = 1 / owner.transform.scale.animatedValue.x;
 		float3 camPos = new(owner.transform.position.animatedValue, z);
 		
 		if (transform.modelMatrix.IsIdentity) transform.RecalculateMatrix();
-		
+
 		Matrix4x4 mvp = transform.modelMatrix * owner.transform.viewMatrix * owner.transform.projectionMatrix;
 		
 		obj.Render(material, mvp, camPos);

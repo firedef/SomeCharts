@@ -66,6 +66,10 @@ public class GlExtrasInterface : GlInterfaceBase<GlInterface.GlContextInfo>
     public GlBlendFunc BlendFunc { get; } = null!;
     public unsafe delegate void GlBlendFunc(int sFactor, int dFactor);
 
+    [GlEntryPoint("glBlendEquation")]
+    public GlBlendEquation BlendEquation { get; } = null!;
+    public unsafe delegate void GlBlendEquation(int mode);
+
     [GlEntryPoint("glPixelStorei")]
     public GlPixelStorei PixelStorei { get; } = null!;
     public unsafe delegate void GlPixelStorei(int name, int param);

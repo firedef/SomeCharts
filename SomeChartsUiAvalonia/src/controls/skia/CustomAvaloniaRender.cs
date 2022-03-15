@@ -1,3 +1,4 @@
+using System;
 using Avalonia;
 using Avalonia.Platform;
 using Avalonia.Rendering.SceneGraph;
@@ -19,8 +20,9 @@ public class CustomAvaloniaRender : ICustomDrawOperation {
 	public bool Equals(ICustomDrawOperation? other) => false;
 
 	public void Render(IDrawingContextImpl context) {
-		((SkiaChartsBackend)_owner.renderer.backend).SetRenderingVariables(context);
-		foreach (CanvasLayer layer in _owner.renderer!.layers)
-			layer.Render();
+		throw new NotImplementedException();
+		// ((SkiaChartsBackend)_owner.renderer.backend).SetRenderingVariables(context);
+		// foreach (CanvasLayer layer in _owner.renderer!.layers)
+		// 	layer.Render();
 	}
 }

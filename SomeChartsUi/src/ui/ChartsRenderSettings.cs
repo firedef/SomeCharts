@@ -12,4 +12,5 @@ public static class ChartsRenderSettings {
 	public static float textThickness = 0.4f;
 	public static PolygonMode polygonMode = PolygonMode.fill;
 	public static int textQuality = 1;
+	public static bool postProcessing = true;
 }

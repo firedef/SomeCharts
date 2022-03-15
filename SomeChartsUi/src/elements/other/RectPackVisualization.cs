@@ -2,6 +2,7 @@ using MathStuff;
 using MathStuff.vectors;
 using SomeChartsUi.ui.canvas;
 using SomeChartsUi.ui.elements;
+using SomeChartsUi.ui.layers.render;
 using SomeChartsUi.utils.collections;
 
 namespace SomeChartsUi.elements.other;
@@ -98,5 +99,10 @@ public class RectPackVisualization : RenderableBase {
 		//rectangles.Add((r, c));
 		isDirty = true;
 		return true;
+	}
+	
+	public override void Render(RenderLayerId pass) {
+		if (!isTransparent && pass == RenderLayerId.opaque) DrawMesh(material);
+		if (isTransparent && pass == RenderLayerId.transparent) DrawMesh(material);
 	}
 }

@@ -27,12 +27,12 @@ public abstract partial class RenderableBase {
 			c0.aF *= alphaMul;
 			
 			float2 offset = Rot90DegFastWithLen(p0 - p1, thickness);
-
+			
 			m.AddRect(
-				new(p1.x - offset.x, p1.y - offset.y), 
-				new(p1.x + offset.x, p1.y + offset.y),
+				new(p0.x - offset.x, p0.y - offset.y), 
 				new(p0.x + offset.x, p0.y + offset.y),
-				new(p0.x - offset.x, p0.y - offset.y),
+				new(p1.x + offset.x, p1.y + offset.y),
+				new(p1.x - offset.x, p1.y - offset.y),
 				c0);
 		}
 	}
@@ -54,18 +54,13 @@ public abstract partial class RenderableBase {
 		for (int i = 0; i < len; i++) {
 			float2 p0 = elementPoints[i];
 			color c0 = elementColors[i];
-
-			m.AddVertex(new(new(p0.x - size, p0.y - size), float3.front, float2.zero, c0));
-			m.AddVertex(new(new(p0.x - size, p0.y + size), float3.front, float2.zero, c0));
-			m.AddVertex(new(new(p0.x + size, p0.y + size), float3.front, float2.zero, c0));
-			m.AddVertex(new(new(p0.x + size, p0.y - size), float3.front, float2.zero, c0));
 			
-			m.AddIndex(curVIndex + 0);
-			m.AddIndex(curVIndex + 1);
-			m.AddIndex(curVIndex + 2);
-			m.AddIndex(curVIndex + 0);
-			m.AddIndex(curVIndex + 2);
-			m.AddIndex(curVIndex + 3);
+			m.AddRect(
+				new(p0.x - size, p0.y - size),
+				new(p0.x - size, p0.y + size),
+				new(p0.x + size, p0.y + size),
+				new(p0.x + size, p0.y - size),
+				c0);
 
 			curVIndex += 4;
 		}

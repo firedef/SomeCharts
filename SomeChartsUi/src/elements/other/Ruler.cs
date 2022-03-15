@@ -5,6 +5,7 @@ using SomeChartsUi.themes.colors;
 using SomeChartsUi.themes.themes;
 using SomeChartsUi.ui.canvas;
 using SomeChartsUi.ui.elements;
+using SomeChartsUi.ui.layers.render;
 using SomeChartsUi.ui.text;
 
 namespace SomeChartsUi.elements.other;
@@ -87,8 +88,8 @@ public class Ruler : RenderableBase {
 		}
 	}
 
-	protected override void AfterDraw() {
-		base.AfterDraw();
-		_textMesh.Draw();
+	public override void Render(RenderLayerId pass) {
+		if (pass == RenderLayerId.opaque) DrawMesh(material);
+		if (pass == RenderLayerId.ui) _textMesh.Draw();
 	}
 }

@@ -5,6 +5,7 @@ using SomeChartsUi.themes.colors;
 using SomeChartsUi.themes.themes;
 using SomeChartsUi.ui.canvas;
 using SomeChartsUi.ui.elements;
+using SomeChartsUi.ui.layers.render;
 using SomeChartsUi.ui.text;
 
 namespace SomeChartsUi.elements.charts.pie;
@@ -169,12 +170,12 @@ public class PieChart : RenderableBase, IDownsample {
 		mesh.OnModified();
 	}
 
-	protected override void AfterDraw() {
-		base.AfterDraw();
-		
-		if (IsVisible()) _textMesh.Draw();
+	public override void Render(RenderLayerId pass) {
+		if (!IsVisible()) return;
+		if (pass == RenderLayerId.opaque && IsVisible()) DrawMesh(material);
+		if (pass == RenderLayerId.ui && IsVisible()) _textMesh.Draw();
 	}
-
+	
 	private bool IsVisible() {
 		float approximateSize = outerScale;
 		if (drawLabels) approximateSize += (outerScale + 1) * labelLineLength;

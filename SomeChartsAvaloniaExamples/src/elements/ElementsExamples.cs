@@ -205,26 +205,30 @@ public static class ElementsExamples {
 			AvaloniaGlChartsCanvas canvas = AvaloniaRunUtils.AddGlCanvas();
 			const int rulerOffset = 1_000_000;
 
-			int c = 15_000;
+			int c = 10_000;
+			float sc = 20;
 			Random rnd = new();
 			float3[] values = new float3[c];
 
 			for (int i = 0; i < c; i++) {
 				float x = rnd.NextSingle() * 10000;
 				float y = rnd.NextSingle() * 10000;
-				float s = rnd.NextSingle() * 20 + 40;
+				float s = rnd.NextSingle() * sc;
 
 				values[i] = new(x, y, s);
 			}
 			
 			IChartData<float3> data = new ArrayChartData<float3>(values);
 			IChartData<indexedColor> colors = new ConstChartData<indexedColor>(theme.accent0_ind);
+			IChartData<ScatterShape> shapes = new FuncChartData<ScatterShape>(i => (ScatterShape)((int)(i + DateTime.Now.TimeOfDay.TotalMilliseconds * .001) % 3), 1);
 
 			ScatterChart scatter = new(canvas.canvas);
 			scatter.values = data;
 			scatter.colors = colors;
+			scatter.shapes = shapes;
 			scatter.isDynamic = true;
 			scatter.scale = 10_000;
+			//scatter.material = mat;
 			
 			canvas.AddElement(scatter);
 
@@ -241,9 +245,9 @@ public static class ElementsExamples {
 			// pie.isDynamic = true;
 			// canvas.AddElement(pie);
 
-			Material mat = new(GlShaders.bloom);
-			mat.SetProperty("brightness", 1);
-			canvas.canvas.renderer.postProcessor = canvas.canvas.factory.CreatePostProcessor(mat);
+			//Material mat = new(GlShaders.bloom);
+			//mat.SetProperty("brightness", 1);
+			//canvas.canvas.renderer.postProcessor = canvas.canvas.factory.CreatePostProcessor(mat);
 		});
 
 		AvaloniaRunUtils.RunAvalonia();

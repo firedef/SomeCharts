@@ -1,5 +1,6 @@
 using MathStuff.vectors;
 using SomeChartsUi.ui.canvas;
+using SomeChartsUi.ui.layers.render;
 using SomeChartsUi.utils.mesh;
 using SomeChartsUi.utils.shaders;
 using SomeChartsUi.ui.text;
@@ -27,6 +28,8 @@ public abstract partial class RenderableBase {
 	public int updateRareFrameSkip = 64;
 	protected int framesCount;
 
+	public bool isTransparent = false;
+
 	/// <summary>material of mesh <br/><br/>if null, renderer will use basic material</summary>
 	public Material? material;
 
@@ -46,19 +49,18 @@ public abstract partial class RenderableBase {
 		// pick random frame offset, so objects added in one frame will not re-generate at the same time
 		framesCount = rnd.Next(100);
 	}
-	
-	public void Render() {
+
+	public void PreRender() {
 		framesCount++;
 		beforeRender();
 		OnFrequentUpdate();
 		if (framesCount % (updateRareFrameSkip + 1) == 0) OnRareUpdate();
-		if (CheckMeshForUpdate()) {
-			GenerateMesh();
-			isDirty = false;
-		}
-		DrawMesh(material);
-		AfterDraw();
+		if (!CheckMeshForUpdate()) return;
+		GenerateMesh();
+		isDirty = false;
 	}
+
+	public abstract void Render(RenderLayerId pass);
 
 	protected virtual bool CheckMeshForUpdate() => isDirty || isDynamic && framesCount % (updateFrameSkip + 1) == 0;
 
@@ -66,7 +68,7 @@ public abstract partial class RenderableBase {
 	protected abstract void GenerateMesh();
 
 	/// <summary>called every frame after render <br/><br/>usable for rendering multiple meshes, like <see cref="TextMesh"/></summary>
-	protected virtual void AfterDraw() { }
+	public virtual void PostRender() { }
 
 	/// <summary>called every frame after beforeRender()</summary>
 	protected virtual void OnFrequentUpdate() {}

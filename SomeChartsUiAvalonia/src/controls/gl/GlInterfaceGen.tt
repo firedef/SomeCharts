@@ -28,6 +28,7 @@
         new {name = "CullFace", ret = "void", args = "int face"},
         new {name = "PolygonMode", ret = "void", args = "int face, int mode"},
         new {name = "BlendFunc", ret = "void", args = "int sFactor, int dFactor"},
+        new {name = "BlendEquation", ret = "void", args = "int mode"},
         new {name = "PixelStorei", ret = "void", args = "int name, int param"},
         new {name = "GenerateMipmap", ret = "void", args = "int target"},
         new {name = "Disable", ret = "void", args = "int cap"},

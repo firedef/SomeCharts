@@ -2,19 +2,12 @@ using MathStuff;
 using MathStuff.vectors;
 using SomeChartsUi.ui.canvas;
 using SomeChartsUi.ui.elements;
+using SomeChartsUi.ui.layers.render;
 using SomeChartsUi.utils.mesh;
 
 namespace SomeChartsUi.elements.other;
 
 public class TestRenderable : RenderableBase {
-	// protected override void Render() {
-	// 	rect r = new(-100, -100, 200, 200);
-	// 	float2[] points = {r.leftBottom, r.leftTop, r.rightTop, r.rightBottom};
-	// 	color[] colors = {color.red, color.softRed, color.blue, color.softBlue};
-	// 	ushort[] indexes = {0, 1, 2, 0, 2, 3};
-	// 	DrawVertices(points, null, colors, indexes);
-	// 	//Console.WriteLine("render");
-	// }
 	public TestRenderable(ChartsCanvas owner) : base(owner) { }
 	protected override void GenerateMesh() {
 		const float s = 100;
@@ -28,5 +21,10 @@ public class TestRenderable : RenderableBase {
 		ushort[] indexes = {0, 1, 2, 0, 2, 3};
 		mesh!.SetVertices(vertices);
 		mesh.SetIndexes(indexes);
+	}
+	
+	public override void Render(RenderLayerId pass) {
+		if (!isTransparent && pass == RenderLayerId.opaque) DrawMesh(material);
+		if (isTransparent && pass == RenderLayerId.transparent) DrawMesh(material);
 	}
 }

@@ -14,6 +14,8 @@ namespace SomeChartsUiAvalonia.controls.gl;
 
 /// <summary>based on <see cref="OpenGlControlBase"/></summary>
 public abstract class CustomGlControlBase : Control {
+#region fields
+
 	protected IOpenGlBitmapAttachment? attachment;
 	protected OpenGlBitmap? bitmap;
 	protected int depthBuffer;
@@ -28,81 +30,12 @@ public abstract class CustomGlControlBase : Control {
 	
 	private bool _glFailed;
 	private bool _isInitialized;
+	
+	protected abstract bool isRequirePostProcess { get; }
 
-	public override void Render(DrawingContext context) {
-		if (_glFailed) return;
+#endregion fields
 
-		if (!_isInitialized) {
-			if (!Init()) {
-				_glFailed = true;
-				GlInfo.CheckError("gl init");
-			}
-			using (glContext!.MakeCurrent()) {
-				OnOpenGlInit(glContext.GlInterface, frameBuffer);
-			}
-		}
-
-		using (glContext!.MakeCurrent()) {
-			glContext.GlInterface.BindFramebuffer(GL_FRAMEBUFFER, frameBuffer);
-			EnsureTextureAttachment();
-			EnsureDepthBufferAttachment(glContext.GlInterface);
-
-			OnOpenGlRender(glContext.GlInterface, frameBuffer);
-			//GlInfo.gl!.GetIntegerv(GL_DRAW_FRAMEBUFFER, out int a);
-
-			int w = (int)Bounds.Width;
-			int h = (int)Bounds.Height;
-			//GlInfo.gl.BindFramebuffer(GL_READ_FRAMEBUFFER, frameBuffer);
-			//GlInfo.gl.BindFramebuffer(GL_DRAW_FRAMEBUFFER, screenfFrameBuffer);
-			//GlInfo.gl.BlitFramebuffer(0, 0, w, h, 0, 0, w, h, GL_COLOR_BUFFER_BIT, GL_LINEAR);
-//
-			//GlInfo.gl.BindFramebuffer(GL_READ_FRAMEBUFFER, a);
-			//GlInfo.gl.BindFramebuffer(GL_DRAW_FRAMEBUFFER, frameBuffer);
-
-			//GlInfo.gl!.Finish();
-			//GlInfo.gl.GetIntegerv(GL_FRAMEBUFFER_BINDING, out int oldFbo);
-			//GlInfo.gl.GetIntegerv(GL_TEXTURE_BINDING_2D, out int oldTexture);
-			//GlInfo.gl.GetIntegerv(GL_ACTIVE_TEXTURE, out int oldActive);
-			//
-			//GlInfo.gl.BindFramebuffer(GL_FRAMEBUFFER, screenfFrameBuffer);
-			//GlInfo.gl.BindTexture(GL_TEXTURE_2D, screenTextureId);
-			//GlInfo.gl.ActiveTexture(GL_TEXTURE0);
-			//
-			//GlInfo.gl.CopyTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, 0, 0, w, h);
-//
-			//GlInfo.gl.BindFramebuffer(GL_FRAMEBUFFER, oldFbo);
-			//
-			//OnOpenGlPostRender(glContext.GlInterface, frameBuffer);
-			//GlInfo.gl.BindTexture(GL_TEXTURE_2D, oldTexture);
-			//GlInfo.gl.ActiveTexture(oldActive);
-                    
-			GlInfo.gl!.Finish();
-			GlInfo.gl!.GetIntegerv(GL_TEXTURE_BINDING_2D, out int tex);
-			
-			GlInfo.gl.BindFramebuffer(GL_READ_FRAMEBUFFER, frameBuffer);
-			GlInfo.gl.BindFramebuffer(GL_DRAW_FRAMEBUFFER, screenfFrameBuffer);
-			GlInfo.gl.BlitFramebuffer(0, 0, w, h, 0, 0, w, h, GL_COLOR_BUFFER_BIT, GL_LINEAR);
-			//GlInfo.gl.BindFramebuffer(GL_FRAMEBUFFER, frameBuffer);
-			//GlInfo.gl.CopyTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, 0, 0, w, h);
-
-			GlInfo.gl.ActiveTexture(GL_TEXTURE0);
-			GlInfo.gl!.BindTexture(GL_TEXTURE_2D, screenTextureId);
-			GlInfo.gl.BindFramebuffer(GL_DRAW_FRAMEBUFFER, frameBuffer);
-			
-			OnOpenGlPostRender(glContext.GlInterface, frameBuffer);
-			GlInfo.gl!.BindTexture(GL_TEXTURE_2D, tex);
-			
-			//GlInfo.gl.Flush();
-			//GlInfo.gl!.BindTexture(GL_TEXTURE_2D, oldTexture);
-			
-			attachment!.Present();
-		}
-
-		context.DrawImage(bitmap, new(bitmap!.Size), Bounds);
-		base.Render(context);
-		
-		Dispatcher.UIThread.Post(InvalidateVisual);
-	}
+#region init
 
 	private bool Init() {
 		_isInitialized = true;
@@ -162,6 +95,77 @@ public abstract class CustomGlControlBase : Control {
 		}
 	}
 
+	
+#endregion init
+	
+#region render
+
+	public override void Render(DrawingContext context) {
+		if (!CheckInit()) return;
+
+		using (glContext!.MakeCurrent()) {
+			glContext.GlInterface.BindFramebuffer(GL_FRAMEBUFFER, frameBuffer);
+			
+			EnsureTextureAttachment();
+			EnsureDepthBufferAttachment(glContext.GlInterface);
+			EnsureScreenTextureAttachment();
+
+			OnOpenGlRender(glContext.GlInterface, frameBuffer);
+
+			PostProcess();
+			
+			attachment!.Present();
+		}
+
+		context.DrawImage(bitmap, new(bitmap!.Size), Bounds);
+		base.Render(context);
+		
+		Dispatcher.UIThread.Post(InvalidateVisual);
+	}
+
+	private bool CheckInit() {
+		if (_glFailed) return false;
+		if (_isInitialized) return true;
+		if (!Init()) {
+			_glFailed = true;
+			GlInfo.CheckError("gl init");
+			return false;
+		}
+		using (glContext!.MakeCurrent()) {
+			OnOpenGlInit(glContext.GlInterface, frameBuffer);
+		}
+
+		return true;
+	}
+
+	private void PostProcess() {
+		if (!isRequirePostProcess || screenTextureId == 0) {
+			OnOpenGlPostRender(glContext!.GlInterface, frameBuffer);
+			return;
+		}
+		
+		int w = (int)Bounds.Width;
+		int h = (int)Bounds.Height;
+
+		GlInfo.gl!.Finish();
+		GlInfo.gl!.GetIntegerv(GL_TEXTURE_BINDING_2D, out int tex);
+
+		GlInfo.gl.BindFramebuffer(GL_READ_FRAMEBUFFER, frameBuffer);
+		GlInfo.gl.BindFramebuffer(GL_DRAW_FRAMEBUFFER, screenfFrameBuffer);
+		GlInfo.gl.BlitFramebuffer(0, 0, w, h, 0, 0, w, h, GL_COLOR_BUFFER_BIT, GL_LINEAR);
+
+		GlInfo.gl.ActiveTexture(GL_TEXTURE0);
+		GlInfo.gl!.BindTexture(GL_TEXTURE_2D, screenTextureId);
+		GlInfo.gl.BindFramebuffer(GL_DRAW_FRAMEBUFFER, frameBuffer);
+		
+		OnOpenGlPostRender(glContext!.GlInterface, frameBuffer);
+		GlInfo.gl!.BindTexture(GL_TEXTURE_2D, tex);
+	}
+
+#endregion render
+
+#region textures
+	
 	private void EnsureTextureAttachment() {
 		GlInfo.gl!.BindFramebuffer(GL_FRAMEBUFFER, frameBuffer);
 		if (bitmap != null && attachment != null && bitmap.PixelSize == GetPixelSize()) return;
@@ -170,18 +174,12 @@ public abstract class CustomGlControlBase : Control {
 		bitmap?.Dispose();
 		bitmap = new(GetPixelSize(), GetDpi());
 		attachment = bitmap.CreateFramebufferAttachment(glContext);
+	}
 
-		// sorry for that, _texture field, using for post processing is private, and derived class is internal
-		//FieldInfo? textureField = attachment.GetType().GetField("_texture", BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Instance);
-		//if (textureField == null) {
-		//	Console.WriteLine("cannot get field '_texture' from opengl bitmap attachment");
-		//	_glFailed = true;
-		//	return;
-		//}
-
+	private void EnsureScreenTextureAttachment() {
 		int[] arr = {screenTextureId};
-		if (screenTextureId != 0) GlInfo.gl.DeleteTextures(1, arr);
-		GlInfo.gl.GenTextures(1, arr);
+		if (screenTextureId != 0) GlInfo.gl!.DeleteTextures(1, arr);
+		GlInfo.gl!.GenTextures(1, arr);
 		screenTextureId = arr[0];
 
 		if (screenfFrameBuffer == 0) {
@@ -205,12 +203,8 @@ public abstract class CustomGlControlBase : Control {
 		GlInfo.gl.BindTexture(GL_TEXTURE_2D, oldTexture);
 		
 		GlInfo.gl.BindFramebuffer(GL_FRAMEBUFFER, oldFb);
-
-		//GlInfo.gl.FramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, screenTextureId, 0);
-
-		//screenTextureId = (int)textureField.GetValue(attachment)!;
 	}
-
+	
 	private void EnsureDepthBufferAttachment(GlInterface gl) {
 		PixelSize size = GetPixelSize();
 		if (size == depthBufferSize && depthBuffer != 0)
@@ -239,14 +233,20 @@ public abstract class CustomGlControlBase : Control {
 
 	private Vector GetDpi() => new(96, 96);
 
+
+#endregion textures
+
+#region cleanup
+	
 	private void DoCleanup() {
 		if (glContext == null) return;
 		using (glContext.MakeCurrent()) {
 			GlInterface? gl = glContext.GlInterface;
 			gl.BindTexture(GL_TEXTURE_2D, 0);
 			gl.BindFramebuffer(GL_FRAMEBUFFER, 0);
-			gl.DeleteFramebuffers(1, new[] {frameBuffer});
+			gl.DeleteFramebuffers(2, new[] {frameBuffer, screenfFrameBuffer});
 			gl.DeleteRenderbuffers(1, new[] {depthBuffer});
+			gl.DeleteTextures(1, new[] {screenTextureId});
 			attachment?.Dispose();
 			attachment = null;
 			bitmap?.Dispose();
@@ -263,6 +263,11 @@ public abstract class CustomGlControlBase : Control {
 			}
 		}
 	}
+	
+#endregion cleanup
+
+#region other
+	
 	protected virtual void OnOpenGlInit(GlInterface gl, int fb) { }
 	protected virtual void OnOpenGlDeinit(GlInterface gl, int fb) { }
 	protected virtual void OnOpenGlRender(GlInterface gl, int fb) { }
@@ -274,4 +279,6 @@ public abstract class CustomGlControlBase : Control {
 		DoCleanup();
 		base.OnDetachedFromVisualTree(e);
 	}
+
+#endregion other
 }

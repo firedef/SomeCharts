@@ -4,6 +4,7 @@ using SomeChartsUi.data;
 using SomeChartsUi.themes.colors;
 using SomeChartsUi.ui.canvas;
 using SomeChartsUi.ui.elements;
+using SomeChartsUi.ui.layers.render;
 
 namespace SomeChartsUi.elements.charts.line;
 
@@ -15,7 +16,7 @@ public class LineChart : RenderableBase, IDownsample {
 	public bool drawPoints = true;
 	public bool drawLines = true;
 	
-	public ChartProperty<float> lineThickness = new ChartPropertyFunc<float>(r => 1 / r.canvas.transform.scale.animatedValue.x);
+	public ChartProperty<float> lineThickness = new ChartPropertyFunc<float>(r => 2 / r.canvas.transform.scale.animatedValue.x);
 	public ChartProperty<float> pointThickness = new ChartPropertyFunc<float>(r => 2 / r.canvas.transform.scale.animatedValue.x);
 	
 	public IChartData<indexedColor> colors;
@@ -58,5 +59,9 @@ public class LineChart : RenderableBase, IDownsample {
 		if (drawLines) AddConnectedLines(mesh!, linePoints, lineColors, lineThickness.Get(this), count - 1, lineAlphaMul);
 
 		mesh.OnModified();
+	}
+
+	public override void Render(RenderLayerId pass) {
+		if (pass == RenderLayerId.transparent) DrawMesh(material);
 	}
 }

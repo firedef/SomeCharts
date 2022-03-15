@@ -5,6 +5,7 @@ using SomeChartsUi.themes.colors;
 using SomeChartsUi.themes.themes;
 using SomeChartsUi.ui.canvas;
 using SomeChartsUi.ui.elements;
+using SomeChartsUi.ui.layers.render;
 using SomeChartsUi.utils.mesh;
 
 namespace SomeChartsUi.elements.charts.scatter; 
@@ -90,8 +91,8 @@ public class ScatterChart : RenderableBase {
 		noTextureMesh.OnModified();
 	}
 
-	protected override void AfterDraw() {
-		base.AfterDraw();
-		DrawMesh(null, noTextureMesh);
+	public override void Render(RenderLayerId pass) {
+		if (pass == RenderLayerId.transparent) DrawMesh(material);
+		if (pass == RenderLayerId.ui) DrawMesh(null, noTextureMesh);
 	}
 }

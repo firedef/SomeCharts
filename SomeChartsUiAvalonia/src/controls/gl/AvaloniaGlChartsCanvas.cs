@@ -11,6 +11,7 @@ using SomeChartsUi.ui;
 using SomeChartsUi.ui.canvas;
 using SomeChartsUi.ui.elements;
 using SomeChartsUi.ui.layers;
+using SomeChartsUi.ui.layers.render;
 using SomeChartsUiAvalonia.backends;
 using SomeChartsUiAvalonia.utils;
 using static Avalonia.OpenGL.GlConsts;
@@ -61,8 +62,9 @@ public class AvaloniaGlChartsCanvas : CustomGlControlBase {
 	public void AddElement(RenderableBase el, string layer = "normal") => (canvas.GetLayer(layer) ?? canvas.GetLayer(1)).AddElement(el);
 	/// <summary>remove element from layer</summary>
 	public void RemoveElement(RenderableBase el, string layer = "normal") => (canvas.GetLayer(layer) ?? canvas.GetLayer(1)).RemoveElement(el);
-
-
+	
+	protected override bool isRequirePostProcess => ChartsRenderSettings.postProcessing && !ChartsRenderSettings.useDefaultMat && canvas.renderer.postProcessor is {material: { }};
+	
 	protected override void OnOpenGlInit(GlInterface glInterface, int framebuffer) {
 	}
 
@@ -79,6 +81,7 @@ public class AvaloniaGlChartsCanvas : CustomGlControlBase {
 		gl.Enable(GL_MULTISAMPLE);
 		gl.Enable(GL_BLEND);
 		GlInfo.glExt!.BlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+		// GlInfo.glExt!.BlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
 		switch (ChartsRenderSettings.polygonMode) {
 			case PolygonMode.fill:
@@ -102,8 +105,11 @@ public class AvaloniaGlChartsCanvas : CustomGlControlBase {
 
 		GlInfo.CheckError("before render");
 		Stopwatch sw = Stopwatch.StartNew();
-		foreach (CanvasLayer layer in canvas.renderer!.layers)
-			layer.Render();
+		
+		foreach (CanvasLayer layer in canvas.renderer!.layers) layer.PreRender();
+		RenderPass(RenderLayerId.opaque);
+		RenderPass(RenderLayerId.transparent);
+		
 		GlInfo.CheckError("end");
 
 		canvas.renderTime = sw.Elapsed;
@@ -111,13 +117,21 @@ public class AvaloniaGlChartsCanvas : CustomGlControlBase {
 
 	protected override void OnOpenGlPostRender(GlInterface gl, int fb) {
 		GlInfo.glExt!.Disable(GL_DEPTH_TEST);
-		//GlInfo.glExt!.Disable(GL_CULL_FACE);
-		canvas.renderer.postProcessor?.Draw();
+		
+		RenderPass(RenderLayerId.postFx);
+		if (isRequirePostProcess) canvas.renderer.postProcessor?.Draw();
+		RenderPass(RenderLayerId.afterPostFx);
+		RenderPass(RenderLayerId.ui);
+		foreach (CanvasLayer layer in canvas.renderer!.layers) layer.PostRender();
+		
 		Dispatcher.UIThread.Post(InvalidateVisual);
+	}
+
+	private void RenderPass(RenderLayerId pass) {
+		foreach (CanvasLayer layer in canvas.renderer!.layers) layer.Render(pass);
 	}
 	
 	
-
 
 	protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e) {
 		stopRender = true;
