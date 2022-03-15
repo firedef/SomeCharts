@@ -38,13 +38,8 @@ public static class PieChartExample {
 		// {2} - element id
 		// to truncate output of percent you can add ':0.00'
 		IChartManagedData<string> names = new FuncChartManagedData<string>(i => $"#{i}: {{1:0.00}}%", 1);
-		
-		PieChart pie = new(canvas.canvas) {
-			values = values, 
-			colors = colors, 
-			names = names, 
-			isDynamic = true
-		};
-		canvas.AddElement(pie);
+
+		PieChart chart = canvas.AddPieChart(values, colors, names);
+		chart.isDynamic = true;
 	}
 }

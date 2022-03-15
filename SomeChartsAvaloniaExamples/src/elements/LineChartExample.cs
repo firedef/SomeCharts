@@ -2,10 +2,8 @@ using System;
 using SomeChartsUi.data;
 using SomeChartsUi.elements;
 using SomeChartsUi.elements.charts.line;
-using SomeChartsUi.elements.other;
 using SomeChartsUi.themes.colors;
 using SomeChartsUi.themes.themes;
-using SomeChartsUi.utils.shaders;
 using SomeChartsUiAvalonia.controls.opengl;
 using SomeChartsUiAvalonia.impl.opengl.shaders;
 
@@ -26,27 +24,11 @@ public static class LineChartExample {
 		const int rulerOffset = 1_000_000; // ruler (grid) length
 		
 		// add horizontal ruler (grid)
-		canvas.AddElement(new Ruler(canvas.canvas) {
-			orientation = Orientation.horizontal,
-			length = rulerOffset,
-			names = new FuncChartManagedData<string>(GetHorizontalRulerLabels, 1),
-			
-			// with stick range, labels will stay at camera
-			stickRange = new(0, 0, 0, rulerOffset),
-			
-			// update label mesh every frame
-			isDynamic = true,
-		});
+		canvas.AddRuler(Orientation.horizontal, rulerOffset);
 			
 		// add vertical ruler (grid)
-		canvas.AddElement(new Ruler(canvas.canvas) {
-			orientation = Orientation.vertical,
-			length = rulerOffset,
-			names = new FuncChartManagedData<string>(GetVerticalRulerLabels, 1),
-			stickRange = new(0, 0, rulerOffset, 0),
-			isDynamic = true,
-		});
-		
+		canvas.AddRuler(Orientation.vertical, rulerOffset);
+
 		// add multiple line charts
 		int lineChartCount = 3;
 		indexedColor[] lineColors = {theme.good_ind, theme.normal_ind, theme.bad_ind};
@@ -73,23 +55,22 @@ public static class LineChartExample {
 		// can be function/collection, like data source
 		// indexed color used to handle different colors on different themes
 		IChartData<indexedColor> colors = new ConstChartData<indexedColor>(color);
-		
-		LineChart chart = new(data, colors, canvas.canvas) {
-			// set dynamic to true, so chart will update automatically
-			isDynamic = true,
-			
-			// line opacity
-			// from 0 (invincible) to 1 (opaque)
-			// if you don`t want to render lines, disable them by 'drawLines = false'
-			lineAlphaMul = 0.2f,
-			
-			// you can change 'updateFrameSkip' to specify update frequency
-			// bigger value - less frequent updates but better performance
-			// value '10' means it will re-generate mesh every 10 frames (6 times per second at 60 fps)
-			// minimum is 0
-			updateFrameSkip = 10,
-		};
-		canvas.AddElement(chart);
+
+		LineChart chart = canvas.AddLineChart(data, colors);
+
+		// set dynamic to true, so chart will update automatically
+		chart.isDynamic = true;
+
+		// line opacity
+		// from 0 (invincible) to 1 (opaque)
+		// if you don`t want to render lines, disable them by 'drawLines = false'
+		chart.lineAlphaMul = 0.2f;
+
+		// you can change 'updateFrameSkip' to specify update frequency
+		// bigger value - less frequent updates but better performance
+		// value '10' means it will re-generate mesh every 10 frames (6 times per second at 60 fps)
+		// minimum is 0
+		chart.updateFrameSkip = 10;
 	}
 
 	// LineChart data source

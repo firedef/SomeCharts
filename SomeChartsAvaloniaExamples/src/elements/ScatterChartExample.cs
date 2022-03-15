@@ -30,8 +30,14 @@ public static class ScatterChartExample {
 		// generate random data
 		(float3[] points, indexedColor[] colors, ScatterShape[] shapes) = GenerateRandomPoints();
 		
+		// values using float3
+		// x,y - point position
+		// z - point size
 		IChartData<float3> pointsSrc = new ArrayChartData<float3>(points);
+		
 		IChartData<indexedColor> colorsSrc = new ArrayChartData<indexedColor>(colors);
+		
+		// you can skip shapes, because it's using default value (circles)
 		IChartData<ScatterShape> shapesSrc = new ArrayChartData<ScatterShape>(shapes);
 
 		// load shapes shader, so it will render triangles and circles
@@ -39,24 +45,12 @@ public static class ScatterChartExample {
 		// disable depth test for transparency (required by shape shader)
 		Material mat = new(GlShaders.shapes);
 		mat.depthTest = false;
+
+		ScatterChart chart = canvas.AddScatterChart(pointsSrc, colorsSrc, shapesSrc);
 		
-		ScatterChart pie = new(canvas.canvas) {
-			// values using float3
-			// x,y - point position
-			// z - point size
-			values = pointsSrc, 
-			colors = colorsSrc, 
-			
-			// you can skip shapes, because it's using default value (circles)
-			shapes = shapesSrc, 
-			isDynamic = true,
-			
-			// set scale, so bound will render properly
-			// you can disable setting drawBounds to false
-			scale = _bounds,
-			material = mat,
-		};
-		canvas.AddElement(pie);
+		// set scale, so bound will render properly
+		// you can disable setting drawBounds to false
+		chart.scale = _bounds;
 	}
 
 	private static (float3[] points, indexedColor[] colors, ScatterShape[] shapes) GenerateRandomPoints() {

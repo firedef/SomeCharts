@@ -6,6 +6,13 @@ using Avalonia.Input;
 using Avalonia.OpenGL;
 using Avalonia.Threading;
 using MathStuff.vectors;
+using SomeChartsUi.data;
+using SomeChartsUi.elements;
+using SomeChartsUi.elements.charts.line;
+using SomeChartsUi.elements.charts.pie;
+using SomeChartsUi.elements.charts.scatter;
+using SomeChartsUi.elements.other;
+using SomeChartsUi.themes.colors;
 using SomeChartsUi.themes.themes;
 using SomeChartsUi.ui;
 using SomeChartsUi.ui.canvas;
@@ -23,6 +30,8 @@ using static Avalonia.OpenGL.GlConsts;
 namespace SomeChartsUiAvalonia.controls.opengl;
 
 public class AvaloniaGlChartsCanvas : CustomGlControlBase {
+#region fields
+
 	public readonly ChartsCanvas canvas = CreateCanvas();
 
 	/// <summary>name of current canvas</summary>
@@ -34,7 +43,15 @@ public class AvaloniaGlChartsCanvas : CustomGlControlBase {
 	/// <summary>pause redraw loop</summary>
 	public bool stopRender;
 
-	private Timer _updateTimer;
+	private static Timer _updateTimer;
+
+#endregion fields
+
+#region init
+
+	static AvaloniaGlChartsCanvas() {
+		Dispatcher.UIThread.Post(() => _updateTimer = new(UpdateTimerJob, null, 0, 1000 / 50));
+	}
 
 	public AvaloniaGlChartsCanvas() {
 		canvas.controller = new AvaloniaGlCanvasUiController(canvas, this);
@@ -42,18 +59,17 @@ public class AvaloniaGlChartsCanvas : CustomGlControlBase {
 
 		GlInfo.version = new();
 		
-		Dispatcher.UIThread.Post(() => _updateTimer = new(_ => {
-			try {
-				if (Dispatcher.UIThread.CheckAccess())
-					Dispatcher.UIThread?.RunJobs(DispatcherPriority.Input + 2);
-			}
-			catch (Exception e) {// ignored
-			}
-		}, null, 0, 1000 / 50));
-
 		UpdateUberPostProcessor();
 	}
 
+	private static void UpdateTimerJob(object? _) {
+		try {
+			if (Dispatcher.UIThread.CheckAccess())
+				Dispatcher.UIThread.RunJobs(DispatcherPriority.Input + 2);
+		}
+		catch (Exception e) {// ignored
+		}
+	}
 
 	private static ChartsCanvas CreateCanvas() {
 		ChartsCanvas canvas = new(new GlChartsBackend(), new GlChartFactory());
@@ -65,10 +81,82 @@ public class AvaloniaGlChartsCanvas : CustomGlControlBase {
 		return canvas;
 	}
 
+#endregion init
+
+#region elements
+	
 	/// <summary>add element to layer</summary>
 	public void AddElement(RenderableBase el, string layer = "normal") => (canvas.GetLayer(layer) ?? canvas.GetLayer(1)).AddElement(el);
 	/// <summary>remove element from layer</summary>
 	public void RemoveElement(RenderableBase el, string layer = "normal") => (canvas.GetLayer(layer) ?? canvas.GetLayer(1)).RemoveElement(el);
+
+	public Ruler AddRuler(Orientation orientation, int length, IChartManagedData<string>? names = null) {
+		bool isVertical = (orientation & Orientation.vertical) != 0;
+		names ??= new FuncChartManagedData<string>(isVertical ? i => (i * 100).ToString() : i => i.ToString(), 1);
+		
+		Ruler ch = new(canvas);
+		AddElement(ch);
+		ch.orientation = orientation;
+		ch.names = names;
+		ch.isDynamic = true;
+		ch.length = length;
+		ch.stickRange = isVertical ? new(0, 0, length, 0) : new(0, 0, 0, length);
+		
+		return ch;
+	}
+	
+	public Ruler AddRulerWithoutLabels(Orientation orientation, int length) {
+		bool isVertical = (orientation & Orientation.vertical) != 0;
+		
+		Ruler ch = new(canvas);
+		AddElement(ch);
+		ch.orientation = orientation;
+		ch.drawLabels = false;
+		ch.isDynamic = true;
+		ch.length = length;
+		ch.stickRange = isVertical ? new(0, 0, length, 0) : new(0, 0, 0, length);
+		
+		return ch;
+	}
+	
+	public LineChart AddLineChart(IChartData<float> values, IChartData<indexedColor>? colors = null) {
+		colors ??= new ConstChartData<indexedColor>(theme.default4_ind);
+		LineChart ch = new(values, colors, canvas);
+		AddElement(ch);
+		ch.isDynamic = true;
+		return ch;
+	}
+	
+	public PieChart AddPieChart(IChartData<float> values, IChartData<indexedColor> colors, IChartManagedData<string>? names = null) {
+		names ??= new FuncChartManagedData<string>(i => $"#{i}: {{1:0.00}}%", 1);
+		PieChart ch = new(canvas);
+		ch.values = values;
+		ch.colors = colors;
+		ch.names = names;
+		ch.isDynamic = true;
+		AddElement(ch);
+		return ch;
+	}
+	
+	public ScatterChart AddScatterChart(IChartData<float3> values, IChartData<indexedColor>? colors = null, IChartData<ScatterShape>? shapes = null) {
+		colors ??= new ConstChartData<indexedColor>(theme.default4_ind);
+		shapes ??= new ConstChartData<ScatterShape>(ScatterShape.circle);
+		
+		ScatterChart ch = new(canvas);
+		ch.values = values;
+		ch.colors = colors;
+		ch.shapes = shapes;
+		ch.isDynamic = true;
+
+		Material mat = new(GlShaders.shapes);
+		mat.depthTest = false;
+		ch.material = mat;
+		AddElement(ch);
+		return ch;
+	}
+
+#endregion elements
+	
 	
 	protected override bool isRequirePostProcess => ChartsRenderSettings.postProcessing && !ChartsRenderSettings.useDefaultMat && canvas.renderer.postProcessor is {material: { }};
 	
