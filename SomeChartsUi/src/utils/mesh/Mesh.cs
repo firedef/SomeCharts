@@ -63,12 +63,20 @@ public class Mesh : IDisposable {
 	public void AddVertex(Vertex v) => vertices.Add(v);
 	public void AddIndex(int v) => indexes.Add((ushort) v);
 	
-	/// <summary>add quadrilateral to mesh (vertices and indices) <br/><br/>use front normal and 0-1 uv coordinates</summary>
+	/// <summary>add quadrilateral to mesh (vertices and indices) <br/><br/>using front normal and 0-1 uv coordinates</summary>
 	public void AddRect(float3 p0, float3 p1, float3 p2, float3 p3, color c0) => AddRect(
 		new(p0, float3.front, new(0,0), c0),
 		new(p1, float3.front, new(0,1), c0),
 		new(p2, float3.front, new(1,1), c0),
 		new(p3, float3.front, new(1,0), c0)
+	);
+	
+	/// <summary>add quadrilateral to mesh (vertices and indices) <br/><br/>using front normal</summary>
+	public void AddRect(float3 p0, float3 p1, float3 p2, float3 p3, color c0, rect uvs) => AddRect(
+		new(p0, float3.front, uvs.leftBottom, c0),
+		new(p1, float3.front, uvs.leftTop, c0),
+		new(p2, float3.front, uvs.rightTop, c0),
+		new(p3, float3.front, uvs.rightBottom, c0)
 	);
 
 	/// <summary>add quadrilateral to mesh (vertices and indices)</summary>

@@ -75,7 +75,6 @@ public class AvaloniaGlChartsCanvas : CustomGlControlBase {
 	}
 	
 	protected override void OnOpenGlRender(GlInterface gl, int framebuffer) {
-		
 		gl.Enable(GL_DEPTH_TEST);
 		gl.Enable(GL_MULTISAMPLE);
 		gl.Enable(GL_BLEND);

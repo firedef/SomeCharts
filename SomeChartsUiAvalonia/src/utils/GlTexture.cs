@@ -52,14 +52,14 @@ public class GlTexture : Texture, IDisposable {
 		using ILockedFramebuffer lockedFramebuffer = bitmap!.Lock();
 		IntPtr ptr = lockedFramebuffer.Address;
 
-		(int type, int format) = lockedFramebuffer.Format switch {
-			PixelFormat.Rgb565 => (GlConsts.GL_UNSIGNED_SHORT_5_6_5, GlConsts.GL_RGB),
-			PixelFormat.Rgba8888 => (GlConsts.GL_UNSIGNED_INT_8_8_8_8, GlConsts.GL_RGBA),
-			PixelFormat.Bgra8888 => (GlConsts.GL_UNSIGNED_INT_8_8_8_8, GlConsts.GL_BGRA),
+		(int type, int format, int internalFormat) = lockedFramebuffer.Format switch {
+			PixelFormat.Rgb565 => (GlConsts.GL_UNSIGNED_SHORT_5_6_5, GlConsts.GL_RGB, GlConsts.GL_RGB),
+			PixelFormat.Rgba8888 => (GlConsts.GL_UNSIGNED_INT_8_8_8_8, GlConsts.GL_RGBA, GlConsts.GL_RGBA),
+			PixelFormat.Bgra8888 => (GlConsts.GL_UNSIGNED_INT_8_8_8_8, GlConsts.GL_BGRA, GlConsts.GL_RGBA),
 			_ => throw new ArgumentOutOfRangeException()
 		};
 
-		GlInfo.gl.TexImage2D(GlConsts.GL_TEXTURE_2D, 0, GlConsts.GL_RGB, (int)bitmap.Size.Width, (int)bitmap.Size.Height, 0, format, type, ptr);
+		GlInfo.gl.TexImage2D(GlConsts.GL_TEXTURE_2D, 0, internalFormat, (int) size.x, (int) size.y, 0, format, type, ptr);
 	}
 
 	public void Bind() {

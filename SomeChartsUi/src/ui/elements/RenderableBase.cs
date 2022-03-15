@@ -22,6 +22,9 @@ public abstract partial class RenderableBase {
 
 	/// <summary>frame skip on dynamic update</summary>
 	public int updateFrameSkip = 8;
+	
+	/// <summary>frame skip on dynamic update</summary>
+	public int updateRareFrameSkip = 64;
 	protected int framesCount;
 
 	/// <summary>material of mesh <br/><br/>if null, renderer will use basic material</summary>
@@ -47,6 +50,8 @@ public abstract partial class RenderableBase {
 	public void Render() {
 		framesCount++;
 		beforeRender();
+		OnFrequentUpdate();
+		if (framesCount % (updateRareFrameSkip + 1) == 0) OnRareUpdate();
 		if (CheckMeshForUpdate()) {
 			GenerateMesh();
 			isDirty = false;
@@ -62,6 +67,12 @@ public abstract partial class RenderableBase {
 
 	/// <summary>called every frame after render <br/><br/>usable for rendering multiple meshes, like <see cref="TextMesh"/></summary>
 	protected virtual void AfterDraw() { }
+
+	/// <summary>called every frame after beforeRender()</summary>
+	protected virtual void OnFrequentUpdate() {}
+	
+	/// <summary>called after OnFrequentUpdate and before GenerateMesh dynamically, using updateRareFrameSkip</summary>
+	protected virtual void OnRareUpdate() {}
 
 	protected virtual void Destroy() {
 		mesh?.Dispose();
