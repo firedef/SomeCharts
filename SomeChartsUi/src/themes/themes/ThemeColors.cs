@@ -3,7 +3,6 @@ using MathStuff;
 namespace SomeChartsUi.themes.themes;
 
 public partial record theme {
-
 	public const ushort default0_ind = 0;
 	public const ushort default1_ind = 1;
 	public const ushort default2_ind = 2;
