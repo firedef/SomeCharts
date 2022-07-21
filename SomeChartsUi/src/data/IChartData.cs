@@ -1,4 +1,5 @@
 using MathStuff;
+using MathStuff.vectors;
 using SomeChartsUi.themes.colors;
 
 namespace SomeChartsUi.data;
@@ -107,6 +108,12 @@ public class ConstChartData<T> : ConstChartManagedData<T>, IChartData<T> where T
 public static class ChartDataExtensions {
 	public static T[] GetValues<T>(this IChartManagedData<T> v, int start, int count, int downsample) {
 		T[] arr = new T[count];
+		v.GetValues(start, count, downsample, arr);
+		return arr;
+	}
+	
+	public static T[] GetValues<T>(this IChart2DManagedData<T> v, int2 start, int2 count, int downsample) {
+		T[] arr = new T[count.x * count.y];
 		v.GetValues(start, count, downsample, arr);
 		return arr;
 	}
