@@ -28,7 +28,7 @@ public class LineChart : RenderableBase, IDownsample {
 	}
 
 	public LineChart(IChartData<float> values, indexedColor color, ChartsCanvas c) : this(values, new ConstChartData<indexedColor>(color), c) { }
-	public float downsampleMultiplier { get; set; } = .5f;
+	public float downsampleMultiplier { get; set; } = .25f;
 	public float elementScale { get; set; } = 100;
 
 	protected override unsafe void GenerateMesh() {

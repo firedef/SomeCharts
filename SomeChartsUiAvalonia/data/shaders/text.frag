@@ -6,6 +6,7 @@ in vec3 fragNormal;
 in vec2 fragUv;
 in vec4 fragCol;
 in vec2 texCoord;
+in vec2 subPixelSize;
 
 // uniforms
 uniform float u_gamma = 0.3;
@@ -32,17 +33,25 @@ float sample(vec2 coord, float gammaAdd) {
 	return alpha;
 }
 
+vec4 sampleSubpixel(vec2 coord, float gammaAdd, float offset) {
+	float r = sample(coord - vec2(offset, 0), gammaAdd);
+	float g = sample(coord, gammaAdd);
+	float b = sample(coord + vec2(offset, 0), gammaAdd);
+	float a = (r + g + b) * .333333;
+	return vec4(r,g,b,a);
+}
+
 void main() {
 	const float rA = .4;
 	const float bA = .4;
-	float shift_ = fract(gl_FragCoord.x);
+	float shift_ = fract(subPixelSize.x);
 
 	float fragGamma = (fragCol.x + fragCol.y + fragCol.z) * .02;
 	float s = -dFdx(texCoord.x) / 3.0;
 
 	if (textQuality == 1) { 
-		vec4 col0 = vec4(sample(texCoord, fragGamma));
-		vec4 col1 = vec4(sample(texCoord + vec2(-s,0), fragGamma));
+		vec4 col0 = sampleSubpixel(texCoord, fragGamma, s);
+		vec4 col1 = sampleSubpixel(texCoord + vec2(s,0), fragGamma, s);
 		vec4 curCol = col0;
 
 		if (shift_ <= 1/3.0) {

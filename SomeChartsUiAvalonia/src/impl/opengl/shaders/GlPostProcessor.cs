@@ -22,7 +22,7 @@ public class GlPostProcessor : PostProcessor {
 		
 		GlMesh glMesh = (GlMesh) mesh;
 		UpdateVertices();
-		glMesh.Render(material, mvp, float3.zero);
+		glMesh.Render(material, mvp, float3.zero, owner.transform.screenBounds.widthHeight);
 		//owner.renderer.backend.DrawMesh(glMesh, material, new(0));
 	}
 }

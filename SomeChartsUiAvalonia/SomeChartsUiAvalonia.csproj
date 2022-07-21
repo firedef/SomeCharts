@@ -14,63 +14,9 @@
     </PropertyGroup>
     <ItemGroup>
         <None Remove=".gitignore" />
-        <None Update="data\shaders\basic.frag">
-          <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-        </None>
-        <None Update="data\shaders\basic.vert">
-          <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-        </None>
-        <None Update="data\shaders\basicTextured.frag">
-          <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-        </None>
-        <None Update="data\shaders\basicTextured.vert">
-          <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-        </None>
-        <None Update="data\shaders\bloom.frag">
-          <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-        </None>
-        <None Update="data\shaders\bloom.vert">
-          <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-        </None>
-        <None Update="data\shaders\diffuse.frag">
-          <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-        </None>
-        <None Update="data\shaders\diffuse.vert">
-          <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-        </None>
-        <None Update="data\shaders\fxaa.frag">
-          <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-        </None>
-        <None Update="data\shaders\fxaa.vert">
-          <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-        </None>
-        <None Update="data\shaders\text.frag">
-          <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-        </None>
-        <None Update="data\shaders\text.vert">
-          <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-        </None>
-        <None Update="data\shaders\shapes.frag">
-          <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-        </None>
-        <None Update="data\shaders\shapes.vert">
-          <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-        </None>
-        <None Update="data\shaders\smooth.frag">
-          <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-        </None>
-        <None Update="data\shaders\smooth.vert">
-          <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-        </None>
         <None Update="src\impl\opengl\GlInterfaceGen.tt">
           <Generator>TextTemplatingFileGenerator</Generator>
           <LastGenOutput>GlInterfaceGen.cs</LastGenOutput>
-        </None>
-        <None Update="data\shaders\uberPostFx.frag">
-          <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-        </None>
-        <None Update="data\shaders\uberPostFx.vert">
-          <CopyToOutputDirectory>Always</CopyToOutputDirectory>
         </None>
     </ItemGroup>
     <ItemGroup>
@@ -94,5 +40,79 @@
         <DesignTime>True</DesignTime>
         <DependentUpon>GlInterfaceGen.tt</DependentUpon>
       </Compile>
+    </ItemGroup>
+    <ItemGroup>
+      <None Remove="data\shaders\basic.frag" />
+      <Content Include="data\shaders\basic.frag">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </Content>
+      <None Remove="data\shaders\basic.vert" />
+      <Content Include="data\shaders\basic.vert">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </Content>
+      <None Remove="data\shaders\basicTextured.frag" />
+      <Content Include="data\shaders\basicTextured.frag">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </Content>
+      <None Remove="data\shaders\basicTextured.vert" />
+      <Content Include="data\shaders\basicTextured.vert">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </Content>
+      <None Remove="data\shaders\bloom.frag" />
+      <Content Include="data\shaders\bloom.frag">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </Content>
+      <None Remove="data\shaders\bloom.vert" />
+      <Content Include="data\shaders\bloom.vert">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </Content>
+      <None Remove="data\shaders\diffuse.frag" />
+      <Content Include="data\shaders\diffuse.frag">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </Content>
+      <None Remove="data\shaders\diffuse.vert" />
+      <Content Include="data\shaders\diffuse.vert">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </Content>
+      <None Remove="data\shaders\fxaa.frag" />
+      <Content Include="data\shaders\fxaa.frag">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </Content>
+      <None Remove="data\shaders\fxaa.vert" />
+      <Content Include="data\shaders\fxaa.vert">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </Content>
+      <None Remove="data\shaders\shapes.frag" />
+      <Content Include="data\shaders\shapes.frag">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </Content>
+      <None Remove="data\shaders\shapes.vert" />
+      <Content Include="data\shaders\shapes.vert">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </Content>
+      <None Remove="data\shaders\smooth.frag" />
+      <Content Include="data\shaders\smooth.frag">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </Content>
+      <None Remove="data\shaders\smooth.vert" />
+      <Content Include="data\shaders\smooth.vert">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </Content>
+      <None Remove="data\shaders\text.frag" />
+      <Content Include="data\shaders\text.frag">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </Content>
+      <None Remove="data\shaders\text.vert" />
+      <Content Include="data\shaders\text.vert">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </Content>
+      <None Remove="data\shaders\uberPostFx.frag" />
+      <Content Include="data\shaders\uberPostFx.frag">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </Content>
+      <None Remove="data\shaders\uberPostFx.vert" />
+      <Content Include="data\shaders\uberPostFx.vert">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </Content>
     </ItemGroup>
 </Project>

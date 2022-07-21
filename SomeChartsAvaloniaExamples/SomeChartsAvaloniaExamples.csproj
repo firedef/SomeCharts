@@ -54,6 +54,15 @@
         <!--Condition below is needed to remove Avalonia.Diagnostics package from build output in Release configuration.-->
         <PackageReference Condition="'$(Configuration)' == 'Debug'" Include="Avalonia.Diagnostics" Version="0.10.12" />
         <PackageReference Include="MathStuff" Version="1.0.0" />
+        <PackageReference Include="runtime.any.System.Collections" Version="4.3.0" />
+        <PackageReference Include="System.Collections" Version="4.3.0" />
+        <PackageReference Include="System.Diagnostics.Debug" Version="4.3.0" />
+        <PackageReference Include="System.IO" Version="4.3.0" />
+        <PackageReference Include="System.Resources.ResourceManager" Version="4.3.0" />
+        <PackageReference Include="System.Runtime.Extensions" Version="4.3.1" />
+        <PackageReference Include="System.Runtime.Handles" Version="4.3.0" />
+        <PackageReference Include="System.Runtime.InteropServices" Version="4.3.0" />
+        <PackageReference Include="System.Threading" Version="4.3.0" />
     </ItemGroup>
     <ItemGroup>
         <ProjectReference Include="..\SomeChartsUiAvalonia\SomeChartsUiAvalonia.csproj" />

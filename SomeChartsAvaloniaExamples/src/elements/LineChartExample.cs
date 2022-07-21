@@ -48,7 +48,7 @@ public static class LineChartExample {
 		// amount of points in current line
 		// this value will not affect line length, because it`s using culling (generate mesh and render only visible parts)
 		// you can also use collections by 'ArrayChartData<T>()' and 'CollectionChartData<T>()'
-		const int lineLength = 8192;
+		const int lineLength = 81920;
 		IChartData<float> data = new FuncChartData<float>(j => LineChartFunc(j, i * 10), lineLength);
 		
 		// colors of line

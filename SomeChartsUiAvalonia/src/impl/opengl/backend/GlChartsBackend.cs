@@ -41,6 +41,6 @@ public class GlChartsBackend : ChartsBackendBase {
 
 		Matrix4x4 mvp = transform.modelMatrix * owner.transform.viewMatrix * owner.transform.projectionMatrix;
 		
-		obj.Render(material, mvp, camPos);
+		obj.Render(material, mvp, camPos, owner.transform.screenBounds.widthHeight);
 	}
 }

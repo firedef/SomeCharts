@@ -103,7 +103,9 @@ public class AvaloniaGlChartsCanvas : CustomGlControlBase {
 		ch.stickRange = isVertical ? new(0, 0, length, 0) : new(0, 0, 0, length);
 		
 		return ch;
-	}
+	}	
+
+	public Ruler AddRuler(Orientation orientation, int length, Func<int, string> names) => AddRuler(orientation, length, new FuncChartManagedData<string>(names, 1));
 	
 	public Ruler AddRulerWithoutLabels(Orientation orientation, int length) {
 		bool isVertical = (orientation & Orientation.vertical) != 0;

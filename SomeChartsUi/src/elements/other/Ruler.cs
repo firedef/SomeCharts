@@ -40,14 +40,15 @@ public class Ruler : RenderableBase {
 	public bool useStyledText = false;
 
 	private readonly TextMesh _textMesh;
-	private Font _font;
+	private Font? _font;
 	
 	public Ruler(ChartsCanvas owner) : base(owner) {
 		_textMesh = owner.factory.CreateTextMesh(this);
 		uint resolution = 32;
-		_font = Font.LoadFromPath("data/FiraCode-VariableFont_wght.ttf", renderer.owner, resolution);
-		Font fallbackFont = Font.LoadFromPath("data/NotoSansJP-Regular.otf", renderer.owner, resolution);
-		_font.fallbacks.Add(fallbackFont);
+		
+		_font = canvas.GetDefaultFont();
+		//Font fallbackFont = Font.LoadFromPath("data/NotoSansJP-Regular.otf", renderer.owner, resolution);
+		//_font.fallbacks.Add(fallbackFont);
 
 		updateFrameSkip = 1;
 	}
@@ -79,7 +80,7 @@ public class Ruler : RenderableBase {
 				//DrawText(txt, positions, font, labelColor.GetColor(), screenSpaceLabels ? fontSize * scaleVal : fontSize, skipLabels..);
 				_textMesh.ClearMeshes();
 				for (int i = 0; i < txt.Length; i++) {
-					_textMesh.GenerateMesh(txt[i], _font, screenSpaceLabels ? fontSize * scaleVal : fontSize, labelColor.GetColor(), new(positions[i]));
+					_textMesh.GenerateMesh(txt[i], _font ?? canvas.GetDefaultFont(), screenSpaceLabels ? fontSize * scaleVal : fontSize, labelColor.GetColor(), new(positions[i]));
 				}
 				
 			}

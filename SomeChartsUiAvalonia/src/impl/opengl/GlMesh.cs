@@ -98,10 +98,10 @@ public class GlMesh : Mesh {
 	
 #region rendering
 
-	public void Render(Material? material, Matrix4x4 mvp, float3 cameraPos) {
+	public void Render(Material? material, Matrix4x4 mvp, float3 cameraPos, float2 screenSize) {
 		if (material is {shader: not GlShader}) return;
 		if (!PrepareBuffers()) return;
-		PrepareShader(material, mvp, cameraPos);
+		PrepareShader(material, mvp, cameraPos, screenSize);
 
 		GlInfo.CheckError("after uniforms");
 		GlInfo.gl!.DrawElements(GL_TRIANGLES, indexes.count, GL_UNSIGNED_SHORT, IntPtr.Zero);
@@ -121,7 +121,7 @@ public class GlMesh : Mesh {
 		return true;
 	}
 
-	private static void PrepareShader(Material? material, Matrix4x4 mvp, float3 cameraPos) {
+	private static void PrepareShader(Material? material, Matrix4x4 mvp, float3 cameraPos, float2 screenSize) {
 		GlShader shader = material == null || ChartsRenderSettings.useDefaultMat ? GlShaders.basic : (GlShader)material.shader;
 		if (shader.shaderProgram == 0) shader.TryCompile();
 		if (shader.shaderProgram == 0) return;
@@ -132,6 +132,7 @@ public class GlMesh : Mesh {
 		shader.TrySetUniform("mvp", mvp);
 		shader.TrySetUniform("cameraPos", cameraPos);
 		shader.TrySetUniform("time", (float)DateTime.Now.TimeOfDay.TotalMilliseconds);
+		shader.TrySetUniform("screenSize", screenSize);
 		if (material == null) return;
 		
 		shader.TryApplyMaterial(material);
