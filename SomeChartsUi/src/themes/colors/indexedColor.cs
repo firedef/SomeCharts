@@ -36,7 +36,7 @@ public readonly struct indexedColor {
 		           (theme.globalTheme[colorIndex].raw & ~mask));
 	}
 
-	public color GetColor(palette p) {
+	public color GetColor(palette? p) {
 		uint mask = 0;
 		if ((colorMask & 0b1) != 0) mask = 0xFF;
 		if ((colorMask & 0b10) != 0) mask |= 0xFF00;
@@ -48,7 +48,7 @@ public readonly struct indexedColor {
 		return new(
 			(customColor.raw & mask) |
 			(theme.globalTheme[colorIndex].raw & ~mask & ~mask2) |
-			(p[colorIndex].raw & mask2)
+			(p == null ? 0 : p[colorIndex].raw & mask2)
 		);
 	}
 
@@ -58,4 +58,6 @@ public readonly struct indexedColor {
 	public static implicit operator indexedColor(ushort v) => new(v);
 	public static implicit operator indexedColor(color v) => new(v);
 	public static implicit operator indexedColor(string v) => new(v);
+
+	public static color Lerp(indexedColor a, indexedColor b, float t, palette? p = null) => color.Lerp(a.GetColor(p), b.GetColor(p), t);
 }
