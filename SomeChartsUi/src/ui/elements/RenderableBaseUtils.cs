@@ -50,6 +50,11 @@ public abstract partial class RenderableBase {
 	protected (float start, int count) GetStartCountIndexes((float start, float end) positions, float size) =>
 		(MathF.Ceiling(positions.start / size) * size,
 		(int)Math.Floor((positions.end - positions.start) / size) + 1);
+	
+	/// <summary>get start index and count with 2D frustum culling</summary>
+	protected (float2 start, int2 count) GetStartCountIndexes((float2 start, float2 end) positions, float2 size) =>
+		(new float2(MathF.Ceiling(positions.start.x / size.x), MathF.Ceiling(positions.start.y / size.y)) * size,
+			new((int)Math.Floor((positions.end.x - positions.start.x) / size.x) + 1, (int)Math.Floor((positions.end.y - positions.start.y) / size.y) + 1));
 
 	/// <summary>clamp start and end positions to screen bounds</summary>
 	protected (float start, float end) GetStartEndPos(float2 startLim, float2 endLim, Orientation orientation) {
@@ -71,6 +76,21 @@ public abstract partial class RenderableBase {
 			? (math.max(startLim, canvas.transform.worldBounds.right - tr.position.x), math.min(endLim, canvas.transform.worldBounds.left - tr.position.x))
 			: (math.max(startLim, canvas.transform.worldBounds.left - tr.position.x), math.min(endLim, canvas.transform.worldBounds.right - tr.position.x));
 	}
+	
+	/// <summary>clamp start and end positions to screen bounds</summary>
+	protected (float2 start, float2 end) GetStartEndPos(float2 startLim, float2 endLim) {
+		Transform tr = transform;
+
+		float2 start = new();
+		float2 end = new();
+
+		start.x = math.max(startLim.x, canvas.transform.worldBounds.left - tr.position.x);
+		start.y = math.max(startLim.y, canvas.transform.worldBounds.bottom - tr.position.y);
+
+		end.x = math.min(endLim.x, canvas.transform.worldBounds.right - tr.position.x);
+		end.y = math.min(endLim.y, canvas.transform.worldBounds.top - tr.position.y);
+		return (start, end);
+	}
 
 	/// <summary>get preferred downsample for element</summary>
 	protected int GetDownsampleX(float downsampleMul, int sub = 2) => (int)math.max(math.log2(downsampleMul / canvas.transform.scale.animatedValue.x), sub) - sub;
@@ -80,6 +100,9 @@ public abstract partial class RenderableBase {
 	protected int GetDownsample(Orientation orientation, float downsampleMul, int sub = 2) => (orientation & Orientation.vertical) != 0
 		? GetDownsampleY(downsampleMul, sub)
 		: GetDownsampleX(downsampleMul, sub);
+
+	/// <summary>get preferred downsample for element</summary>
+	protected int2 GetDownsample(float downsampleMul, int sub = 2) => new(GetDownsampleX(downsampleMul, sub), GetDownsampleY(downsampleMul, sub));
 
 	/// <summary>(0,1) for vertical and (1,0) for horizontal</summary>
 	protected static float2 GetOrientationVector(Orientation orientation) => (orientation & Orientation.vertical) != 0 ? new(0, 1) : new(1, 0);// vertical : horizontal

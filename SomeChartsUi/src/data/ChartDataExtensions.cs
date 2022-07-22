@@ -39,4 +39,12 @@ public static class ChartDataExtensions {
         for (int i = 0; i < count; i++)
             dest[i] = temp[i].GetColor();
     }
+    
+    public static unsafe void GetColors(this IChart2DData<indexedColor> v, int2 start, int2 count, int downsample, color* dest) {
+        indexedColor* temp = stackalloc indexedColor[count.x * count.y];
+        v.GetValues(start, count, downsample, temp);
+
+        for (int i = 0; i < count; i++)
+            dest[i] = temp[i].GetColor();
+    }
 }

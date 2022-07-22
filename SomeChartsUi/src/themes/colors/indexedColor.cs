@@ -59,5 +59,7 @@ public readonly struct indexedColor {
 	public static implicit operator indexedColor(color v) => new(v);
 	public static implicit operator indexedColor(string v) => new(v);
 
+	public indexedColor WithAlpha(float a) => new(customColor.WithAlpha((byte)(a * 255)), colorIndex, (byte)(colorMask | _alphaMask));
+
 	public static color Lerp(indexedColor a, indexedColor b, float t, palette? p = null) => color.Lerp(a.GetColor(p), b.GetColor(p), t);
 }

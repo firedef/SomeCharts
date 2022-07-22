@@ -71,7 +71,7 @@ public class Gradient {
     public color this[float t] => Eval(t);
     public color this[float t, palette? p] => Eval(t, p);
 
-    public static Gradient FromColor(indexedColor col, float startAlpha = 0f, float endAlpha = 1f) => new((startAlpha, col), (endAlpha, col));
+    public static Gradient FromColor(indexedColor col, float startAlpha = 0f, float endAlpha = 1f) => new((0, col.WithAlpha(startAlpha)), (1, col.WithAlpha(endAlpha)));
 }
 
 public readonly record struct GradientPoint(float time, indexedColor col) {

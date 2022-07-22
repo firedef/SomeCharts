@@ -8,6 +8,7 @@ using Avalonia.Threading;
 using MathStuff.vectors;
 using SomeChartsUi.data;
 using SomeChartsUi.elements;
+using SomeChartsUi.elements.charts.heatmap;
 using SomeChartsUi.elements.charts.line;
 using SomeChartsUi.elements.charts.pie;
 using SomeChartsUi.elements.charts.scatter;
@@ -154,6 +155,23 @@ public class AvaloniaGlChartsCanvas : CustomGlControlBase {
 		mat.depthTest = false;
 		ch.material = mat;
 		AddElement(ch);
+		return ch;
+	}
+	
+	public HeatmapChart AddHeatmapChart(IChart2DData<float> values, Gradient gradient, int meshesPerAxis = 2) {
+		HeatmapChart ch = new(canvas, meshesPerAxis);
+		ch.values = values;
+		ch.gradient = gradient;
+		AddElement(ch);
+		ch.isDynamic = true;
+		return ch;
+	}
+	
+	public HeatmapChart AddHeatmapChart(IChart2DData<indexedColor> colors, int meshesPerAxis = 2) {
+		HeatmapChart ch = new(canvas, meshesPerAxis);
+		ch.colors = colors;
+		AddElement(ch);
+		ch.isDynamic = true;
 		return ch;
 	}
 

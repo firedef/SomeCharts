@@ -1,4 +1,5 @@
 using System;
+using MathStuff.vectors;
 using SomeChartsUi.data;
 using SomeChartsUi.elements;
 using SomeChartsUi.elements.charts.line;
@@ -29,17 +30,24 @@ public static class LineChartExample {
 		// add vertical ruler (grid)
 		canvas.AddRuler(Orientation.vertical, rulerOffset);
 
-		// add multiple line charts
-		int lineChartCount = 3;
-		indexedColor[] lineColors = {theme.good_ind, theme.normal_ind, theme.bad_ind};
-		for (int i = 0; i < lineChartCount; i++)
-			AddLineChart(i, lineColors[i % lineColors.Length], canvas);
+		// // add multiple line charts
+		// int lineChartCount = 3;
+		// indexedColor[] lineColors = {theme.good_ind, theme.normal_ind, theme.bad_ind};
+		// for (int i = 0; i < lineChartCount; i++)
+		// 	AddLineChart(i, lineColors[i % lineColors.Length], canvas);
+
+		const int length = 65536;
+		IChart2DData<float> data = new FuncChart2DData<float>(p => Circle(p, 0.005f) * Circle(p, 0.004f) * Circle(p, 0.003f) * Circle(p, 0.002f), length);
+		canvas.AddHeatmapChart(data, theme.globalTheme.grayscaleGradient);
 		
+
 		// add post processing über shader
 		UberShaderSettings.current.bloom = true;
 		UberShaderSettings.current.bloom_brightness = 4;
 		canvas.UpdateUberPostProcessor();
 	}
+
+	private static float Circle(int2 p, float s) => MathF.Sin(p.x * s) * MathF.Sin(p.y * s);
 
 	private static string GetHorizontalRulerLabels(int i) => i.ToString();
 	private static string GetVerticalRulerLabels(int i) => (i * 100).ToString();
