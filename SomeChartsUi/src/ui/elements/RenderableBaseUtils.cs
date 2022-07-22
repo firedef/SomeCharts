@@ -64,31 +64,31 @@ public abstract partial class RenderableBase {
 
 	/// <summary>clamp start and end positions to screen bounds</summary>
 	protected (float start, float end) GetStartEndPos(float startLim, float endLim, Orientation orientation) {
-		float2 s = 1 / canvasScale;
+		float2 s = 100 / canvas.transform.scale.currentValue;
 		Transform tr = transform;
-		//Console.WriteLine(startLim + " " + endLim + " " + math.min(endLim, canvas.transform.worldBounds.right*10 - tr.position.x));
-		//return (math.max(startLim, canvas.transform.worldBounds.left - tr.position.x), math.min(endLim, canvas.transform.worldBounds.right - tr.position.x));
+		
 		if ((orientation & Orientation.vertical) != 0)
 			return (orientation & Orientation.reversed) != 0
-				? (math.max(startLim, canvas.transform.worldBounds.top - tr.position.y), math.min(endLim, canvas.transform.worldBounds.bottom - tr.position.y))
-				: (math.max(startLim, canvas.transform.worldBounds.bottom - tr.position.y), math.min(endLim, canvas.transform.worldBounds.top - tr.position.y));
+				? (math.max(startLim, canvas.transform.worldBounds.top - tr.position.y + s.y), math.min(endLim, canvas.transform.worldBounds.bottom - tr.position.y - s.y))
+				: (math.max(startLim, canvas.transform.worldBounds.bottom - tr.position.y - s.y), math.min(endLim, canvas.transform.worldBounds.top - tr.position.y + s.y));
 		return (orientation & Orientation.reversed) != 0
-			? (math.max(startLim, canvas.transform.worldBounds.right - tr.position.x), math.min(endLim, canvas.transform.worldBounds.left - tr.position.x))
-			: (math.max(startLim, canvas.transform.worldBounds.left - tr.position.x), math.min(endLim, canvas.transform.worldBounds.right - tr.position.x));
+			? (math.max(startLim, canvas.transform.worldBounds.right - tr.position.x + s.x), math.min(endLim, canvas.transform.worldBounds.left - tr.position.x - s.x))
+			: (math.max(startLim, canvas.transform.worldBounds.left - tr.position.x - s.x), math.min(endLim, canvas.transform.worldBounds.right - tr.position.x + s.x));
 	}
 	
 	/// <summary>clamp start and end positions to screen bounds</summary>
 	protected (float2 start, float2 end) GetStartEndPos(float2 startLim, float2 endLim) {
+		float2 s = 100 / canvas.transform.scale.currentValue;
 		Transform tr = transform;
 
 		float2 start = new();
 		float2 end = new();
 
-		start.x = math.max(startLim.x, canvas.transform.worldBounds.left - tr.position.x);
-		start.y = math.max(startLim.y, canvas.transform.worldBounds.bottom - tr.position.y);
+		start.x = math.max(startLim.x, canvas.transform.worldBounds.left - tr.position.x - s.x);
+		start.y = math.max(startLim.y, canvas.transform.worldBounds.bottom - tr.position.y - s.y);
 
-		end.x = math.min(endLim.x, canvas.transform.worldBounds.right - tr.position.x);
-		end.y = math.min(endLim.y, canvas.transform.worldBounds.top - tr.position.y);
+		end.x = math.min(endLim.x, canvas.transform.worldBounds.right - tr.position.x + s.x);
+		end.y = math.min(endLim.y, canvas.transform.worldBounds.top - tr.position.y + s.y);
 		return (start, end);
 	}
 
