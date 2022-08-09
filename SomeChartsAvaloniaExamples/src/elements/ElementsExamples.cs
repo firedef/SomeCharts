@@ -1,9 +1,11 @@
 using System;
+using System.Collections.Generic;
 using System.IO;
 using MathStuff;
 using MathStuff.vectors;
 using SomeChartsUi.data;
 using SomeChartsUi.elements;
+using SomeChartsUi.elements.charts.graph;
 using SomeChartsUi.elements.charts.line;
 using SomeChartsUi.elements.charts.pie;
 using SomeChartsUi.elements.charts.scatter;
@@ -59,6 +61,46 @@ public static class ElementsExamples {
 
 		AvaloniaRunUtils.RunAvalonia();
 	}
+	
+	public static void RunGraph() {
+		AvaloniaRunUtils.RunAfterStart(() => {
+			AvaloniaGlChartsCanvas canvas = AvaloniaRunUtils.AddGlCanvas();
+
+			GraphChart chart = new(canvas.canvas);
+			canvas.AddElement(chart);
+
+			int c = 800;
+			Random rnd = new();
+
+			float2[] positions = new float2[c];
+			indexedColor[] colors = new indexedColor[c];
+			int[][] connections = new int[c][];
+
+			for (int i = 0; i < c; i++) {
+				positions[i] = new(rnd.NextSingle() * 50_000, rnd.NextSingle() * 50_000);
+				colors[i] = rnd.NextSingle() > .8 ? theme.bad_ind : theme.normal_ind;
+			}
+			
+			for (int i = 0; i < c; i++) {
+				List<int> curConnections = new();
+				
+				for (int j = i; j < c; j++) {
+					float dist = (positions[i] - positions[j]).length;
+					if (dist < 2000) curConnections.Add(j);
+				}
+
+				connections[i] = curConnections.ToArray();
+			}
+
+			chart.nodePosition = new ArrayChartData<float2>(positions);
+			chart.connections = new ArrayChartManagedData<int[]>(connections);
+			chart.nodeColor = new ArrayChartData<indexedColor>(colors);
+			chart.isDynamic = true;
+		});
+
+		AvaloniaRunUtils.RunAvalonia();
+	}
+	
 	public static void RunRectPack() {
 		AvaloniaRunUtils.RunAfterStart(() => {
 			AvaloniaGlChartsCanvas canvas = AvaloniaRunUtils.AddGlCanvas();
@@ -188,6 +230,36 @@ public static class ElementsExamples {
 					lineAlphaMul = 0.2f
 				};
 				canvas.AddElement(chart);
+			}
+
+			Material mat = new(GlShaders.bloom);
+			mat.SetProperty("brightness", 4);
+			canvas.canvas.renderer.postProcessor = canvas.canvas.factory.CreatePostProcessor(mat);
+		});
+
+		AvaloniaRunUtils.RunAvalonia();
+	}
+	
+	public static void RunLotsOfLines() {
+		AvaloniaRunUtils.RunAfterStart(() => {
+			AvaloniaGlChartsCanvas canvas = AvaloniaRunUtils.AddGlCanvas();
+			const int rulerOffset = 1_000_000;
+
+			const int c = 10_000;
+
+			for (int i = 0; i < c; i++) {
+				int i1 = i;
+				IChartData<float> data = new FuncChartData<float>(j => MathF.Sin((j + i1 * 100) * .1f) * 1000, 20480);
+				IChartData<indexedColor> colors = new ConstChartData<indexedColor>(theme.normal_ind);
+
+				LineChart chart = new(data, colors, canvas.canvas) {
+					isDynamic = true, 
+					lineThickness = new ChartPropertyFunc<float>(r => 1 / r.canvas.transform.scale.animatedValue.x), 
+					lineAlphaMul = 0.2f,
+					downsampleMultiplier = 5f,
+				};
+				canvas.AddElement(chart);
+				chart.updateRareFrameSkip = 80;
 			}
 
 			Material mat = new(GlShaders.bloom);

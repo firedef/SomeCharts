@@ -6,6 +6,7 @@ using SomeChartsUi.data;
 using SomeChartsUi.elements;
 using SomeChartsUi.ui.canvas;
 using SomeChartsUi.utils.mesh;
+using SomeChartsUi.utils.mesh.construction;
 using SomeChartsUi.utils.shaders;
 
 namespace SomeChartsUi.ui.elements;
@@ -29,23 +30,6 @@ public abstract partial class RenderableBase {
 	// protected void DrawText(string txt, float2 pos, color col, FontData font, float scale = 12) =>
 	// 	renderer.backend.DrawText(txt, col, font, transform + new RenderableTransform(pos, scale, float3.zero));
 
-	/// <summary>rotate vector by 90 degrees and set length</summary>
-	protected static float2 Rot90DegFastWithLen(float2 p, float len) {
-		len *= FastInverseSquareRoot(p.x * p.x + p.y * p.y);
-		return new(-p.y * len, p.x * len);
-	}
-
-	/// <summary>1 / sqrt(num)</summary>
-	protected static unsafe float FastInverseSquareRoot(float num) {
-		float x2 = num * .5f;
-		float y = num;
-		long i = *(long*)&y;
-		i = 0x5f3759df - (i >> 1);
-		y = *(float*)&i;
-		y *= 1.5f - x2 * y * y;
-		return y;
-	}
-
 	/// <summary>get start index and count with 2D frustum culling</summary>
 	protected (float start, int count) GetStartCountIndexes((float start, float end) positions, float size) =>
 		(MathF.Ceiling(positions.start / size) * size,
@@ -58,7 +42,7 @@ public abstract partial class RenderableBase {
 
 	/// <summary>clamp start and end positions to screen bounds</summary>
 	protected (float start, float end) GetStartEndPos(float2 startLim, float2 endLim, Orientation orientation) {
-		float2 vec = GetOrientationVector(orientation);
+		float2 vec = MeshUtils.GetOrientationVector(orientation);
 		return GetStartEndPos((startLim * vec).sum, (endLim * vec).sum, orientation);
 	}
 
@@ -104,15 +88,6 @@ public abstract partial class RenderableBase {
 	/// <summary>get preferred downsample for element</summary>
 	protected int2 GetDownsample(float downsampleMul, int sub = 2) => new(GetDownsampleX(downsampleMul, sub), GetDownsampleY(downsampleMul, sub));
 
-	/// <summary>(0,1) for vertical and (1,0) for horizontal</summary>
-	protected static float2 GetOrientationVector(Orientation orientation) => (orientation & Orientation.vertical) != 0 ? new(0, 1) : new(1, 0);// vertical : horizontal
-
-	protected static T[] Rent<T>(int size) => ArrayPool<T>.Shared.Rent(size);
-	protected static unsafe T* RentMem<T>(int size) where T : unmanaged => (T*)NativeMemory.Alloc((nuint)((long)size * sizeof(T)));
-
-	protected static void Free<T>(T[] arr) => ArrayPool<T>.Shared.Return(arr);
-	protected static unsafe void FreeMem<T>(T* arr) where T : unmanaged => NativeMemory.Free(arr);
-	
 	protected bool IsVisible(float2 a, float2 s) => canvas.transform.worldBounds.Contains(a.x, a.y, s.x, s.y);
 	protected bool IsVisibleWithTransform(float2 a, float2 s) => canvas.transform.worldBounds.Contains(a.x + transform.position.x, a.y + transform.position.y, s.x * transform.scale.x, s.y * transform.scale.y);
 

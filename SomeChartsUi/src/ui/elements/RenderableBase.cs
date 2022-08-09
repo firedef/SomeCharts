@@ -4,13 +4,12 @@ using SomeChartsUi.ui.layers.render;
 using SomeChartsUi.utils.mesh;
 using SomeChartsUi.utils.shaders;
 using SomeChartsUi.ui.text;
+using SomeChartsUi.utils.mesh.construction;
 
 namespace SomeChartsUi.ui.elements;
 
 /// <summary>base class of all canvas elements</summary>
 public abstract partial class RenderableBase {
-	protected static Random rnd = new();
-	
 	/// <summary>action will happen every frame and before draw<br/><br/>
 	/// <see cref="updateFrameSkip"/> will not affect on this</summary>
 	public Action beforeRender = () => { };
@@ -47,7 +46,7 @@ public abstract partial class RenderableBase {
 		mesh = canvas.factory.CreateMesh();
 		
 		// pick random frame offset, so objects added in one frame will not re-generate at the same time
-		framesCount = rnd.Next(100);
+		framesCount = MeshUtils.rnd.Next(100);
 	}
 
 	public void PreRender() {

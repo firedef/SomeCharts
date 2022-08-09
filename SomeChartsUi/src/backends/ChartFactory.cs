@@ -13,7 +13,7 @@ namespace SomeChartsUi.backends;
 public abstract class ChartFactory {
 	public ChartsCanvas owner = null!;
 
-	public virtual Mesh CreateMesh() => new();
+	public virtual Mesh CreateMesh() => throw new NotSupportedException();
 	public virtual Shader CreateShader(string name, string vertex, string fragment) => new(name, vertex, fragment);
 	public virtual CanvasLayer CreateLayer(string name) => new(owner, name);
 

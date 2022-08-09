@@ -20,21 +20,21 @@ public class MeshTests {
 
 		ushort[] indexes = {0, 1, 2, 0, 2, 3};
 
-		using Mesh m = new(verts, indexes);
-		m.vertices.ResetChanges();
-		m.indexes.ResetChanges();
-
-		List<Range> ch = m.vertices.GetChanges();
-		Assert.IsEmpty(ch);
-
-		verts[0].position.x = 0;
-		m.SetVertices(verts);
-		ch = m.vertices.GetChanges();
-		Assert.IsEmpty(ch);
-
-		verts[0].position.x = 5;
-		m.SetVertices(verts);
-		ch = m.vertices.GetChanges();
-		Assert.AreEqual(ch.Count, 1);
+		// using Mesh m = new(verts, indexes);
+		// m.vertices.ResetChanges();
+		// m.indexes.ResetChanges();
+		//
+		// List<Range> ch = m.vertices.GetChanges();
+		// Assert.IsEmpty(ch);
+		//
+		// verts[0].position.x = 0;
+		// m.SetVertices(verts);
+		// ch = m.vertices.GetChanges();
+		// Assert.IsEmpty(ch);
+		//
+		// verts[0].position.x = 5;
+		// m.SetVertices(verts);
+		// ch = m.vertices.GetChanges();
+		// Assert.AreEqual(ch.Count, 1);
 	}
 }

@@ -7,7 +7,7 @@ namespace SomeChartsUi.utils.mesh;
 
 /// <summary>mesh of object <br/><br/>
 /// contains all information about geometry, using in rendering</summary>
-public class Mesh : IDisposable {
+public abstract class Mesh : MeshBase {
 #region fields
 
 	/// <summary>mesh indices for VBO</summary>
@@ -16,15 +16,7 @@ public class Mesh : IDisposable {
 	/// <summary>mesh VBO</summary>
 	public readonly HashedList<Vertex> vertices;
 
-	/// <summary>AABB using for culling <br/><br/>
-	/// update using <see cref="RecalculateBounds"/><br/><br/>
-	/// does not take into account object transform (rotation, translation and scale)</summary>
-	public rect bounds;
-
-	/// <summary>set to false, to disable object rendering</summary>
-	public bool enabled = true;
-
-#endregion fields
+	#endregion fields
 
 #region ctors
 
@@ -60,11 +52,11 @@ public class Mesh : IDisposable {
 	public unsafe void SetIndexes(ushort* v, int s) => indexes.CopyFrom(v, s);
 	public unsafe void SetIndexes(ushort[] v) { fixed(ushort* vPtr = v) SetIndexes(vPtr, v.Length); }
 
-	public void AddVertex(Vertex v) => vertices.Add(v);
-	public void AddIndex(int v) => indexes.Add((ushort) v);
+	public override void AddVertex(Vertex v) => vertices.Add(v);
+	public override void AddIndex(int v) => indexes.Add((ushort) v);
 	
 	/// <summary>add quadrilateral to mesh (vertices and indices) <br/><br/>using front normal and 0-1 uv coordinates</summary>
-	public void AddRect(float3 p0, float3 p1, float3 p2, float3 p3, color c0) => AddRect(
+	public override void AddRect(float3 p0, float3 p1, float3 p2, float3 p3, color c0) => AddRect(
 		new(p0, float3.front, new(0,0), c0),
 		new(p1, float3.front, new(0,1), c0),
 		new(p2, float3.front, new(1,1), c0),
@@ -72,7 +64,7 @@ public class Mesh : IDisposable {
 	);
 	
 	/// <summary>add quadrilateral to mesh (vertices and indices) <br/><br/>using front normal</summary>
-	public void AddRect(float3 p0, float3 p1, float3 p2, float3 p3, color c0, rect uvs) => AddRect(
+	public override void AddRect(float3 p0, float3 p1, float3 p2, float3 p3, color c0, rect uvs) => AddRect(
 		new(p0, float3.front, uvs.leftBottom, c0),
 		new(p1, float3.front, uvs.leftTop, c0),
 		new(p2, float3.front, uvs.rightTop, c0),
@@ -80,7 +72,7 @@ public class Mesh : IDisposable {
 	);
 
 	/// <summary>add quadrilateral to mesh (vertices and indices)</summary>
-	public void AddRect(Vertex p0, Vertex p1, Vertex p2, Vertex p3) {
+	public override void AddRect(Vertex p0, Vertex p1, Vertex p2, Vertex p3) {
 		vertices.EnsureCapacity(4);
 		AddVertex(p0);
 		AddVertex(p1);
@@ -89,7 +81,7 @@ public class Mesh : IDisposable {
 		AddQuadIndices();
 	}
 
-	public void AddQuadIndices() {
+	public override void AddQuadIndices() {
 		indexes.EnsureCapacity(6);
 		int vCount = vertices.count - 4;
 		AddIndex(vCount + 0);
@@ -105,7 +97,7 @@ public class Mesh : IDisposable {
 #region calculations
 
 	/// <summary>recalculate normals of mesh</summary>
-	public unsafe void RecalculateNormals() {
+	public override unsafe void RecalculateNormals() {
 		int c = indexes.count;
 
 		for (int i = 0; i < c; i += 3) {
@@ -124,7 +116,7 @@ public class Mesh : IDisposable {
 	}
 
 	/// <summary>recalculate AABB of mesh <br/><br/>does not take into account object transform (rotation, translation and scale)</summary>
-	public void RecalculateBounds() {
+	public override void RecalculateBounds() {
 		int c = vertices.count;
 		float2 min =  float2.maxValue;
 		float2 max = -float2.maxValue;
@@ -144,17 +136,17 @@ public class Mesh : IDisposable {
 
 #region cleanup
 	
-	public virtual void Dispose() {
+	public override void Dispose() {
 		Dispose(true);
 		GC.SuppressFinalize(this);
 	}
 	
-	public void Clear() {
+	public override void Clear() {
 		vertices.Clear();
 		indexes.Clear();
 	}
 
-	private void Dispose(bool disposing) {
+	protected override void Dispose(bool disposing) {
 		if (!disposing) return;
 		vertices.Dispose();
 		indexes.Dispose();
@@ -162,15 +154,15 @@ public class Mesh : IDisposable {
 	~Mesh() => Dispose(false);
 
 #endregion cleanup
-	
+
 #region other
 	
-	public bool IsVisible(rect camera) => enabled && Geometry.Intersects(bounds, camera, float2.zero);
-	public bool IsVisible(rect camera, Transform objTransform) => enabled && Geometry.Intersects(new(bounds.left, bounds.bottom, bounds.width * objTransform.scale.x, bounds.height * objTransform.scale.y), camera, objTransform.position);
+	public override bool IsVisible(rect camera) => enabled && Geometry.Intersects(bounds, camera, float2.zero);
+	public override bool IsVisible(rect camera, Transform objTransform) => enabled && Geometry.Intersects(new(bounds.left, bounds.bottom, bounds.width * objTransform.scale.x, bounds.height * objTransform.scale.y), camera, objTransform.position);
 
 	/// <summary>mark mesh as modified <br/><br/>
 	/// it will recalculate bounds and (if GlMesh) update it on gpu</summary>
-	public virtual void OnModified() => RecalculateBounds();
+	public override void OnModified() => RecalculateBounds();
 
 #endregion other
 

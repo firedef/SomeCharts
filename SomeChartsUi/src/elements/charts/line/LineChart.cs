@@ -5,6 +5,8 @@ using SomeChartsUi.themes.colors;
 using SomeChartsUi.ui.canvas;
 using SomeChartsUi.ui.elements;
 using SomeChartsUi.ui.layers.render;
+using SomeChartsUi.utils.mesh.construction;
+using SomeChartsUi.utils.mesh.construction.line;
 
 namespace SomeChartsUi.elements.charts.line;
 
@@ -21,6 +23,8 @@ public class LineChart : RenderableBase, IDownsample {
 	
 	public IChartData<indexedColor> colors;
 	public IChartData<float> values;
+	
+	public LineConstructor? lineConstructor = null;
 
 	public LineChart(IChartData<float> values, IChartData<indexedColor> colors, ChartsCanvas c) : base(c) {
 		this.values = values;
@@ -41,7 +45,7 @@ public class LineChart : RenderableBase, IDownsample {
 		(float start, int count) = GetStartCountIndexes(culledPositions, elementScale * (1 << downsample));
 		int startIndex = (int)(start / elementScale);
 		if (count <= 1) return;
-		float2 vec = GetOrientationVector(orientation);
+		float2 vec = MeshUtils.GetOrientationVector(orientation);
 		
 		// get line points
 		float2* linePoints = stackalloc float2[count];
@@ -55,8 +59,16 @@ public class LineChart : RenderableBase, IDownsample {
 		color* lineColors = stackalloc color[count];
 		colors.GetColors(startIndex, count, downsample, lineColors);
 
-		if (drawPoints) AddPoints(mesh, linePoints, lineColors, pointThickness.Get(this), count);
-		if (drawLines) AddConnectedLines(mesh!, linePoints, lineColors, lineThickness.Get(this), count - 1, lineAlphaMul);
+		if (drawPoints) mesh.AddPoints(linePoints, lineColors, pointThickness.Get(this), count);
+		if (drawLines) {
+			if (lineConstructor != null) {
+				for (int i = 0; i < count - 1; i++) {
+					lineConstructor.Construct(mesh!, linePoints[i], linePoints[i + 1], lineThickness.Get(this),
+						lineColors[i].WithAlpha((byte)(lineAlphaMul * 255)), canvas);
+				}
+			}
+			else mesh!.AddConnectedLines(linePoints, lineColors, lineThickness.Get(this), count - 1, lineAlphaMul);
+		}
 
 		mesh.OnModified();
 	}

@@ -7,6 +7,7 @@ using SomeChartsUi.ui.canvas;
 using SomeChartsUi.ui.elements;
 using SomeChartsUi.ui.layers.render;
 using SomeChartsUi.ui.text;
+using SomeChartsUi.utils.mesh.construction;
 
 namespace SomeChartsUi.elements.charts.pie;
 
@@ -155,8 +156,8 @@ public class PieChart : RenderableBase, IDownsample {
 				float2 labelPos = new(lineEnd2.x, lineEnd2.y + 4);
 
 				float thickness = 1f / canvasScale.avg;
-				AddLine(mesh, lineStart, lineEnd, thickness, col.WithAlpha(255));
-				AddLine(mesh, lineEnd, lineEnd2, thickness, col.WithAlpha(255));
+				mesh.AddLine(lineStart, lineEnd, thickness, col.WithAlpha(255));
+				mesh.AddLine(lineEnd, lineEnd2, thickness, col.WithAlpha(255));
 
 				string name = string.Format(names.GetValue(i), pieValues[i], pieValues[i] / valueSum * 100, i);
 				_textMesh.GenerateMesh(name, font, 16 / canvasScale.avg, labelColor.GetColor(), new(labelPos));

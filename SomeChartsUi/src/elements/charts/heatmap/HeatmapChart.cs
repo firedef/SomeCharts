@@ -6,6 +6,7 @@ using SomeChartsUi.ui.canvas;
 using SomeChartsUi.ui.elements;
 using SomeChartsUi.ui.layers.render;
 using SomeChartsUi.utils.mesh;
+using SomeChartsUi.utils.mesh.construction;
 
 namespace SomeChartsUi.elements.charts.heatmap; 
 
@@ -57,7 +58,7 @@ public class HeatmapChart : RenderableBase, IDownsample {
 
             _meshes[x * _meshesPerAxis + y].Clear();
             GetColors(startIndex + new int2(x * (c.x << downsample.x), y * (c.y << downsample.y)), c + 1, downsample.x, chartColors);
-            AddCellsGrid(_meshes[x * _meshesPerAxis + y], start + new float2(x * offset.x, y * offset.y), scale, c, chartColors, smooth, true);
+            _meshes[x * _meshesPerAxis + y].AddCellsGrid(start + new float2(x * offset.x, y * offset.y), scale, c, chartColors, smooth, true);
             
             return chartColors;
         }, _ => { });

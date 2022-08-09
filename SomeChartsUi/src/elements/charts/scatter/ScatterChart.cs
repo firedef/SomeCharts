@@ -7,6 +7,7 @@ using SomeChartsUi.ui.canvas;
 using SomeChartsUi.ui.elements;
 using SomeChartsUi.ui.layers.render;
 using SomeChartsUi.utils.mesh;
+using SomeChartsUi.utils.mesh.construction;
 
 namespace SomeChartsUi.elements.charts.scatter; 
 
@@ -82,10 +83,10 @@ public class ScatterChart : RenderableBase {
 		
 		if (drawBounds) {
 			float thickness = 2 / canvas.transform.scale.animatedValue.avg;
-			AddLine(noTextureMesh, new(0,0), new(0,scale.y), thickness, boundsColor.GetColor());
-			AddLine(noTextureMesh, new(0,scale.y), new(scale.x,scale.y), thickness, boundsColor.GetColor());
-			AddLine(noTextureMesh, new(scale.x,scale.y), new(scale.x,0), thickness, boundsColor.GetColor());
-			AddLine(noTextureMesh, new(scale.x,0), new(0,0), thickness, boundsColor.GetColor());
+			noTextureMesh.AddLine(new(0,0), new(0,scale.y), thickness, boundsColor.GetColor());
+			noTextureMesh.AddLine(new(0,scale.y), new(scale.x,scale.y), thickness, boundsColor.GetColor());
+			noTextureMesh.AddLine(new(scale.x,scale.y), new(scale.x,0), thickness, boundsColor.GetColor());
+			noTextureMesh.AddLine(new(scale.x,0), new(0,0), thickness, boundsColor.GetColor());
 		}
 		
 		noTextureMesh.OnModified();

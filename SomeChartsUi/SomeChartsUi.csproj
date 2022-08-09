@@ -19,11 +19,9 @@
     <ItemGroup>
         <Folder Include="src\elements\charts\bar" />
         <Folder Include="src\elements\charts\flow" />
-        <Folder Include="src\elements\charts\graph" />
         <Folder Include="src\elements\charts\radar" />
         <Folder Include="src\elements\ui" />
         <Folder Include="src\utils\rects" />
-        <Folder Include="src\utils\vectors" />
     </ItemGroup>
 
     <ItemGroup>

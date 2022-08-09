@@ -7,6 +7,7 @@ using SomeChartsUi.ui.canvas;
 using SomeChartsUi.ui.elements;
 using SomeChartsUi.ui.layers.render;
 using SomeChartsUi.ui.text;
+using SomeChartsUi.utils.mesh.construction;
 
 namespace SomeChartsUi.elements.other;
 
@@ -72,7 +73,7 @@ public class Ruler : RenderableBase {
 			float2[] positions = GetPositions(pos, space, count, orientation);
 			float scaleVal = 1 / (canvas.transform.scale.animatedValue * vec).sum;
 
-			if (drawLines) AddStraightLines(mesh!, positions, lineLength - (pos * vec.yx).sum, lineColor.GetColor(), screenSpaceThickness ? thickness * scaleVal : thickness, orientation, -.01f);
+			if (drawLines) mesh!.AddStraightLines(positions, lineLength - (pos * vec.yx).sum, lineColor.GetColor(), screenSpaceThickness ? thickness * scaleVal : thickness, orientation, -.01f);
 			if (drawLabels && names != null) {
 				(float s, int c) = GetStartCountIndexes(GetStartEndPos(pos, pos + count * space, orientation), space);
 				if (c < 1) return;

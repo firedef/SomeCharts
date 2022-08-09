@@ -5,6 +5,7 @@ using MathStuff.vectors;
 using SomeChartsUi.ui;
 using SomeChartsUi.utils.mesh;
 using SomeChartsUi.utils.shaders;
+using SomeChartsUiAvalonia.impl.opengl.backend;
 using SomeChartsUiAvalonia.impl.opengl.shaders;
 using static Avalonia.OpenGL.GlConsts;
 
